@@ -881,7 +881,7 @@ function loadScene(sceneId) {
     player.col=20; player.row=23;
     player.px=isoX(player.col,player.row);
     player.py=isoY(player.col,player.row);
-    updateSceneLabel('🏛️ The Village');
+    updateSceneLabel('The Village');
     State.scene='village'; State.save();
     addNarrative('You step outside.','sys');
     updateSleepButton();
@@ -1002,7 +1002,7 @@ function loadFloor(building, floorId) {
   player.py  = isoY(player.col, player.row);
   player.path = [];
 
-  updateSceneLabel(`${building.emoji} ${floor.name}`);
+  updateSceneLabel(floor.name);
   State.scene = floorId; State.save();
   updateSleepButton();
   updateLeaveButton();
