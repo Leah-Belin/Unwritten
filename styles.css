@@ -30,12 +30,6 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
   font-family:var(--font-hand); font-size:1rem;
   color:var(--parchment); text-shadow:0 1px 6px rgba(0,0,0,0.9); pointer-events:none;
 }
-#hint-badge {
-  position:absolute; bottom:56px; left:50%; transform:translateX(-50%);
-  font-family:var(--font-hand); font-size:0.78rem;
-  color:var(--parchment); text-shadow:0 1px 6px rgba(0,0,0,0.9); pointer-events:none; opacity:0.45;
-  white-space:nowrap;
-}
 #map-btn {
   position:absolute; bottom:18px; left:18px;
   background:rgba(20,12,4,0.85); border:1px solid var(--sepia);
@@ -133,17 +127,24 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 
 /* ══ DIALOGUE ══════════════════════════════════════════════════ */
 #dialogue-overlay {
-  position:absolute; bottom:env(safe-area-inset-bottom, 0px); left:0; right:0; min-height:120px;
+  position:absolute; bottom:env(safe-area-inset-bottom, 0px); left:0; right:0; min-height:240px;
   background:linear-gradient(to right,rgba(12,7,2,0.97),rgba(22,13,5,0.95));
   border-top:2px solid var(--sepia);
   display:flex; align-items:flex-start; gap:14px; padding:14px 18px;
   transform:translateY(100%); transition:transform 0.3s ease; z-index:50;
 }
 #dialogue-overlay.open { transform:translateY(0); }
-#dlg-portrait { width:68px; height:90px; flex-shrink:0; border:2px solid var(--parchment-deep); background:var(--parchment-dark); display:flex; align-items:center; justify-content:center; font-size:2.2rem; }
+#dlg-portrait { width:68px; height:110px; flex-shrink:0; border:2px solid var(--parchment-deep); background:var(--parchment-dark); display:flex; align-items:center; justify-content:center; font-size:2.2rem; }
 #dlg-body     { flex:1; display:flex; flex-direction:column; gap:7px; }
 #dlg-name     { font-family:var(--font-title); font-size:0.72rem; letter-spacing:0.15em; color:var(--sepia-light); }
 #dlg-text     { font-family:var(--font-body); font-size:0.98rem; font-style:italic; color:var(--parchment); line-height:1.5; }
+#dlg-actions  { display:flex; flex-direction:column; gap:5px; margin-top:4px; }
+.dlg-action-btn {
+  background:transparent; border:1px solid var(--sepia);
+  color:var(--parchment); font-family:var(--font-hand); font-size:0.9rem;
+  padding:5px 12px; cursor:pointer; text-align:left; transition:background 0.15s;
+}
+.dlg-action-btn:hover { background:rgba(139,111,71,0.2); border-color:var(--parchment-deep); }
 #dlg-close    { display:none; }
 @keyframes blink { 0%,100%{opacity:0.4} 50%{opacity:1} }
 
@@ -294,8 +295,11 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 #game-title  { font-family:var(--font-title); font-size:1.3rem; letter-spacing:0.2em; color:var(--ink); }
 #game-subtitle { font-family:var(--font-hand); font-size:0.8rem; color:var(--sepia); margin-top:2px; }
 
+/* Panel scroll wrapper */
+#panel-scroll { flex:1; overflow-y:auto; min-height:0; position:relative; z-index:1; scrollbar-width:thin; scrollbar-color:var(--parchment-deep) transparent; }
+
 /* Narrative */
-#narrative-box { flex:1; overflow-y:auto; padding:10px 14px; position:relative; z-index:1; scrollbar-width:thin; scrollbar-color:var(--parchment-deep) transparent; min-height:0; }
+#narrative-box { padding:10px 14px 4px; }
 .n-line       { font-family:var(--font-body); font-size:0.9rem; line-height:1.6; color:var(--ink-light); margin-bottom:7px; animation:lineIn 0.35s ease forwards; opacity:0; }
 .n-line.sys   { font-family:var(--font-hand); color:var(--sepia); font-size:0.85rem; }
 .n-line.alert { color:var(--accent); font-weight:600; }
@@ -306,8 +310,8 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 .divlabel { font-family:var(--font-hand); font-size:0.68rem; color:var(--sepia); text-align:center; padding:2px 0 1px; position:relative; z-index:1; letter-spacing:0.1em; }
 .divline  { height:1px; background:linear-gradient(to right,transparent,var(--parchment-deep),transparent); margin:0 12px; position:relative; z-index:1; }
 
-/* Energy */
-#status-box  { padding:4px 14px 5px; position:relative; z-index:1; }
+/* Energy — fixed near top */
+#status-box  { padding:5px 14px 6px; border-bottom:1px solid var(--parchment-deep); position:relative; z-index:1; flex-shrink:0; }
 .stat-row    { display:flex; flex-direction:column; gap:2px; }
 .stat-label  { font-family:var(--font-hand); font-size:0.68rem; color:var(--sepia); }
 .stat-track  { height:6px; background:var(--parchment-dark); border:1px solid var(--parchment-deep); border-radius:1px; overflow:hidden; }
@@ -340,7 +344,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 #use-item-btn:hover { background:var(--parchment-deep); }
 
 /* Quests */
-#quest-box    { padding:3px 14px 5px; position:relative; z-index:1; overflow-y:auto; max-height:90px; }
+#quest-box    { padding:3px 14px 5px; position:relative; z-index:1; }
 #quest-list   { margin-top:2px; }
 .quest-item   { display:flex; align-items:center; gap:6px; font-family:var(--font-body); font-size:0.82rem; color:var(--ink-light); margin-bottom:4px; padding:2px 0; border-bottom:1px solid var(--parchment-dark); }
 .quest-item.ready { color:var(--accent); }

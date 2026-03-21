@@ -718,28 +718,42 @@ function talkTo(npc) {
   // Always advance index, wrapping safely
   State.npcDialogueIndex[npc.id] = (idx + 1) % npc.lines.length;
 
-  // Check quest completion first
+  // Check quest completion first — show Give button
   const completable = checkQuestCompletion(npc.id);
   if (completable) {
-    const result = completeQuest(completable.id);
-    if (result) {
-      showDialogue(npc, line);
-      addNarrative(result, 'sys');
-      renderInventory(); renderWallet(); renderQuestList();
-      tickActionSafe(3);
-      State.save();
-      return;
-    }
+    const item = ITEMS[completable.itemId];
+    showDialogue(npc, line, [{
+      label: `Give ${item?.emoji || ''} ${completable.itemId.replace(/_/g,' ')}`,
+      onClick: () => {
+        const result = completeQuest(completable.id);
+        if (result) {
+          addNarrative(result, 'sys');
+          renderInventory(); renderWallet(); renderQuestList();
+          tickActionSafe(3);
+          State.save();
+        }
+      }
+    }]);
+    tickActionSafe(1);
+    State.save();
+    return;
   }
 
-  // Check if should offer quest
-  const questLine = offerQuest(npc);
-  if (questLine) {
-    showDialogue(npc, questLine);
-    addNarrative(`↳ ${npc.name} has a task for you.`, 'sys');
-    renderQuestList();
-    State.raiseGoodwill(npc.id);
-    tickActionSafe(3);
+  // Check if should offer quest — show Accept button
+  if (canOfferQuest(npc)) {
+    const q = npc.quest;
+    showDialogue(npc, q.line, [{
+      label: `Accept: ${q.itemName}`,
+      onClick: () => {
+        offerQuest(npc);
+        addNarrative(`↳ ${npc.name} has a task for you.`, 'sys');
+        renderQuestList();
+        State.raiseGoodwill(npc.id);
+        tickActionSafe(2);
+        State.save();
+      }
+    }]);
+    tickActionSafe(1);
     State.save();
     return;
   }
@@ -845,6 +859,7 @@ function interactCabinet() {
 
 // ── SCENE MANAGEMENT ──────────────────────────────────────────
 function loadScene(sceneId) {
+  clearNarrative();
   if (sceneId === 'village') {
     currentBuilding = null;
     currentFloor    = null;
@@ -1138,8 +1153,6 @@ function init() {
 
   addNarrative('The village is already busy. Someone is laughing near the well.');
   addNarrative('The bakery smells like warm bread and spiced rolls. A perfect morning.');
-  addNarrative('↳ Click to move · Click buildings to enter · Click villagers to talk', 'sys');
-  addNarrative('↳ Click crafting stations inside buildings to cook and brew', 'sys');
 
   requestAnimationFrame(loop);
 }
