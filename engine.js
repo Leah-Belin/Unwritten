@@ -599,9 +599,10 @@ function attachInputHandlers() {
 
     // ── NPC click — must be adjacent to talk ──────────────────
     for (const npc of currentNPCs) {
-      const{x,y}=toScreen(npc.col,npc.row);
-      const by=y+TH/2-4;
-      if ((sx-x)**2+(sy-by)**2 < 22**2) {
+      const nx = (npc.px !== undefined ? npc.px : isoX(npc.col,npc.row)) + offX;
+      const ny = (npc.py !== undefined ? npc.py : isoY(npc.col,npc.row)) + offY;
+      const by = ny - TH/2 - 12; // matches sprite circle centre in drawSprite
+      if ((sx-nx)**2+(sy-by)**2 < 30**2) {
         if (isAdjacent(player.col, player.row, npc.col, npc.row)) {
           talkTo(npc);
         } else {

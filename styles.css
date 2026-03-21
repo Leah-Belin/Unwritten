@@ -13,8 +13,7 @@
   --font-hand:      'Caveat', cursive;
 }
 html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-family:var(--font-body); color:var(--ink); }
-#layout { display:grid; grid-template-columns:1fr 300px; grid-template-rows:100vh; width:100vw; height:100vh; transition:grid-template-columns 0.3s ease; }
-#layout.panel-collapsed { grid-template-columns:1fr 0; }
+#layout { display:grid; grid-template-columns:1fr auto; grid-template-rows:100vh; width:100vw; height:100vh; }
 
 /* ══ CANVAS PANEL ══════════════════════════════════════════════ */
 #canvas-wrap { position:relative; overflow:hidden; background:#1a1410; }
@@ -136,7 +135,8 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
   position:absolute; bottom:0; left:0; right:0; min-height:120px;
   background:linear-gradient(to right,rgba(12,7,2,0.97),rgba(22,13,5,0.95));
   border-top:2px solid var(--sepia);
-  display:flex; align-items:flex-start; gap:14px; padding:14px 18px;
+  display:flex; align-items:flex-start; gap:14px;
+  padding:14px 18px calc(14px + env(safe-area-inset-bottom, 0px));
   transform:translateY(100%); transition:transform 0.3s ease; z-index:50;
 }
 #dialogue-overlay.open { transform:translateY(0); }
@@ -280,8 +280,11 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 #ui-panel {
   display:flex; flex-direction:column;
   background:var(--parchment); border-left:3px solid var(--ink);
-  position:relative; overflow:hidden; min-width:0;
+  position:relative; overflow:hidden;
+  width:300px; max-width:300px; min-width:0;
+  transition:max-width 0.3s ease;
 }
+#layout.panel-collapsed #ui-panel { max-width:0; border-left-width:0; }
 #ui-panel::before {
   content:''; position:absolute; inset:0;
   background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(139,111,71,0.07) 27px,rgba(139,111,71,0.07) 28px);
@@ -352,16 +355,15 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 
 /* ══ MOBILE — panel becomes a fixed overlay ════════════════════ */
 @media (max-width: 640px) {
-  #layout                       { grid-template-columns: 1fr; }
-  #layout.panel-collapsed        { grid-template-columns: 1fr; }
   #ui-panel {
     position: fixed; top: 0; right: 0;
-    width: 300px; height: 100%;
+    width: 300px; max-width: 300px; height: 100%;
     transform: translateX(100%);
     transition: transform 0.3s ease;
     z-index: 200;
     border-left: 3px solid var(--ink);
   }
+  #layout.panel-collapsed #ui-panel { max-width: 300px; transform: translateX(100%); }
   #layout:not(.panel-collapsed) #ui-panel { transform: translateX(0); }
   /* backdrop */
   #panel-backdrop {
