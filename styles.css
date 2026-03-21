@@ -65,7 +65,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
   background:rgba(10,6,2,0.92); border:1px solid var(--sepia);
   color:var(--parchment); font-family:var(--font-hand); font-size:0.95rem;
   padding:7px 16px; cursor:pointer; transition:all 0.2s;
-  display:none; z-index:30;
+  display:none; z-index:60;
 }
 #sleep-here-btn:hover { background:rgba(139,111,71,0.25); border-color:var(--parchment-deep); }
 /* ══ ROOM TRANSITION ═══════════════════════════════════════════ */
@@ -127,7 +127,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 
 /* ══ DIALOGUE ══════════════════════════════════════════════════ */
 #dialogue-overlay {
-  position:absolute; bottom:env(safe-area-inset-bottom, 0px); left:0; right:0; min-height:320px;
+  position:absolute; bottom:env(safe-area-inset-bottom, 0px); left:0; right:0; min-height:50vh;
   background:linear-gradient(to right,rgba(12,7,2,0.97),rgba(22,13,5,0.95));
   border-top:2px solid var(--sepia);
   display:flex; align-items:flex-start; gap:14px; padding:14px 18px;

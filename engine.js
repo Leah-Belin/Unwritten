@@ -1185,7 +1185,8 @@ function init() {
   initPanelState();
   initOverlayDismiss();
   resize();
-  window.addEventListener('resize', resize);
+  // ResizeObserver catches both window resize and panel collapse/expand
+  new ResizeObserver(resize).observe(document.getElementById('canvas-wrap'));
   attachInputHandlers();
   renderInventory();
   renderWallet();
