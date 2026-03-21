@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Unwritten — Chapter I</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -18,6 +18,7 @@
     <div id="hint-badge">click to move · click buildings to enter · click villagers to talk</div>
     <button id="map-btn" onclick="toggleWorldMap()">🗺️ World Map</button>
     <button id="nap-btn" onclick="doNap()">😴 Rest (2hrs)</button>
+    <button id="leave-btn" onclick="leaveBuilding()" style="display:none">🚪 Leave</button>
     <button id="panel-toggle" onclick="togglePanel()" title="Toggle sidebar">‹</button>
 
     <!-- Room transition -->
