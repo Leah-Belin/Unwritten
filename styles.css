@@ -137,7 +137,11 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 #dlg-body     { flex:1; display:flex; flex-direction:column; gap:7px; }
 #dlg-name     { font-family:var(--font-title); font-size:0.72rem; letter-spacing:0.15em; color:var(--sepia-light); }
 #dlg-text     { font-family:var(--font-body); font-size:0.98rem; font-style:italic; color:var(--parchment); line-height:1.5; }
-#dlg-close    { display:none; }
+#dlg-close    { font-size:0.72rem; letter-spacing:0.12em; color:var(--sepia-light); opacity:0.6; cursor:pointer; margin-top:2px; }
+#dlg-close:hover { opacity:1; }
+#dlg-actions  { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+.dlg-action-btn { background:rgba(180,140,80,0.15); border:1px solid var(--sepia); color:var(--parchment); font-family:var(--font-body); font-size:0.82rem; font-style:italic; padding:4px 10px; cursor:pointer; transition:background 0.2s; }
+.dlg-action-btn:hover { background:rgba(180,140,80,0.3); }
 @keyframes blink { 0%,100%{opacity:0.4} 50%{opacity:1} }
 
 /* ══ CRAFTING OVERLAY ══════════════════════════════════════════ */

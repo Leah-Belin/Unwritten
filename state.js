@@ -65,6 +65,8 @@ const State = {
   // ── SCENE ────────────────────────────────────────────────────
   scene: 'village',   // 'village' | building id
   priorScene: null,
+  playerCol: 20,
+  playerRow: 23,
 
   // ── NPC DIALOGUE INDICES ─────────────────────────────────────
   npcDialogueIndex: {},
@@ -95,6 +97,8 @@ const State = {
         activeQuests:      this.activeQuests,
         completedQuests:   this.completedQuests,
         scene:             this.scene,
+        playerCol:         (typeof player !== 'undefined') ? player.col : this.playerCol,
+        playerRow:         (typeof player !== 'undefined') ? player.row : this.playerRow,
         npcDialogueIndex:  this.npcDialogueIndex,
         takenItems:        this.takenItems,
         plot:              this.plot,
@@ -122,7 +126,9 @@ const State = {
       this.knownRecipes     = data.knownRecipes    ?? ['simple_bread','herb_bundle'];
       this.activeQuests     = data.activeQuests    ?? [];
       this.completedQuests  = data.completedQuests ?? [];
-      this.scene            = data.scene           ?? 'village';
+      this.scene            = data.scene            ?? 'village';
+      this.playerCol        = data.playerCol        ?? 20;
+      this.playerRow        = data.playerRow        ?? 23;
       this.npcDialogueIndex = data.npcDialogueIndex ?? {};
       this.takenItems       = data.takenItems      ?? [];
       if (data.plot) Object.assign(this.plot, data.plot);

@@ -155,8 +155,19 @@ function useSelectedItem() {
   }
 }
 
+// ── LEAVE BUTTON ──────────────────────────────────────────────
+function updateLeaveButton() {
+  document.getElementById('leave-btn').style.display = currentBuilding ? 'block' : 'none';
+}
+
+function leaveBuilding() {
+  const exit = currentExits.find(e => e.targetScene === 'village');
+  if (exit) loadScene('village', currentBuilding?.id);
+}
+
 // ── DIALOGUE ──────────────────────────────────────────────────
-function showDialogue(npc, text) {
+// actions: [{ label, onClick }]  — optional reply buttons shown in the panel
+function showDialogue(npc, text, actions = []) {
   const portrait = document.getElementById('dlg-portrait');
   if (npc.portrait) {
     portrait.innerHTML = `<img src="${npc.portrait}" style="width:100%;height:100%;object-fit:cover;object-position:top">`;
@@ -165,6 +176,15 @@ function showDialogue(npc, text) {
   }
   document.getElementById('dlg-name').textContent = npc.name;
   document.getElementById('dlg-text').textContent = text;
+  const actionsEl = document.getElementById('dlg-actions');
+  actionsEl.innerHTML = '';
+  actions.forEach(({ label, onClick }) => {
+    const btn = document.createElement('button');
+    btn.className = 'dlg-action-btn';
+    btn.textContent = label;
+    btn.onclick = () => { closeDialogue(); onClick(); };
+    actionsEl.appendChild(btn);
+  });
   document.getElementById('dialogue-overlay').classList.add('open');
 }
 
