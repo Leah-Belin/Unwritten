@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unwritten — Chapter I</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="layout">
+
+  <!-- ═══ CANVAS PANEL ═══════════════════════════════════════ -->
+  <div id="canvas-wrap">
+    <canvas id="game-canvas"></canvas>
+    <div id="scene-label">🏛️ The Village</div>
+    <div id="time-badge">🌅 Dawn · Day 1</div>
+    <div id="hint-badge">click to move · click buildings to enter · click villagers to talk</div>
+    <button id="map-btn" onclick="toggleWorldMap()">🗺️ World Map</button>
+    <button id="nap-btn" onclick="doNap()">😴 Rest (2hrs)</button>
+
+    <!-- Room transition -->
+    <div id="room-transition">
+      <div id="rt-art"></div>
+      <div id="rt-overlay"></div>
+      <div id="rt-name"></div>
+      <div id="rt-sub"></div>
+      <div id="rt-prompt" onclick="commitEnterBuilding()">[ enter ]</div>
+    </div>
+
+    <!-- Sleep here button — appears contextually -->
+    <button id="sleep-here-btn" onclick="doSleepHere()">💤 Sleep here</button>
+
+    <!-- Exhaustion notice — passive, no interaction required -->
+    <div id="exhaustion-notice"><p id="exhaustion-text"></p></div>
+
+    <!-- Dialogue -->
+    <div id="dialogue-overlay">
+      <div id="dlg-portrait">👤</div>
+      <div id="dlg-body">
+        <div id="dlg-name"></div>
+        <div id="dlg-text"></div>
+        <div id="dlg-close" onclick="closeDialogue()">[ continue ]</div>
+      </div>
+    </div>
+
+    <!-- Crafting -->
+    <div id="craft-overlay">
+      <div id="craft-box">
+        <div id="craft-title"></div>
+        <div id="craft-close" onclick="closeCraftingMenu()">✕ close</div>
+        <div id="craft-list"></div>
+      </div>
+    </div>
+
+    <!-- Story Event / Cutscene Overlay -->
+    <div id="event-overlay" onclick="advanceEventPanel()">
+      <div id="event-box">
+        <div id="event-portrait-row">
+          <div id="event-portrait"></div>
+          <div id="event-speaker"></div>
+        </div>
+        <div id="event-text-box">
+          <div id="event-text" class="event-text"></div>
+          <div id="event-choice-box">
+            <div id="event-choice-prompt"></div>
+            <div id="event-choice-btns"></div>
+          </div>
+          <div id="event-continue">[ tap to continue ]</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Market -->
+    <div id="market-overlay">
+      <div id="market-box">
+        <div id="market-title">🛒 Market Day</div>
+        <div id="market-close" onclick="closeMarket()">✕ close</div>
+        <div id="market-stalls"></div>
+      </div>
+    </div>
+
+    <!-- Plot Fund -->
+    <div id="plot-overlay">
+      <div id="plot-box">
+        <div id="plot-title">🏡 The Plot</div>
+        <div id="plot-close" onclick="closePlot()">✕ close</div>
+        <div id="plot-desc" style="font-family:var(--font-body);font-size:0.88rem;font-style:italic;color:var(--ink-light);margin-bottom:14px;line-height:1.5"></div>
+        <div id="plot-contents"></div>
+        <div id="plot-deposit" style="margin-top:14px;border-top:1px solid var(--parchment-deep);padding-top:12px">
+          <div style="font-family:var(--font-title);font-size:0.72rem;letter-spacing:0.1em;margin-bottom:8px">Deposit chits</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="plot-deposit-btns"></div>
+          <div style="font-family:var(--font-title);font-size:0.72rem;letter-spacing:0.1em;margin:10px 0 8px">Deposit materials</div>
+          <div id="plot-material-btns" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- World Map -->
+    <div id="worldmap-overlay">
+      <div id="worldmap-box">
+        <div id="worldmap-title">— The Known World —</div>
+        <div id="worldmap-close" onclick="toggleWorldMap()">✕ close</div>
+        <div id="worldmap-svg-container"></div>
+        <script>
+          fetch('images/worldmap.svg').then(r => r.text()).then(svg => {
+            document.getElementById('worldmap-svg-container').innerHTML = svg;
+          });
+        </script>
+      </div>
+    </div>
+  </div><!-- /canvas-wrap -->
+
+  <!-- ═══ UI PANEL ════════════════════════════════════════════ -->
+  <div id="ui-panel">
+    <div id="game-header">
+      <div id="game-title">Unwritten</div>
+      <div id="game-subtitle">Chapter I &nbsp;·&nbsp; The Healer's Daughter</div>
+    </div>
+
+    <div id="narrative-box"></div>
+
+    <div class="divlabel">tasks</div>
+    <div class="divline"></div>
+    <div id="quest-box"><div id="quest-list"></div></div>
+
+    <div class="divlabel">purse</div>
+    <div class="divline"></div>
+    <div id="wallet-box"><div id="wallet-row"></div></div>
+
+    <div class="divlabel">carried</div>
+    <div class="divline"></div>
+    <div id="inventory-box">
+      <div id="inv-grid"></div>
+      <button id="use-item-btn" onclick="useSelectedItem()"></button>
+    </div>
+
+    <div class="divline"></div>
+    <div class="divlabel">condition</div>
+    <div id="status-box">
+      <div class="stat-row">
+        <span class="stat-label" id="energy-label">✨ energy — well rested</span>
+        <div class="stat-track"><div class="stat-fill f-energy-full" id="s-energy" style="width:100%"></div></div>
+      </div>
+    </div>
+
+    <div id="day-bar">
+      <span id="day-label">Day 1 · Chapter I</span>
+      <span id="time-label-r">🌅 Dawn</span>
+    </div>
+  </div><!-- /ui-panel -->
+
+</div><!-- /layout -->
+
+<!-- Scripts — order matters: data first, then logic, then rendering -->
+<script src="state.js"></script>
+<script src="world.js"></script>
+<script src="crafting.js"></script>
+<script src="quests.js"></script>
+<script src="ui.js"></script>
+<script src="events.js"></script>
+<script src="engine.js"></script>
+<script>window.addEventListener('load', init);</script>
+</body>
+</html>

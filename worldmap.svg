@@ -1,0 +1,32 @@
+<svg id="worldmap-svg" viewBox="0 0 420 300">
+  <rect width="420" height="300" fill="#e8dfc8"/>
+  <line x1="0" y1="100" x2="420" y2="100" stroke="#c8b48a" stroke-width="0.5" opacity="0.5"/>
+  <line x1="0" y1="200" x2="420" y2="200" stroke="#c8b48a" stroke-width="0.5" opacity="0.5"/>
+  <path d="M200,195 Q170,150 140,95"  stroke="#b8956a" stroke-width="2" fill="none" stroke-dasharray="6,4" opacity="0.6"/>
+  <path d="M200,195 Q270,175 330,155" stroke="#b8956a" stroke-width="2" fill="none" stroke-dasharray="6,4" opacity="0.4"/>
+  <path d="M200,195 Q195,240 188,285" stroke="#b8956a" stroke-width="2" fill="none" stroke-dasharray="6,4" opacity="0.3"/>
+  <g class="map-zone" onclick="travelTo('village')">
+    <ellipse cx="200" cy="195" rx="30" ry="19" fill="#c8b48a" stroke="#3d2b1a" stroke-width="2"/>
+    <text x="200" y="199" font-family="Caveat,cursive" font-size="12" fill="#1a1008" text-anchor="middle">🏘️ Village</text>
+    <circle cx="200" cy="195" r="5" fill="#7a1e1e" opacity="0.9"/>
+  </g>
+  <g class="map-zone locked" id="zone-garden">
+    <ellipse cx="140" cy="90" rx="28" ry="17" fill="#a09070" stroke="#3d2b1a" stroke-width="1.5"/>
+    <text x="140" y="94" font-family="Caveat,cursive" font-size="10" fill="#3d2b1a" text-anchor="middle">⛰️ Garden</text>
+  </g>
+  <g class="map-zone locked" id="zone-ruins">
+    <ellipse cx="332" cy="153" rx="28" ry="17" fill="#a09070" stroke="#3d2b1a" stroke-width="1.5"/>
+    <text x="332" y="157" font-family="Caveat,cursive" font-size="10" fill="#3d2b1a" text-anchor="middle">🏚️ Ruins</text>
+  </g>
+  <g class="map-zone locked" id="zone-temple">
+    <ellipse cx="188" cy="282" rx="28" ry="15" fill="#a09070" stroke="#3d2b1a" stroke-width="1.5"/>
+    <text x="188" y="286" font-family="Caveat,cursive" font-size="10" fill="#3d2b1a" text-anchor="middle">🕍 Temple</text>
+  </g>
+  <g transform="translate(392,25)" font-family="Caveat,cursive" font-size="9" fill="#8b6f47" text-anchor="middle">
+    <circle r="11" fill="none" stroke="#8b6f47" stroke-width="1"/>
+    <text y="-14">N</text><text y="20">S</text><text x="-16" y="4">W</text><text x="16" y="4">E</text>
+    <line x1="0" y1="-8" x2="0" y2="8" stroke="#8b6f47" stroke-width="1"/>
+    <line x1="-8" y1="0" x2="8" y2="0" stroke="#8b6f47" stroke-width="1"/>
+  </g>
+  <text x="210" y="14" font-family="Caveat,cursive" font-size="9" fill="#8b6f47" text-anchor="middle" opacity="0.6">🔒 Locked regions reveal as the story unfolds</text>
+</svg>
