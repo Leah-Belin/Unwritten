@@ -3,6 +3,13 @@ function togglePanel() {
   document.getElementById('panel-toggle').textContent = collapsed ? '›' : '‹';
 }
 
+function initPanelState() {
+  if (window.innerWidth <= 640) {
+    document.getElementById('layout').classList.add('panel-collapsed');
+    document.getElementById('panel-toggle').textContent = '›';
+  }
+}
+
 function addNarrative(text, cls = '') {
   const box = document.getElementById('narrative-box');
   if (!box) return;

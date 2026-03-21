@@ -1121,6 +1121,7 @@ function init() {
     State.addItem(ITEMS.grain);
   }
 
+  initPanelState();
   resize();
   window.addEventListener('resize', resize);
   attachInputHandlers();
