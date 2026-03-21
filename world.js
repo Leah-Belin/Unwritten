@@ -18,16 +18,16 @@ const TILE_DEF = {
 
 // Visual styles per building — walls, roof/interior, chimney & window flags
 const BUILDING_STYLES = {
-  bakery:           { wall:'#ece0c8', wallL:'#8a6840', wallR:'#b08858', roof:'#5a3020', chimney:true, bigWindows:true },
-  forge:            { wall:'#b0a898', wallL:'#504840', wallR:'#706860', roof:'#2a2420', chimney:true },
-  inn:              { wall:'#d8c890', wallL:'#9a7840', wallR:'#bea060', roof:'#5a3018', chimney:true },
-  town_hall:        { wall:'#dcd8c8', wallL:'#706860', wallR:'#908878', roof:'#484038' },
-  council_hall:     { wall:'#d4d0c0', wallL:'#686058', wallR:'#888070', roof:'#404038' },
-  hestas_hut:       { wall:'#d0c8a0', wallL:'#7a6840', wallR:'#988858', roof:'#4a2c1c', chimney:true },
-  jaxons_house:     { wall:'#ccc8a8', wallL:'#706040', wallR:'#907858', roof:'#503020', chimney:true },
-  villager_house_a: { wall:'#d4caa8', wallL:'#7a6840', wallR:'#987860', roof:'#5c3020', chimney:true },
-  villager_house_b: { wall:'#cac4a0', wallL:'#706040', wallR:'#908058', roof:'#502818', chimney:true },
-  villager_house_c: { wall:'#cecaa8', wallL:'#7a6840', wallR:'#988860', roof:'#5a3020', chimney:true },
+  bakery:           { wall:'#ece0c8', wallL:'#8a6840', wallR:'#b08858', roof:'#5a3020', chimney:true, bigWindows:true, texture:'wood' },
+  forge:            { wall:'#b0a898', wallL:'#504840', wallR:'#706860', roof:'#2a2420', chimney:true, texture:'stone' },
+  inn:              { wall:'#d8c890', wallL:'#9a7840', wallR:'#bea060', roof:'#5a3018', chimney:true, texture:'wood' },
+  town_hall:        { wall:'#dcd8c8', wallL:'#706860', wallR:'#908878', roof:'#484038', texture:'stone_cut' },
+  council_hall:     { wall:'#d4d0c0', wallL:'#686058', wallR:'#888070', roof:'#404038', texture:'stone_cut' },
+  hestas_hut:       { wall:'#d0c8a0', wallL:'#7a6840', wallR:'#988858', roof:'#4a2c1c', chimney:true, texture:'stone' },
+  jaxons_house:     { wall:'#ccc8a8', wallL:'#706040', wallR:'#907858', roof:'#503020', chimney:true, texture:'brick' },
+  villager_house_a: { wall:'#d4caa8', wallL:'#7a6840', wallR:'#987860', roof:'#5c3020', chimney:true, texture:'brick' },
+  villager_house_b: { wall:'#cac4a0', wallL:'#706040', wallR:'#908058', roof:'#502818', chimney:true, texture:'brick' },
+  villager_house_c: { wall:'#cecaa8', wallL:'#7a6840', wallR:'#988860', roof:'#5a3020', chimney:true, texture:'brick' },
 };
 
 // ── TIME PERIODS ──────────────────────────────────────────────
@@ -108,6 +108,11 @@ const BUILDINGS = {
           { itemId:'common_herb', col:7, row:3, oneTime:false, label:'Herbs on the windowsill', respawn:true },
         ],
         stations: [{ type:'oven', col:2, row:3, label:'The Oven 🔥' }],
+        furniture: [
+          {type:'counter', col:3, row:2}, {type:'counter', col:4, row:2},
+          {type:'stool',   col:3, row:6},
+          {type:'barrel',  col:7, row:7},
+        ],
         exits: [
           { label:'Go upstairs',   targetFloor:'bakery_upper', col:8, row:5 },
           { label:'Leave bakery',  targetScene:'village',      col:5, row:9 },
@@ -125,6 +130,13 @@ const BUILDINGS = {
           { itemId:'gallan_tools', col:10, row:4, oneTime:true,  label:"Father's tools, half-sorted", respawn:false },
         ],
         stations: [{ type:'worktable', col:10, row:5, label:"Gallan's Worktable 🔧" }],
+        furniture: [
+          {type:'bed',   col:2, row:2},
+          {type:'bed',   col:2, row:7},
+          {type:'table', col:5, row:4},
+          {type:'chair', col:6, row:4},
+          {type:'chest', col:6, row:8},
+        ],
         exits: [
           { label:'Go downstairs', targetFloor:'bakery_ground', col:9, row:5 },
         ],
@@ -162,6 +174,12 @@ const BUILDINGS = {
           { itemId:'mint_herb',  col:7, row:2, oneTime:false, label:'Mint sprigs',   respawn:false },
         ],
         stations: [{ type:'hearth', col:1, row:3, label:'Hearth 🔥' }],
+        furniture: [
+          {type:'counter', col:5, row:2}, {type:'counter', col:6, row:2},
+          {type:'stool',   col:5, row:3}, {type:'stool',   col:6, row:3},
+          {type:'table',   col:4, row:5}, {type:'chair',   col:3, row:5}, {type:'chair', col:5, row:5},
+          {type:'table',   col:7, row:5}, {type:'chair',   col:6, row:5}, {type:'chair', col:8, row:5},
+        ],
         exits: [{ label:'Leave inn', targetScene:'village', col:5, row:9 }],
         sleepOption: { cost:{blue:2}, label:'Rent a room (2 🔵)' },
       },
@@ -186,6 +204,12 @@ const BUILDINGS = {
           { itemId:'iron_fitting', col:5, row:6, oneTime:false, label:'More fittings by the anvil', respawn:false },
         ],
         stations: [{ type:'forge', col:2, row:2, label:'The Forge 🔥' }],
+        furniture: [
+          {type:'barrel',  col:2, row:7},
+          {type:'barrel',  col:3, row:7},
+          {type:'counter', col:6, row:2},
+          {type:'stool',   col:7, row:3},
+        ],
         exits: [{ label:'Leave forge', targetScene:'village', col:5, row:9 }],
       },
     ],
@@ -204,6 +228,12 @@ const BUILDINGS = {
         npcs: ['elder'],
         items: [],
         stations: [],
+        furniture: [
+          {type:'table', col:4, row:3}, {type:'table', col:5, row:3}, {type:'table', col:6, row:3},
+          {type:'chair', col:3, row:3}, {type:'chair', col:7, row:3},
+          {type:'chair', col:4, row:2}, {type:'chair', col:5, row:2}, {type:'chair', col:6, row:2},
+          {type:'chair', col:5, row:8}, {type:'chair', col:6, row:8},
+        ],
         exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
       },
     ],
@@ -226,6 +256,12 @@ const BUILDINGS = {
           { itemId:'knotted_cord',col:7, row:2, oneTime:true,  label:'Knotted cord hanging on hook' },
         ],
         stations: [],
+        furniture: [
+          {type:'bed',   col:2, row:3},
+          {type:'table', col:5, row:6},
+          {type:'chair', col:4, row:6}, {type:'chair', col:6, row:6},
+          {type:'chest', col:2, row:7},
+        ],
         exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
       },
     ],
@@ -248,6 +284,11 @@ const BUILDINGS = {
           { itemId:'honey',        col:2, row:5, oneTime:true,  label:'Small jar of honey' },
         ],
         stations: [{ type:'hearth', col:1, row:4, label:'Hearth 🔥' }],
+        furniture: [
+          {type:'bed',   col:2, row:2},
+          {type:'shelf', col:6, row:2},
+          {type:'chair', col:4, row:6},
+        ],
         exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
         sleepOption: { cost:null, goodwill:'hesta', goodwillMin:1, label:"Sleep on Hesta's floor" },
       },
