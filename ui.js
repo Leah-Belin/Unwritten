@@ -23,6 +23,11 @@ function initOverlayDismiss() {
   });
 }
 
+function clearNarrative() {
+  const box = document.getElementById('narrative-box');
+  if (box) box.innerHTML = '';
+}
+
 function addNarrative(text, cls = '') {
   const box = document.getElementById('narrative-box');
   if (!box) return;
@@ -30,7 +35,11 @@ function addNarrative(text, cls = '') {
   el.className = 'n-line' + (cls ? ' ' + cls : '');
   el.textContent = text;
   box.appendChild(el);
-  setTimeout(() => box.scrollTop = box.scrollHeight, 50);
+  // Keep max 3 entries — remove oldest when exceeded
+  while (box.children.length > 3) box.removeChild(box.firstChild);
+  // Scroll panel wrapper to bottom
+  const scroll = document.getElementById('panel-scroll');
+  if (scroll) setTimeout(() => scroll.scrollTop = scroll.scrollHeight, 50);
 }
 
 // ── TIME & ENERGY UI ──────────────────────────────────────────
@@ -166,7 +175,8 @@ function leaveBuilding() {
 }
 
 // ── DIALOGUE ──────────────────────────────────────────────────
-function showDialogue(npc, text) {
+// actions: [{ label, onClick }]  — optional buttons shown in the panel
+function showDialogue(npc, text, actions = []) {
   const portrait = document.getElementById('dlg-portrait');
   if (npc.portrait) {
     portrait.innerHTML = `<img src="${npc.portrait}" style="width:100%;height:100%;object-fit:cover;object-position:top">`;
@@ -175,6 +185,15 @@ function showDialogue(npc, text) {
   }
   document.getElementById('dlg-name').textContent = npc.name;
   document.getElementById('dlg-text').textContent = text;
+  const actionsEl = document.getElementById('dlg-actions');
+  actionsEl.innerHTML = '';
+  actions.forEach(({ label, onClick }) => {
+    const btn = document.createElement('button');
+    btn.className = 'dlg-action-btn';
+    btn.textContent = label;
+    btn.onclick = () => { closeDialogue(); onClick(); };
+    actionsEl.appendChild(btn);
+  });
   document.getElementById('dialogue-overlay').classList.add('open');
 }
 
