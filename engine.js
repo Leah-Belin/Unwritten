@@ -178,8 +178,8 @@ function drawTile(c, r) {
 }
 
 function drawSprite(x, y, emoji, label, bodyColor, isPlayer) {
-  // Sprite sits ON the tile surface — base at y, body above
-  const base = y;                          // feet at tile centre
+  // Sprite sits ON the tile surface — base at top vertex of diamond, body above
+  const base = y - TH/2;                  // feet at tile top vertex (not centre)
   const radius = isPlayer ? 14 : 12;
   const centre = base - radius;            // circle centre above tile
 
