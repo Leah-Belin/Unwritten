@@ -3,6 +3,26 @@ function togglePanel() {
   document.getElementById('panel-toggle').textContent = collapsed ? '›' : '‹';
 }
 
+function initPanelState() {
+  if (window.innerWidth <= 640) {
+    document.getElementById('layout').classList.add('panel-collapsed');
+    document.getElementById('panel-toggle').textContent = '›';
+  }
+}
+
+function initOverlayDismiss() {
+  [
+    ['craft-overlay',   closeCraftingMenu],
+    ['market-overlay',  closeMarket],
+    ['plot-overlay',    closePlot],
+    ['worldmap-overlay',toggleWorldMap],
+  ].forEach(([id, fn]) => {
+    document.getElementById(id).addEventListener('click', e => {
+      if (e.target === e.currentTarget) fn();
+    });
+  });
+}
+
 function addNarrative(text, cls = '') {
   const box = document.getElementById('narrative-box');
   if (!box) return;
