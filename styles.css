@@ -126,10 +126,10 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 
 /* ══ DIALOGUE ══════════════════════════════════════════════════ */
 #dialogue-overlay {
-  position:absolute; bottom:0; left:0; right:0; height:130px;
+  position:absolute; bottom:0; left:0; right:0; min-height:120px;
   background:linear-gradient(to right,rgba(12,7,2,0.97),rgba(22,13,5,0.95));
   border-top:2px solid var(--sepia);
-  display:flex; align-items:center; gap:14px; padding:12px 18px;
+  display:flex; align-items:flex-start; gap:14px; padding:14px 18px;
   transform:translateY(100%); transition:transform 0.3s ease; z-index:50;
 }
 #dialogue-overlay.open { transform:translateY(0); }
@@ -137,7 +137,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 #dlg-body     { flex:1; display:flex; flex-direction:column; gap:7px; }
 #dlg-name     { font-family:var(--font-title); font-size:0.72rem; letter-spacing:0.15em; color:var(--sepia-light); }
 #dlg-text     { font-family:var(--font-body); font-size:0.98rem; font-style:italic; color:var(--parchment); line-height:1.5; }
-#dlg-close    { font-family:var(--font-hand); font-size:0.78rem; color:var(--sepia-light); cursor:pointer; align-self:flex-end; animation:blink 2s ease-in-out infinite; }
+#dlg-close    { display:none; }
 @keyframes blink { 0%,100%{opacity:0.4} 50%{opacity:1} }
 
 /* ══ CRAFTING OVERLAY ══════════════════════════════════════════ */

@@ -589,7 +589,7 @@ function checkPendingDoor() {
 // Attached in init() after canvas exists
 function attachInputHandlers() {
   canvas.addEventListener('click', e => {
-    if (document.getElementById('dialogue-overlay').classList.contains('open')) return;
+    if (document.getElementById('dialogue-overlay').classList.contains('open')) { closeDialogue(); return; }
     if (document.getElementById('craft-overlay').classList.contains('open')) return;
     if (document.getElementById('event-overlay').classList.contains('open')) return;
 
