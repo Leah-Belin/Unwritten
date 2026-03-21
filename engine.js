@@ -1122,6 +1122,7 @@ function init() {
   }
 
   initPanelState();
+  initOverlayDismiss();
   resize();
   window.addEventListener('resize', resize);
   attachInputHandlers();
