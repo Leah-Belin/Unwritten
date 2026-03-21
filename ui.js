@@ -155,6 +155,16 @@ function useSelectedItem() {
   }
 }
 
+// ── LEAVE BUTTON ──────────────────────────────────────────────
+function updateLeaveButton() {
+  document.getElementById('leave-btn').style.display = currentBuilding ? 'block' : 'none';
+}
+
+function leaveBuilding() {
+  const exit = currentExits.find(e => e.targetScene === 'village');
+  if (exit) loadScene('village');
+}
+
 // ── DIALOGUE ──────────────────────────────────────────────────
 function showDialogue(npc, text) {
   const portrait = document.getElementById('dlg-portrait');

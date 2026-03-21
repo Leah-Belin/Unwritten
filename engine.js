@@ -868,6 +868,7 @@ function loadScene(sceneId) {
     State.scene='village'; State.save();
     addNarrative('You step outside.','sys');
     updateSleepButton();
+    updateLeaveButton();
 
     // Check story triggers on scene change
     if (typeof checkStoryTriggers === 'function') checkStoryTriggers();
@@ -987,6 +988,7 @@ function loadFloor(building, floorId) {
   updateSceneLabel(`${building.emoji} ${floor.name}`);
   State.scene = floorId; State.save();
   updateSleepButton();
+  updateLeaveButton();
 }
 
 // ── TIME & ENERGY ─────────────────────────────────────────────
