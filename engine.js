@@ -44,6 +44,7 @@ let currentMap  = null;   // 2D tile array
 let currentNPCs = [];     // NPC objects visible in this scene
 let currentItems = [];    // Interactable items on map { itemId, col, row, label, oneTime, taken }
 let currentStations = []; // Crafting stations { type, col, row, label }
+let currentFurniture = [];
 let currentExits = [];    // Exit points { label, targetScene, targetFloor, col, row }
 let currentBuilding = null;
 let currentFloor    = null;
@@ -85,6 +86,56 @@ function astar(sc, sr, ec, er) {
     }
   }
   return [];
+}
+
+// Draw mortar/grain texture lines on a face, clipped to the parallelogram shape.
+function drawWallTexture(x, y, bh, face, texture) {
+  const hw=TW/2, hh=TH/2;
+  const x0 = face==='left' ? x-hw : x;
+  const faceW=hw, faceH=bh+hh;
+  ctx.save();
+  ctx.beginPath();
+  if (face==='left') {
+    ctx.moveTo(x-hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
+  } else {
+    ctx.moveTo(x+hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x+hw,y);
+  }
+  ctx.clip();
+  ctx.strokeStyle='rgba(0,0,0,0.18)';
+  if (texture==='wood') {
+    ctx.lineWidth=0.7;
+    for (let dy=7; dy<faceH+7; dy+=7) {
+      ctx.beginPath(); ctx.moveTo(x0-4,y-bh+dy); ctx.lineTo(x0+faceW+4,y-bh+dy); ctx.stroke();
+    }
+    ctx.strokeStyle='rgba(0,0,0,0.05)'; ctx.lineWidth=0.4;
+    for (let dx=5; dx<faceW; dx+=9) {
+      ctx.beginPath(); ctx.moveTo(x0+dx,y-bh-2); ctx.lineTo(x0+dx-2,y+hh+2); ctx.stroke();
+    }
+  } else if (texture==='brick') {
+    ctx.lineWidth=0.7;
+    const bH=5,bW=11; let row=0;
+    for (let dy=0; dy<faceH+bH; dy+=bH+1,row++) {
+      ctx.beginPath(); ctx.moveTo(x0-4,y-bh+dy); ctx.lineTo(x0+faceW+4,y-bh+dy); ctx.stroke();
+      const xOff=(row%2===0)?0:(bW+1)/2;
+      for (let dx=xOff; dx<faceW+bW; dx+=bW+1) {
+        ctx.beginPath(); ctx.moveTo(x0+dx,y-bh+dy); ctx.lineTo(x0+dx,y-bh+dy+bH+1); ctx.stroke();
+      }
+    }
+  } else if (texture==='stone'||texture==='stone_cut') {
+    ctx.lineWidth=0.8;
+    const rows=texture==='stone_cut'?[14,14,14,14]:[11,13,12,14];
+    let curY=0,ri=0;
+    while(curY<faceH+20) {
+      const sh=rows[ri%rows.length];
+      ctx.beginPath(); ctx.moveTo(x0-4,y-bh+curY); ctx.lineTo(x0+faceW+4,y-bh+curY); ctx.stroke();
+      const vxList=(ri%2===0)?[9,22,32]:[4,16,28,38];
+      for(const vx of vxList) {
+        if(vx<faceW){ ctx.beginPath(); ctx.moveTo(x0+vx,y-bh+curY); ctx.lineTo(x0+vx,y-bh+curY+sh); ctx.stroke(); }
+      }
+      curY+=sh+1; ri++;
+    }
+  }
+  ctx.restore();
 }
 
 // ── DRAWING HELPERS ───────────────────────────────────────────
@@ -335,6 +386,8 @@ function drawTile(c, r) {
         if (onE && !onS && !onN) drawFaceWindow(x, y, bh, 'left',  style.bigWindows||false, winFill, winBorder);
       }
       if (style.chimney && r===bldg.rMin && c===bldg.cMin) drawChimney(x, y, bh);
+      drawWallTexture(x, y, bh, 'left',  style.texture);
+      drawWallTexture(x, y, bh, 'right', style.texture);
     }
   }
 }
@@ -387,6 +440,61 @@ function drawStation(station) {
   ctx.fillText(station.label, x, y+6); ctx.shadowBlur=0;
 }
 
+const FURNITURE_DEFS = {
+  table:    { scale:0.55, h:9,  top:'#c8a870', left:'#8a6040', right:'#a87848' },
+  counter:  { scale:0.60, h:10, top:'#c0a060', left:'#806030', right:'#a08040' },
+  chair:    { scale:0.32, h:10, top:'#b89860', left:'#806038', right:'#9a7848' },
+  stool:    { scale:0.25, h:8,  top:'#b8a068', left:'#786038', right:'#988050' },
+  bed:      { scale:0.55, h:6,  top:'#d0c0a8', left:'#907050', right:'#b09068', bed:true },
+  cot:      { scale:0.45, h:5,  top:'#c8b898', left:'#887058', right:'#a88868', bed:true },
+  barrel:   { scale:0.28, h:16, top:'#906830', left:'#604020', right:'#805030', barrel:true },
+  shelf:    { scale:0.55, h:14, top:'#987840', left:'#685028', right:'#887040', shelf:true },
+  chest:    { scale:0.38, h:9,  top:'#a08038', left:'#685020', right:'#887030', chest:true },
+};
+
+function drawFurniturePiece(piece) {
+  const {x,y} = toScreen(piece.col, piece.row);
+  const def = FURNITURE_DEFS[piece.type];
+  if (!def) return;
+  const s=def.scale, hw=(TW/2)*s, hh=(TH/2)*s, bh=def.h;
+  // Left face
+  ctx.beginPath();
+  ctx.moveTo(x-hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
+  ctx.closePath(); ctx.fillStyle=def.left; ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.7; ctx.stroke();
+  // Right face
+  ctx.beginPath();
+  ctx.moveTo(x+hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x+hw,y);
+  ctx.closePath(); ctx.fillStyle=def.right; ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.7; ctx.stroke();
+  // Top face
+  ctx.beginPath();
+  ctx.moveTo(x,y-hh-bh); ctx.lineTo(x+hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x-hw,y-bh);
+  ctx.closePath(); ctx.fillStyle=def.top; ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.2)'; ctx.lineWidth=0.5; ctx.stroke();
+  // Details
+  if (def.bed) {
+    ctx.beginPath(); ctx.ellipse(x-hw*0.2, y-bh-hh*0.5-2, hw*0.35, hh*0.55, -0.2, 0, Math.PI*2);
+    ctx.fillStyle='#e8d8c0'; ctx.fill();
+    ctx.strokeStyle='rgba(100,70,40,0.35)'; ctx.lineWidth=0.6;
+    ctx.beginPath(); ctx.moveTo(x-hw*0.5,y-bh-hh*0.25); ctx.lineTo(x+hw*0.5,y-bh-hh*0.25); ctx.stroke();
+  }
+  if (def.barrel) {
+    ctx.strokeStyle='rgba(0,0,0,0.32)'; ctx.lineWidth=0.9;
+    for (const dy of [-bh*0.2,-bh*0.55,-bh*0.85]) {
+      ctx.beginPath(); ctx.moveTo(x-hw*0.8,y+dy); ctx.lineTo(x+hw*0.8,y+dy); ctx.stroke();
+    }
+  }
+  if (def.shelf) {
+    ctx.strokeStyle='rgba(0,0,0,0.22)'; ctx.lineWidth=0.8;
+    ctx.beginPath(); ctx.moveTo(x-hw,y-bh*0.5+1); ctx.lineTo(x+hw,y-bh*0.5-3); ctx.stroke();
+  }
+  if (def.chest) {
+    ctx.fillStyle='#c8a030';
+    ctx.fillRect(x-2, y-bh+2, 4, 3);
+  }
+}
+
 function drawCabinet(cabinet) {
   if (!cabinet) return;
   const {x,y} = toScreen(cabinet.col, cabinet.row);
@@ -434,6 +542,7 @@ function render() {
     if (!item.taken) items.push({k:'item',item,z:item.row+item.col+0.5});
   });
   currentStations.forEach(st => items.push({k:'station',st,z:st.row+st.col+0.6}));
+  currentFurniture.forEach(f => items.push({k:'furniture',f,z:f.row+f.col+0.55}));
   if (currentCabinet) items.push({k:'cabinet',z:currentCabinet.row+currentCabinet.col+0.6});
   currentNPCs.forEach(n => items.push({k:'npc',n,z:n.row+n.col+0.8}));
   items.push({k:'player',z:player.row+player.col+0.8});
@@ -445,6 +554,7 @@ function render() {
     else if (d.k==='item')    drawItem(d.item);
     else if (d.k==='station') drawStation(d.st);
     else if (d.k==='cabinet') drawCabinet(currentCabinet);
+    else if (d.k==='furniture') drawFurniturePiece(d.f);
     else if (d.k==='npc') {
       const n = d.n;
       // Use pixel position if NPC is wandering, else tile position
@@ -1183,8 +1293,9 @@ function loadFloor(building, floorId) {
     return { ...item, taken: isTaken };
   });
 
-  currentStations = floor.stations || [];
-  currentExits    = floor.exits    || [];
+  currentStations  = floor.stations  || [];
+  currentFurniture = floor.furniture || [];
+  currentExits     = floor.exits     || [];
 
   // Place player just inside the door (1 tile above the exit row)
   player.col = Math.floor(mapCols/2);
