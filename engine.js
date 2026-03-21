@@ -191,8 +191,9 @@ function drawSprite(x, y, emoji, label, bodyColor, isPlayer) {
   ctx.fillStyle=bodyColor; ctx.fill();
   ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=1.2; ctx.stroke();
   // Face emoji
-  ctx.font=`${isPlayer?15:13}px serif`; ctx.textAlign='center';
-  ctx.fillText(emoji, x, centre+5);
+  ctx.font=`${isPlayer?15:13}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(emoji, x, centre);
+  ctx.textBaseline='alphabetic';
   // Name label
   ctx.font=`${isPlayer?'bold ':''}9px Caveat,cursive`;
   ctx.fillStyle=isPlayer?'#ffe8c0':'#f0e8d5';
