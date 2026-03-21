@@ -14,6 +14,7 @@
 }
 html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-family:var(--font-body); color:var(--ink); }
 #layout { display:grid; grid-template-columns:1fr auto; grid-template-rows:100vh; width:100vw; height:100vh; }
+#panel-backdrop { display:none; }
 
 /* ══ CANVAS PANEL ══════════════════════════════════════════════ */
 #canvas-wrap { position:relative; overflow:hidden; background:#1a1410; }
@@ -132,11 +133,10 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 
 /* ══ DIALOGUE ══════════════════════════════════════════════════ */
 #dialogue-overlay {
-  position:absolute; bottom:0; left:0; right:0; min-height:120px;
+  position:absolute; bottom:env(safe-area-inset-bottom, 0px); left:0; right:0; min-height:120px;
   background:linear-gradient(to right,rgba(12,7,2,0.97),rgba(22,13,5,0.95));
   border-top:2px solid var(--sepia);
-  display:flex; align-items:flex-start; gap:14px;
-  padding:14px 18px calc(14px + env(safe-area-inset-bottom, 0px));
+  display:flex; align-items:flex-start; gap:14px; padding:14px 18px;
   transform:translateY(100%); transition:transform 0.3s ease; z-index:50;
 }
 #dialogue-overlay.open { transform:translateY(0); }
