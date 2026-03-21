@@ -1,3 +1,8 @@
+function togglePanel() {
+  const collapsed = document.getElementById('layout').classList.toggle('panel-collapsed');
+  document.getElementById('panel-toggle').textContent = collapsed ? '›' : '‹';
+}
+
 function addNarrative(text, cls = '') {
   const box = document.getElementById('narrative-box');
   if (!box) return;
