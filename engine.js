@@ -901,6 +901,7 @@ function loadScene(sceneId, fromBuildingId) {
     }
     player.px=isoX(player.col,player.row);
     player.py=isoY(player.col,player.row);
+    player.path=[];
     updateSceneLabel('The Village');
     State.scene='village'; State.save();
     addNarrative('You step outside.','sys');
@@ -1023,9 +1024,9 @@ function loadFloor(building, floorId) {
   currentStations = floor.stations || [];
   currentExits    = floor.exits    || [];
 
-  // Place player 3 rows from the bottom so they don't immediately trigger the exit
+  // Place player just inside the door (1 tile above the exit row)
   player.col = Math.floor(mapCols/2);
-  player.row = mapRows - 4;
+  player.row = mapRows - 2;
   player.px  = isoX(player.col, player.row);
   player.py  = isoY(player.col, player.row);
   player.path = [];
@@ -1165,8 +1166,9 @@ function init() {
   initNPCPositions();
   loadScene('village');
 
-  // Restore saved player position (overrides loadScene default)
-  if (hasSave && State.playerCol !== undefined) {
+  // Restore saved player position — only if the save was made in the village
+  // (interior saves store small map coords that would land inside a building footprint)
+  if (hasSave && State.playerCol !== undefined && State.scene === 'village') {
     player.col = State.playerCol;
     player.row = State.playerRow;
     player.px  = isoX(player.col, player.row);
