@@ -204,7 +204,7 @@ const BUILDINGS = {
         id: 'jaxons_ground',
         name: "Jaxon's House",
         grid: buildInteriorMap('generic'),
-        npcs: ['jaxon'],
+        npcs: [{ id:'jaxon', col:5, row:4 }],
         items: [
           { itemId:'fruit',       col:3, row:5, oneTime:false, label:'Fruit on table', respawn:false },
           { itemId:'cloth_scrap', col:6, row:3, oneTime:true,  label:'Cloth scrap' },
@@ -257,6 +257,57 @@ const BUILDINGS = {
       ],
       stations: [],
       exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
+    }],
+  },
+
+  villager_house_b: {
+    id: 'villager_house_b',
+    name: 'A Villager\'s Home',
+    exteriorCol: 28, exteriorRow: 12,
+    floors: [{
+      id: 'vhouse_b',
+      name: 'A Villager\'s Home',
+      grid: buildInteriorMap('generic'),
+      npcs: [],
+      items: [
+        { itemId:'cloth_scrap', col:3, row:3, oneTime:true,  label:'Cloth scrap on a chair' },
+        { itemId:'fruit',       col:7, row:5, oneTime:false, label:'Bowl of fruit on the table', respawn:false },
+      ],
+      stations: [],
+      exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
+    }],
+  },
+
+  villager_house_c: {
+    id: 'villager_house_c',
+    name: 'A Villager\'s Home',
+    exteriorCol: 14, exteriorRow: 32,
+    floors: [{
+      id: 'vhouse_c',
+      name: 'A Villager\'s Home',
+      grid: buildInteriorMap('generic'),
+      npcs: [],
+      items: [
+        { itemId:'common_herb', col:4, row:3, oneTime:false, label:'Herbs drying by the window', respawn:false },
+        { itemId:'useful_tool', col:7, row:6, oneTime:true,  label:'A small tool left on the floor' },
+      ],
+      stations: [],
+      exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
+    }],
+  },
+
+  council_hall: {
+    id: 'council_hall',
+    name: 'Council Hall',
+    exteriorCol: 29, exteriorRow: 24,
+    floors: [{
+      id: 'council_ground',
+      name: 'Council Hall',
+      grid: buildInteriorMap('hall'),
+      npcs: [{ id:'elder', col:5, row:4 }],
+      items: [],
+      stations: [],
+      exits: [{ label:'Leave', targetScene:'village', col:5, row:11 }],
     }],
   },
 };
@@ -327,7 +378,7 @@ function buildVillageMap() {
   placeBuilding(4,25,5,6);   // Forge
   placeBuilding(4,32,6,6);   // Inn
   placeBuilding(10,15,6,10); // Town Hall
-  placeBuilding(22,29,5,6);  // Council Hall
+  placeBuilding(22,26,5,6);  // Council Hall (moved west to clear the plot)
   placeBuilding(31,4,5,5);   // Hesta's hut
   placeBuilding(25,10,5,5);  // Jaxon's house
   placeBuilding(28,22,4,4);  // Villager house A
@@ -384,8 +435,7 @@ function placeBuilding(r,c,h,w){
 // ── NPCS ──────────────────────────────────────────────────────
 const NPCS = [
   {
-    id:'mariella', portrait:'images/portraits/mariella.jpg', name:'Mariella', emoji:'👩', col:5, row:7, color:'#c07850',
-    scene:'village',
+    id:'mariella', portrait:'images/portraits/mariella.jpg', name:'Mariella', emoji:'👩', col:5, row:5, color:'#c07850',
     lines:[
       '"Good morning, love. Rolls are nearly done — take some to the square when they\'re cool, would you?"',
       '"Market day tomorrow! I need you to fetch me some fresh herbs before then."',
@@ -393,6 +443,7 @@ const NPCS = [
       '"Try Sera\'s stall if you need anything — she got a lovely delivery of honey this week."',
       '"It\'s a beautiful day, Kaida. Go enjoy it."',
     ],
+    generalReplies: ['"Yes, Mum."', '"Of course."', '"I will soon."'],
     quest: { id:'mariella_herbs', itemId:'common_herb', itemName:'Common Herb', reward:'chit', rewardColor:'red', rewardAmount:1, line:'"Could you find me some fresh herbs? The windowsill ones are going dry."' },
     teachesAt: { goodwill:3, recipes:['spiced_rolls','fruit_preserve','morning_tea'], line:'"Come here — let me show you how to do the spiced rolls properly. Your father requests them every single morning."' },
   },
@@ -400,14 +451,40 @@ const NPCS = [
     id:'jaxon', portrait:'images/portraits/jaxon.jpg', name:'Jaxon', emoji:'🧑', col:21, row:22, color:'#507090',
     scene:'village',
     lines:[
-      '"Hey! I was just thinking about you. Want to walk down to the south field later? I found a spot."',
-      '"That corner plot by the old elm — nobody\'s claimed it. Big enough for a proper house. And a garden."',
-      '"My dad says if we save up 20 gold chits we could start the foundation before winter."',
+      {
+        text: '"You know what I keep thinking about?" He looks out toward the east field. "A place of our own. Not your mum\'s, not my dad\'s — somewhere we chose. Somewhere that\'s just ours."',
+        replies: [
+          { label: '"I think about it too."' },
+          { label: '"It would be wonderful."' },
+        ],
+      },
+      {
+        text: '"We could actually make it happen, Kaida. We save up, we gather what we need — a little at a time if we have to. But we could start now. There\'s nothing stopping us."',
+        replies: [
+          { label: '"You really think so?"' },
+          { label: '"I\'d like that more than anything."' },
+        ],
+      },
+      {
+        text: '"A home we built ourselves. So when we\'re married, we\'re walking through our own door for the very first time. Together." He smiles. "That\'s what I want for us."',
+        replies: [
+          { label: '"Before the wedding?"' },
+          { label: '"That\'s exactly what I want too."' },
+        ],
+      },
+      {
+        text: '"I\'ve already been looking." He grins, a little sheepish. "There\'s a plot on the east edge — near the old elm. Nobody\'s claimed it. It\'s just sitting there. I wanted to show you before I did anything else."',
+        replies: [
+          { label: '"You already picked one out?"' },
+          { label: '"Show me."' },
+        ],
+      },
+      '"My dad thinks we could start the foundation before winter, if we save enough. Your work at the bakery, my carpentry — maybe by harvest?"',
       '"I keep telling Sera we\'re saving up. She keeps telling everyone else." He grins. "Small village."',
       '"Your mum offered to teach me her bread recipe. I think she likes me."',
-      '"Twenty gold chits. We can do that. Between the bakery and my carpentry work, maybe by harvest?"',
+      '"Twenty gold chits is a lot. But we can do it. I know we can."',
     ],
-    // House savings goal — tracked in State.flags.house_savings
+    generalReplies: ['"I\'ll keep that in mind."', '"Thanks, Jaxon."', '"I should get going."'],
     houseSavingsGoal: 20,
   },
   {
@@ -418,47 +495,48 @@ const NPCS = [
       '"Market day tomorrow, I\'m run off my feet. Your father always stops for a chat, bless him."',
       '"Lovely weather for the festival coming up. Good for the harvest too, touch wood."',
     ],
+    generalReplies: ['"I\'ll pass that on."', '"Good to know."', '"I should get moving."'],
     quest: { id:'sera_bread', itemId:'simple_bread', itemName:'Simple Bread', reward:'chit', rewardColor:'red', rewardAmount:2, line:'"Oh, I don\'t suppose you have any of your mother\'s bread spare? Mine burned this morning, catastrophe."' },
   },
   {
-    id:'blacksmith', name:'Oswin', emoji:'🧔', col:27, row:6, color:'#605040',
-    scene:'village',
+    id:'blacksmith', name:'Oswin', emoji:'🧔', col:5, row:5, color:'#605040',
     lines:[
       '"Morning! Good day for it. Whatever \'it\' is."',
       '"Your father\'s the only healer I\'d trust. Fixed my shoulder right up last winter."',
       '"Big order this week. Three new ploughs before festival. My arms are going to fall off."',
     ],
+    generalReplies: ['"Sounds about right."', '"Take care of yourself."', '"I won\'t keep you."'],
     teachesAt: { goodwill:2, recipes:['blacksmith_broth'], line:'"You look half-starved. Here — my mother\'s broth. She swore it could fix anything. Mostly true."' },
   },
   {
-    id:'elder', name:'Elder Maren', emoji:'👵', col:32, row:24, color:'#806050',
-    scene:'village',
+    id:'elder', name:'Elder Maren', emoji:'👵', col:5, row:4, color:'#806050',
     lines:[
       '"Good morning, child. The council met this week — we\'re planning the harvest ceremony."',
       '"Your father does good work. The village is lucky to have him."',
       '"The old ways keep us safe. There\'s comfort in that, when you\'re my age."',
       '"Writing is not forbidden by us. It is forbidden by the world. We are only wise enough to obey."',
     ],
+    generalReplies: ['"I understand."', '"Thank you, Elder."', '"I\'ll bear that in mind."'],
   },
   {
-    id:'hesta', portrait:'images/portraits/hesta.jpg', name:'Hesta', emoji:'🧓', col:6, row:33, color:'#7a6050',
-    scene:'village',
+    id:'hesta', portrait:'images/portraits/hesta.jpg', name:'Hesta', emoji:'🧓', col:5, row:4, color:'#7a6050',
     lines:[
       '"Oh, it\'s you! Come and sit a moment, my knees are giving me trouble today."',
       '"I\'ve been out here forty years. Village hasn\'t changed much. That\'s the way I like it."',
       '"Your father brought me a tonic last month. Slept like a stone. Good man."',
     ],
+    generalReplies: ['"Of course."', '"I\'m glad you\'re well."', '"I won\'t stay too long."'],
     teachesAt: { goodwill:2, recipes:['hestas_remedy'], line:'"My grandmother\'s remedy. Don\'t tell your father I said it\'s better than his — but it is."' },
     quest: { id:'hesta_water', itemId:'common_herb', itemName:'Common Herb', reward:'item', rewardItemId:'honey', line:'"Could you fetch me some fresh herbs from the wood\'s edge? My knees won\'t manage it today."' },
   },
   {
-    id:'innkeeper', name:'The Innkeeper', emoji:'🧑‍🍳', col:34, row:6, color:'#806858',
-    scene:'village',
+    id:'innkeeper', name:'The Innkeeper', emoji:'🧑‍🍳', col:5, row:5, color:'#806858',
     lines:[
       '"Morning! Festival\'s coming up — half the region will be through that door. Exciting!"',
       '"Your mother\'s rolls are the best thing about market day. Don\'t tell her I said that, she\'ll raise her prices."',
       '"Quiet week. Just the way I like it before the rush."',
     ],
+    generalReplies: ['"Good to hear."', '"I can imagine."', '"I\'ll let you get back to it."'],
     teachesAt: { goodwill:2, recipes:['strong_tea'], line:'"My house blend. Travelers come back year after year just for this. Secret\'s in the steep time."' },
     quest: { id:'inn_fruit', itemId:'fruit', itemName:'Fruit', reward:'chit', rewardColor:'red', rewardAmount:2, line:'"I\'m short on fruit for the festival pies. Bring me some and I\'ll see you right."' },
   },
@@ -470,6 +548,7 @@ const NPCS = [
       'A girl drags a stick through the dirt idly — draws a curve — then stops. Scuffs it out fast with her shoe. The others don\'t even notice.',
       'They\'re sorting colored stones into elaborate patterns. Someone disagrees about the rules. Loudly.',
     ],
+    generalReplies: ['"Hello."', '"Don\'t mind me."'],
   },
   {
     id:'father', portrait:'images/portraits/father.jpg', name:'The Priest', emoji:'👴', col:20, row:20, color:'#c0b090',

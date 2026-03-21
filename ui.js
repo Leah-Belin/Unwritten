@@ -171,11 +171,11 @@ function updateLeaveButton() {
 
 function leaveBuilding() {
   const exit = currentExits.find(e => e.targetScene === 'village');
-  if (exit) loadScene('village');
+  if (exit) loadScene('village', currentBuilding?.id);
 }
 
 // ── DIALOGUE ──────────────────────────────────────────────────
-// actions: [{ label, onClick }]  — optional buttons shown in the panel
+// actions: [{ label, onClick }]  — optional reply buttons shown in the panel
 function showDialogue(npc, text, actions = []) {
   const portrait = document.getElementById('dlg-portrait');
   if (npc.portrait) {

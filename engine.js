@@ -714,7 +714,9 @@ function talkTo(npc) {
   if (false) return;
 
   const idx = State.npcDialogueIndex[npc.id] || 0;
-  let line = npc.lines[idx % npc.lines.length];
+  const lineData = npc.lines[idx % npc.lines.length];
+  let line    = typeof lineData === 'object' && lineData !== null ? lineData.text : lineData;
+  let lineReplies = typeof lineData === 'object' && lineData !== null ? (lineData.replies || []) : null;
   // Always advance index, wrapping safely
   State.npcDialogueIndex[npc.id] = (idx + 1) % npc.lines.length;
 
@@ -775,7 +777,14 @@ function talkTo(npc) {
     }
   }
 
-  showDialogue(npc, line);
+  // Build Kaida reply actions (per-line or NPC's general replies)
+  let replyActions = [];
+  if (lineReplies && lineReplies.length) {
+    replyActions = lineReplies.map(r => ({ label: r.label, onClick: () => {} }));
+  } else if (npc.generalReplies) {
+    replyActions = npc.generalReplies.map(r => ({ label: r, onClick: () => {} }));
+  }
+  showDialogue(npc, line, replyActions);
   addNarrative(`You spoke with ${npc.name}.`);
   State.raiseGoodwill(npc.id);
 
@@ -785,13 +794,13 @@ function talkTo(npc) {
     setTimeout(()=>addNarrative('↳ Something nags at you. Where is your father?','sys'),600);
   }
 
-  // Jaxon mentions the house after 3 conversations
+  // Jaxon reveals the plot on the 4th conversation (line index 3)
   if (npc.id==='jaxon' && !State.flags.jaxon_proposed &&
-      (State.npcDialogueIndex["jaxon"] || 0) >= 3) {
+      (State.npcDialogueIndex["jaxon"] || 0) >= 4) {
     State.flags.jaxon_proposed = true;
     if (State.plot) State.plot.unlocked = true;
-    addNarrative("↳ Jaxon shows you a patch of land near the east elm. It's perfect.", 'alert');
-    addNarrative('↳ The plot is marked on the east edge of the village. Bring materials and chits there.', 'sys');
+    addNarrative("↳ Jaxon leads you to a quiet spot near the east elm. The plot is just right.", 'alert');
+    addNarrative('↳ The plot is marked on the east edge of the village. Bring materials and chits there to start building.', 'sys');
     updateTimeUI();
   }
 
@@ -858,7 +867,7 @@ function interactCabinet() {
 }
 
 // ── SCENE MANAGEMENT ──────────────────────────────────────────
-function loadScene(sceneId) {
+function loadScene(sceneId, fromBuildingId) {
   clearNarrative();
   if (sceneId === 'village') {
     currentBuilding = null;
@@ -878,7 +887,18 @@ function loadScene(sceneId) {
       return { ...item, taken: State.takenItems.includes(takenKey) };
     });
 
-    player.col=20; player.row=23;
+    // Place player at the building door they just exited, or default starting position
+    if (fromBuildingId) {
+      const doorEntry = Object.entries(DOOR_MAP).find(([k,v]) => v === fromBuildingId);
+      if (doorEntry) {
+        const [dc, dr] = doorEntry[0].split(',').map(Number);
+        player.col = dc; player.row = dr;
+      } else {
+        player.col=20; player.row=23;
+      }
+    } else {
+      player.col=20; player.row=23;
+    }
     player.px=isoX(player.col,player.row);
     player.py=isoY(player.col,player.row);
     updateSceneLabel('The Village');
@@ -982,7 +1002,15 @@ function loadFloor(building, floorId) {
   currentMap      = floor.grid;
   mapRows         = floor.grid.length;
   mapCols         = floor.grid[0].length;  // actual width, may differ from rows
-  currentNPCs     = NPCS.filter(n => floor.npcs.includes(n.id));
+  currentNPCs = (floor.npcs || []).map(entry => {
+    const id  = typeof entry === 'string' ? entry : entry.id;
+    const npc = NPCS.find(n => n.id === id);
+    if (!npc) return null;
+    if (typeof entry === 'object' && (entry.col !== undefined || entry.row !== undefined)) {
+      return { ...npc, col: entry.col ?? npc.col, row: entry.row ?? npc.row };
+    }
+    return npc;
+  }).filter(Boolean);
   currentCabinet  = floor.cabinet || null;
 
   // Build item list, respecting taken items
@@ -1077,10 +1105,12 @@ const DOOR_MAP = {
   '28,8':  'forge',
   '35,9':  'inn',
   '20,15': 'town_hall',
-  '32,26': 'council_hall',
+  '29,26': 'council_hall',
   '6,35':  'hestas_hut',
   '12,29': 'jaxons_house',
   '24,31': 'villager_house_a',
+  '30,15': 'villager_house_b',
+  '16,35': 'villager_house_c',
 };
 
 // Building footprints for click-to-enter — any click on a wall/building/door tile
@@ -1090,10 +1120,12 @@ const BUILDING_BOUNDS = [
   { id:'forge',           rMin:4,  rMax:8,  cMin:25, cMax:30 },
   { id:'inn',             rMin:4,  rMax:9,  cMin:32, cMax:37 },
   { id:'town_hall',       rMin:10, rMax:15, cMin:15, cMax:24 },
-  { id:'council_hall',    rMin:22, rMax:26, cMin:29, cMax:34 },
+  { id:'council_hall',    rMin:22, rMax:26, cMin:26, cMax:31 },
   { id:'hestas_hut',      rMin:31, rMax:35, cMin:4,  cMax:8  },
   { id:'jaxons_house',    rMin:25, rMax:29, cMin:10, cMax:14 },
   { id:'villager_house_a',rMin:28, rMax:31, cMin:22, cMax:25 },
+  { id:'villager_house_b',rMin:12, rMax:15, cMin:28, cMax:31 },
+  { id:'villager_house_c',rMin:32, rMax:35, cMin:14, cMax:17 },
 ];
 
 function getBuildingAtTile(col, row) {
@@ -1128,10 +1160,18 @@ function init() {
   canvas = document.getElementById('game-canvas');
   ctx    = canvas.getContext('2d');
 
-  State.load();
+  const hasSave = State.load();
   buildVillageMap();
   initNPCPositions();
   loadScene('village');
+
+  // Restore saved player position (overrides loadScene default)
+  if (hasSave && State.playerCol !== undefined) {
+    player.col = State.playerCol;
+    player.row = State.playerRow;
+    player.px  = isoX(player.col, player.row);
+    player.py  = isoY(player.col, player.row);
+  }
 
   // Starting inventory if fresh game
   if (State.inventory.length === 0) {
