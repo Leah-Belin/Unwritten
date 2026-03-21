@@ -892,7 +892,7 @@ function loadScene(sceneId, fromBuildingId) {
       const doorEntry = Object.entries(DOOR_MAP).find(([k,v]) => v === fromBuildingId);
       if (doorEntry) {
         const [dc, dr] = doorEntry[0].split(',').map(Number);
-        player.col = dc; player.row = dr;
+        player.col = dc; player.row = dr + 1;
       } else {
         player.col=20; player.row=23;
       }
