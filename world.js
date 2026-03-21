@@ -1,5 +1,5 @@
 // ── TILE TYPES ────────────────────────────────────────────────
-const T = { GRASS:0, PATH:1, DIRT:2, BUILDING:3, WALL:4, TREE:5, FLOWER:6, WATER:7, DOOR:8, STAIRS:9, PLOT:10 };
+const T = { GRASS:0, PATH:1, DIRT:2, BUILDING:3, WALL:4, TREE:5, FLOWER:6, WATER:7, DOOR:8, STAIRS:9, PLOT:10, FOUNTAIN:11 };
 
 const TILE_DEF = {
   [T.GRASS]:    { walk:true,  top:'#8a9a6a', left:'#6a7a4a', right:'#7a8a5a' },
@@ -13,6 +13,21 @@ const TILE_DEF = {
   [T.DOOR]:     { walk:true,  top:'#c8a060', left:'#8a6030', right:'#a07040', door:true },
   [T.STAIRS]:   { walk:true,  top:'#b8a878', left:'#806848', right:'#a08858', stairs:true },
   [T.PLOT]:     { walk:true,  top:'#b8a060', left:'#907840', right:'#a89050', plot:true },
+  [T.FOUNTAIN]: { walk:false, fountain:true },
+};
+
+// Visual styles per building — walls, roof/interior, chimney & window flags
+const BUILDING_STYLES = {
+  bakery:           { wall:'#ece0c8', wallL:'#8a6840', wallR:'#b08858', roof:'#5a3020', chimney:true, bigWindows:true },
+  forge:            { wall:'#b0a898', wallL:'#504840', wallR:'#706860', roof:'#2a2420', chimney:true },
+  inn:              { wall:'#d8c890', wallL:'#9a7840', wallR:'#bea060', roof:'#5a3018', chimney:true },
+  town_hall:        { wall:'#dcd8c8', wallL:'#706860', wallR:'#908878', roof:'#484038' },
+  council_hall:     { wall:'#d4d0c0', wallL:'#686058', wallR:'#888070', roof:'#404038' },
+  hestas_hut:       { wall:'#d0c8a0', wallL:'#7a6840', wallR:'#988858', roof:'#4a2c1c', chimney:true },
+  jaxons_house:     { wall:'#ccc8a8', wallL:'#706040', wallR:'#907858', roof:'#503020', chimney:true },
+  villager_house_a: { wall:'#d4caa8', wallL:'#7a6840', wallR:'#987860', roof:'#5c3020', chimney:true },
+  villager_house_b: { wall:'#cac4a0', wallL:'#706040', wallR:'#908058', roof:'#502818', chimney:true },
+  villager_house_c: { wall:'#cecaa8', wallL:'#7a6840', wallR:'#988860', roof:'#5a3020', chimney:true },
 };
 
 // ── TIME PERIODS ──────────────────────────────────────────────
@@ -384,8 +399,8 @@ function buildVillageMap() {
   placeBuilding(28,22,4,4);  // Villager house A
   placeBuilding(12,28,4,4);  // Villager house B
   placeBuilding(32,14,4,4);  // Villager house C
-  // Well
-  villageMap[19][19] = T.WALL;
+  // Central fountain
+  villageMap[19][19] = T.FOUNTAIN;
   // Tree border — only on pure grass tiles
   for (let i=0;i<VILLAGE_ROWS;i++) for (let j=0;j<VILLAGE_COLS;j++)
     if(i<2||i>VILLAGE_ROWS-3||j<2||j>VILLAGE_COLS-3)
