@@ -395,7 +395,7 @@ function checkArrival() {
   // Check exits — player must step ON the exit tile
   currentExits.forEach(exit => {
     if (c === exit.col && r === exit.row) {
-      if (exit.targetScene) loadScene(exit.targetScene);
+      if (exit.targetScene) loadScene(exit.targetScene, currentBuilding?.id);
       else if (exit.targetFloor) loadFloor(currentBuilding, exit.targetFloor);
     }
   });
