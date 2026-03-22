@@ -1,0 +1,288 @@
+{
+  "version": 2,
+  "bodyType": "child",
+  "selections": {
+    "body": {
+      "itemId": "body",
+      "variant": "black",
+      "name": "Body Color (black)"
+    },
+    "head": {
+      "itemId": "heads_human_child",
+      "variant": "black",
+      "name": "Human Child (black)"
+    },
+    "expression": {
+      "itemId": "face_neutral",
+      "variant": "black",
+      "name": "Neutral (black)"
+    },
+    "hair": {
+      "itemId": "hair_jewfro",
+      "variant": "black",
+      "name": "Jewfro (black)"
+    },
+    "dress": {
+      "itemId": "dress_sash",
+      "variant": "gray",
+      "name": "Sash dress (gray)"
+    },
+    "apron": {
+      "itemId": "torso_aprons_apron_full",
+      "variant": "white",
+      "name": "Apron full (white)"
+    },
+    "shoes": {
+      "itemId": "feet_shoes_sara",
+      "variant": "sara",
+      "name": "Sara Shoes (sara)"
+    },
+    "clothes": {
+      "itemId": "torso_clothes_child_shirt",
+      "variant": "blue",
+      "name": "Child shirts (blue)"
+    },
+    "legs": {
+      "itemId": "legs_childskirts",
+      "variant": "lightblue",
+      "name": "Child skirts (lightblue)"
+    }
+  },
+  "selectedAnimation": "walk",
+  "showTransparencyGrid": true,
+  "applyTransparencyMask": false,
+  "matchBodyColorEnabled": true,
+  "compactDisplay": false,
+  "enabledLicenses": {
+    "CC0": true,
+    "CC-BY-SA": true,
+    "CC-BY": true,
+    "OGA-BY": true,
+    "GPL": true
+  },
+  "enabledAnimations": {
+    "spellcast": false,
+    "thrust": false,
+    "walk": false,
+    "slash": false,
+    "shoot": false,
+    "hurt": false,
+    "climb": false,
+    "idle": false,
+    "jump": false,
+    "sit": false,
+    "emote": false,
+    "run": false,
+    "watering": false,
+    "combat": false,
+    "1h_slash": false,
+    "1h_backslash": false,
+    "1h_halfslash": false
+  },
+  "url": "https://liberatedpixelcup.github.io/Universal-LPC-Spritesheet-Character-Generator/#sex=child&body=Body_Color_black&head=Human_Child_black&expression=Neutral_black&hair=Jewfro_black&dress=Sash_dress_gray&apron=Apron_full_white&shoes=Sara_Shoes_sara&clothes=Child_shirts_blue&legs=Child_skirts_lightblue",
+  "layers": [
+    {
+      "itemId": "body",
+      "variant": "black",
+      "zPos": 10,
+      "layerNum": 1,
+      "yPos": 0,
+      "isCustom": false,
+      "fileName": "body/bodies/child/spellcast/black.png",
+      "supportedAnimations": [
+        "spellcast",
+        "thrust",
+        "walk",
+        "slash",
+        "shoot",
+        "hurt",
+        "climb",
+        "idle",
+        "jump",
+        "sit",
+        "emote",
+        "run",
+        "combat_idle",
+        "backslash",
+        "halfslash"
+      ]
+    },
+    {
+      "itemId": "legs_childskirts",
+      "variant": "lightblue",
+      "zPos": 20,
+      "layerNum": 1,
+      "yPos": 512,
+      "isCustom": false,
+      "fileName": "legs/skirts/child/walk/lightblue.png",
+      "supportedAnimations": [
+        "walk"
+      ]
+    },
+    {
+      "itemId": "torso_clothes_child_shirt",
+      "variant": "blue",
+      "zPos": 35,
+      "layerNum": 1,
+      "yPos": 512,
+      "isCustom": false,
+      "fileName": "torso/clothes/shirt/child/walk/blue.png",
+      "supportedAnimations": [
+        "walk"
+      ]
+    },
+    {
+      "itemId": "heads_human_child",
+      "variant": "black",
+      "zPos": 100,
+      "layerNum": 1,
+      "yPos": 0,
+      "isCustom": false,
+      "fileName": "head/heads/human/child/spellcast/black.png",
+      "supportedAnimations": [
+        "spellcast",
+        "thrust",
+        "walk",
+        "slash",
+        "shoot",
+        "hurt",
+        "climb",
+        "idle",
+        "jump",
+        "sit",
+        "emote",
+        "run",
+        "combat_idle",
+        "backslash",
+        "halfslash"
+      ]
+    },
+    {
+      "itemId": "hair_jewfro",
+      "variant": "black",
+      "zPos": 120,
+      "layerNum": 1,
+      "yPos": 0,
+      "isCustom": false,
+      "fileName": "hair/jewfro/child/spellcast/black.png",
+      "supportedAnimations": [
+        "spellcast",
+        "thrust",
+        "walk",
+        "slash",
+        "shoot",
+        "hurt",
+        "climb",
+        "idle",
+        "jump",
+        "sit",
+        "emote",
+        "run",
+        "combat_idle",
+        "backslash",
+        "halfslash"
+      ]
+    }
+  ],
+  "credits": [
+    {
+      "fileName": "body/bodies/child/walk/black.png",
+      "file": "body/bodies/child",
+      "notes": "",
+      "authors": [
+        "bluecarrot16",
+        "Benjamin K. Smith (BenCreating)",
+        "ElizaWy",
+        "MuffinElZangano",
+        "Durrani",
+        "Nila122",
+        "kheftel",
+        "Stephen Challener (Redshrike)"
+      ],
+      "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+        "https://opengameart.org/content/lpc-child-standing-template",
+        "https://opengameart.org/content/lpc-children-walk-animation",
+        "https://opengameart.org/content/lpc-male-jumping-animation-by-durrani",
+        "https://opengameart.org/content/lpc-male-jumping-animation-by-durrani",
+        "https://opengameart.org/content/lpc-jump-expanded",
+        "https://opengameart.org/content/lpc-jump-expanded"
+      ]
+    },
+    {
+      "fileName": "head/heads/human/child/walk/black.png",
+      "file": "head/heads/human/child",
+      "notes": "",
+      "authors": [
+        "Stephen Challener (Redshrike)",
+        "kheftel",
+        "bluecarrot16"
+      ],
+      "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY 3.0",
+        "GPL 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/",
+        "https://opengameart.org/content/lpc-child-standing-template",
+        "https://opengameart.org/content/lpc-character-bases"
+      ]
+    },
+    {
+      "fileName": "hair/jewfro/child/walk/black.png",
+      "file": "hair/jewfro",
+      "notes": "",
+      "authors": [
+        "JaidynReiman"
+      ],
+      "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-1-hairstyle-2-hair-extensions-3-previously-unofficially-released-hairstyles",
+        "https://github.com/jrconway3/Universal-LPC-spritesheet/commit/46ddcf05a0e43e7aa6ffd47d350eef0eb529ac24"
+      ]
+    },
+    {
+      "fileName": "torso/clothes/shirt/child/walk/blue.png",
+      "file": "torso/clothes/shirt/child",
+      "notes": "",
+      "authors": [
+        "Nila122"
+      ],
+      "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-clothes-for-children"
+      ]
+    },
+    {
+      "fileName": "legs/skirts/child/walk/lightblue.png",
+      "file": "legs/skirts/child",
+      "notes": "",
+      "authors": [
+        "Nila122"
+      ],
+      "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-clothes-for-children"
+      ]
+    }
+  ]
+}

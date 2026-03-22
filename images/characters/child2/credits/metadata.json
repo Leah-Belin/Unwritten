@@ -1,0 +1,108 @@
+{
+  "exportTimestamp": "2026-03-22T17-53-16",
+  "bodyType": "child",
+  "standardAnimations": {
+    "exported": {
+      "spellcast": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "thrust": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "walk": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png",
+        "035 child_shirts__blue_.png",
+        "020 child_skirts__lightblue_.png"
+      ],
+      "slash": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "shoot": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "hurt": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "climb": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "idle": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "jump": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "sit": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "emote": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "run": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "combat": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "1h_backslash": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ],
+      "1h_halfslash": [
+        "010 body_color__black_.png",
+        "100 human_child__black_.png",
+        "120 jewfro__black_.png"
+      ]
+    },
+    "failed": {
+      "spellcast": [],
+      "thrust": [],
+      "walk": [],
+      "slash": [],
+      "shoot": [],
+      "hurt": [],
+      "climb": [],
+      "idle": [],
+      "jump": [],
+      "sit": [],
+      "emote": [],
+      "run": [],
+      "combat": [],
+      "1h_backslash": [],
+      "1h_halfslash": []
+    }
+  },
+  "customAnimations": {
+    "exported": {},
+    "failed": {}
+  },
+  "frameSize": 64,
+  "frameCounts": {}
+}

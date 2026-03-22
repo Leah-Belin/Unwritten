@@ -1,0 +1,163 @@
+{
+  "exportTimestamp": "2026-03-22T16-13-01",
+  "bodyType": "female",
+  "standardAnimations": {
+    "exported": {
+      "spellcast": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "030 sash_dress__slate_.png",
+        "040 apron_full__white_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "thrust": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "030 sash_dress__slate_.png",
+        "040 apron_full__white_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "walk": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "030 sash_dress__slate_.png",
+        "040 apron_full__white_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "slash": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "030 sash_dress__slate_.png",
+        "040 apron_full__white_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "shoot": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "030 sash_dress__slate_.png",
+        "040 apron_full__white_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "hurt": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "120 half_up__strawberry_.png",
+        "030 sash_dress__slate_.png",
+        "040 apron_full__white_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "climb": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "120 half_up__strawberry_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "idle": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "030 sash_dress__slate_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "jump": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "sit": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "emote": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "run": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "combat": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "1h_backslash": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "015 sara_shoes__brown_.png"
+      ],
+      "1h_halfslash": [
+        "010 body_color__amber_.png",
+        "100 human_female__amber_.png",
+        "101 neutral__amber_.png",
+        "120 half_up__strawberry_.png",
+        "015 sara_shoes__brown_.png"
+      ]
+    },
+    "failed": {
+      "spellcast": [],
+      "thrust": [],
+      "walk": [],
+      "slash": [],
+      "shoot": [],
+      "hurt": [],
+      "climb": [],
+      "idle": [],
+      "jump": [],
+      "sit": [],
+      "emote": [],
+      "run": [],
+      "combat": [],
+      "1h_backslash": [],
+      "1h_halfslash": []
+    }
+  },
+  "customAnimations": {
+    "exported": {
+      "slash_128": [
+        "009 tool_smash_.png",
+        "150 tool_smash_.png"
+      ],
+      "slash": []
+    },
+    "failed": {
+      "slash": [
+        "010 body_.png",
+        "020 legs_pants_.png",
+        "025 feet_boots_revised_.png",
+        "100 heads_human_male_.png",
+        "101 face_neutral_.png",
+        "110 beards_beard_.png",
+        "120 hair_buzzcut_.png"
+      ]
+    }
+  },
+  "frameSize": 64,
+  "frameCounts": {}
+}

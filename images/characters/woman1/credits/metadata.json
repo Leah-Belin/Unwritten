@@ -1,0 +1,168 @@
+{
+  "exportTimestamp": "2026-03-22T17-57-55",
+  "bodyType": "female",
+  "standardAnimations": {
+    "exported": {
+      "spellcast": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "030 slit_dress__white_.png",
+        "040 apron_full__white_.png",
+        "015 revised_shoes__tan_.png",
+        "035 sara_tunic__gray_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "thrust": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "030 slit_dress__white_.png",
+        "040 apron_full__white_.png",
+        "015 revised_shoes__tan_.png",
+        "035 sara_tunic__gray_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "walk": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "030 slit_dress__white_.png",
+        "040 apron_full__white_.png",
+        "015 revised_shoes__tan_.png",
+        "035 sara_tunic__gray_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "slash": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "030 slit_dress__white_.png",
+        "040 apron_full__white_.png",
+        "015 revised_shoes__tan_.png",
+        "035 sara_tunic__gray_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "shoot": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "030 slit_dress__white_.png",
+        "040 apron_full__white_.png",
+        "015 revised_shoes__tan_.png",
+        "035 sara_tunic__gray_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "hurt": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "030 slit_dress__white_.png",
+        "040 apron_full__white_.png",
+        "015 revised_shoes__tan_.png",
+        "035 sara_tunic__gray_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "climb": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "015 revised_shoes__tan_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "idle": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "030 slit_dress__white_.png",
+        "015 revised_shoes__tan_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "jump": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "015 revised_shoes__tan_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "sit": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "015 revised_shoes__tan_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "emote": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "015 revised_shoes__tan_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "run": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "015 revised_shoes__tan_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "combat": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "015 revised_shoes__tan_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "1h_backslash": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "015 revised_shoes__tan_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ],
+      "1h_halfslash": [
+        "010 body_color__taupe_.png",
+        "100 human_female__taupe_.png",
+        "101 neutral__taupe_.png",
+        "120 curly_long__light_brown_.png",
+        "015 revised_shoes__tan_.png",
+        "130 bonnie_alt_tilt__white_.png"
+      ]
+    },
+    "failed": {
+      "spellcast": [],
+      "thrust": [],
+      "walk": [],
+      "slash": [],
+      "shoot": [],
+      "hurt": [],
+      "climb": [],
+      "idle": [],
+      "jump": [],
+      "sit": [],
+      "emote": [],
+      "run": [],
+      "combat": [],
+      "1h_backslash": [],
+      "1h_halfslash": []
+    }
+  },
+  "customAnimations": {
+    "exported": {},
+    "failed": {}
+  },
+  "frameSize": 64,
+  "frameCounts": {}
+}

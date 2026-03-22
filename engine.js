@@ -684,24 +684,19 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
 }
 
 // ── ROOM TRANSITION ───────────────────────────────────────────
+const _MW = 'images/tiles/Miniature%20world/Outline/Houses/';
+const _mwHouse = f => `<img src="${_MW}${f}" style="width:100%;height:100%;object-fit:contain;background:#3a4a2e;image-rendering:pixelated">`;
+
 const BUILDING_ART = {
-  market: `<img src="images/buildings/market_day.jpeg" style="width:100%;height:100%;object-fit:cover">`,
-
-  bakery: `<img src="images/buildings/bakery.jpg" style="width:100%;height:100%;object-fit:cover">`,
-
-  bakery_upper: `<img src="images/buildings/bakery_upper.jpg" style="width:100%;height:100%;object-fit:cover">`,
-
-  inn: `<img src="images/buildings/inn.jpeg" style="width:100%;height:100%;object-fit:cover">`,
-
-  forge: `<img src="images/buildings/forge.jpg" style="width:100%;height:100%;object-fit:cover">`,
-
-  town_hall: `<img src="images/buildings/town_hall.jpg" style="width:100%;height:100%;object-fit:cover">`,
-
-  jaxons_house: `<img src="images/buildings/jaxons_house.jpg" style="width:100%;height:100%;object-fit:cover">`,
-
-  hestas_hut: `<img src="images/buildings/hestas_hut.jpg" style="width:100%;height:100%;object-fit:cover">`,
-
-  default: `<img src="images/buildings/default.jpg" style="width:100%;height:100%;object-fit:cover">`,
+  market:       _mwHouse('%23U%20Market.png'),
+  bakery:       _mwHouse('%231%20Wide%20House.png'),
+  bakery_upper: _mwHouse('%231%20Main%20Building.png'),
+  inn:          _mwHouse('%231%20Big%20House.png'),
+  forge:        _mwHouse('%232%20Main%20Building.png'),
+  town_hall:    _mwHouse('%232%20Big%20House.png'),
+  jaxons_house: _mwHouse('%231%20little%20House%201.png'),
+  hestas_hut:   _mwHouse('%232%20little%20House%201.png'),
+  default:      _mwHouse('%231%20Medium%20House.png'),
 };
 
 // Map building IDs and floor IDs to art keys
