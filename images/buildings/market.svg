@@ -1,0 +1,257 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" style="width:100%;height:100%">
+  <!-- Sky -->
+  <rect width="400" height="300" fill="#fdf8f2"/>
+
+  <!-- Peach cloud left -->
+  <ellipse cx="90" cy="45" rx="60" ry="18" fill="#f5cbb0" opacity="0.7"/>
+  <ellipse cx="60" cy="55" rx="38" ry="13" fill="#f5cbb0" opacity="0.5"/>
+  <ellipse cx="130" cy="52" rx="32" ry="11" fill="#f5cbb0" opacity="0.45"/>
+
+  <!-- Blue-grey cloud right -->
+  <ellipse cx="310" cy="38" rx="55" ry="15" fill="#b8cdd8" opacity="0.65"/>
+  <ellipse cx="350" cy="48" rx="38" ry="13" fill="#b8cdd8" opacity="0.55"/>
+  <ellipse cx="285" cy="48" rx="28" ry="10" fill="#b8cdd8" opacity="0.45"/>
+
+  <!-- Ground / cobblestone -->
+  <rect x="0" y="195" width="400" height="105" fill="#e2c89a"/>
+  <!-- cobblestone marks -->
+  <line x1="30" y1="210" x2="75" y2="210" stroke="#c8a870" stroke-width="0.8" opacity="0.6"/>
+  <line x1="90" y1="218" x2="140" y2="218" stroke="#c8a870" stroke-width="0.8" opacity="0.6"/>
+  <line x1="155" y1="210" x2="205" y2="210" stroke="#c8a870" stroke-width="0.8" opacity="0.6"/>
+  <line x1="55" y1="228" x2="100" y2="228" stroke="#c8a870" stroke-width="0.8" opacity="0.5"/>
+  <line x1="220" y1="220" x2="270" y2="220" stroke="#c8a870" stroke-width="0.8" opacity="0.6"/>
+  <line x1="290" y1="212" x2="345" y2="212" stroke="#c8a870" stroke-width="0.8" opacity="0.6"/>
+  <line x1="10" y1="240" x2="65" y2="238" stroke="#c8a870" stroke-width="0.8" opacity="0.5"/>
+  <line x1="130" y1="235" x2="185" y2="233" stroke="#c8a870" stroke-width="0.8" opacity="0.5"/>
+  <line x1="250" y1="240" x2="310" y2="237" stroke="#c8a870" stroke-width="0.8" opacity="0.5"/>
+  <line x1="340" y1="230" x2="395" y2="228" stroke="#c8a870" stroke-width="0.8" opacity="0.5"/>
+  <line x1="40" y1="255" x2="90" y2="252" stroke="#c8a870" stroke-width="0.7" opacity="0.45"/>
+  <line x1="180" y1="252" x2="240" y2="250" stroke="#c8a870" stroke-width="0.7" opacity="0.45"/>
+  <line x1="310" y1="255" x2="370" y2="252" stroke="#c8a870" stroke-width="0.7" opacity="0.45"/>
+  <!-- diagonal sketch marks on ground -->
+  <line x1="105" y1="222" x2="118" y2="232" stroke="#c0a068" stroke-width="0.6" opacity="0.4"/>
+  <line x1="195" y1="230" x2="208" y2="242" stroke="#c0a068" stroke-width="0.6" opacity="0.4"/>
+  <line x1="265" y1="225" x2="278" y2="235" stroke="#c0a068" stroke-width="0.6" opacity="0.4"/>
+
+  <!-- ═══ LEFT STALL — pink/salmon awning ═══ -->
+  <!-- Back wall of stall -->
+  <rect x="0" y="105" width="175" height="100" fill="#e8d4b8" stroke="#9a7850" stroke-width="0.8"/>
+  <!-- Table with cloth -->
+  <rect x="10" y="155" width="130" height="12" fill="#c8b48a" stroke="#8a6840" stroke-width="0.9"/>
+  <path d="M8,167 Q75,180 145,167" fill="#ddc8a0" stroke="#9a7850" stroke-width="0.7"/>
+  <!-- Bread loaves on table -->
+  <ellipse cx="30" cy="158" rx="9" ry="5" fill="#c89050" stroke="#8a5830" stroke-width="0.8"/>
+  <ellipse cx="48" cy="157" rx="9" ry="5" fill="#c89050" stroke="#8a5830" stroke-width="0.8"/>
+  <ellipse cx="66" cy="158" rx="9" ry="5" fill="#d09860" stroke="#8a5830" stroke-width="0.8"/>
+  <ellipse cx="82" cy="157" rx="8" ry="4.5" fill="#c89050" stroke="#8a5830" stroke-width="0.8"/>
+  <ellipse cx="98" cy="158" rx="8" ry="4.5" fill="#d09860" stroke="#8a5830" stroke-width="0.8"/>
+  <ellipse cx="38" cy="153" rx="8" ry="4" fill="#c89050" stroke="#8a5830" stroke-width="0.7"/>
+  <ellipse cx="56" cy="152" rx="8" ry="4" fill="#d09860" stroke="#8a5830" stroke-width="0.7"/>
+  <!-- Hanging sausages top-left -->
+  <line x1="15" y1="105" x2="15" y2="140" stroke="#9a6840" stroke-width="3" stroke-linecap="round"/>
+  <line x1="25" y1="105" x2="25" y2="145" stroke="#9a6840" stroke-width="3" stroke-linecap="round"/>
+  <line x1="35" y1="105" x2="35" y2="138" stroke="#9a6840" stroke-width="3" stroke-linecap="round"/>
+  <line x1="45" y1="105" x2="45" y2="143" stroke="#9a6840" stroke-width="3" stroke-linecap="round"/>
+  <line x1="55" y1="105" x2="55" y2="140" stroke="#9a6840" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Awning support posts left stall -->
+  <rect x="5" y="70" width="6" height="130" fill="#a07848" stroke="#7a5828" stroke-width="0.7"/>
+  <rect x="155" y="70" width="6" height="130" fill="#a07848" stroke="#7a5828" stroke-width="0.7"/>
+
+  <!-- Main pink awning polygon -->
+  <polygon points="0,65 165,65 165,88 0,88" fill="#e8a090" stroke="#8a4830" stroke-width="1.2"/>
+  <!-- Awning fold lines -->
+  <line x1="33" y1="65" x2="30" y2="88" stroke="#c87860" stroke-width="0.8" opacity="0.6"/>
+  <line x1="66" y1="65" x2="63" y2="88" stroke="#c87860" stroke-width="0.8" opacity="0.6"/>
+  <line x1="99" y1="65" x2="96" y2="88" stroke="#c87860" stroke-width="0.8" opacity="0.6"/>
+  <line x1="132" y1="65" x2="129" y2="88" stroke="#c87860" stroke-width="0.8" opacity="0.6"/>
+  <!-- Scalloped fringe -->
+  <path d="M0,88 Q8,100 16,88 Q24,100 32,88 Q40,100 48,88 Q56,100 64,88 Q72,100 80,88 Q88,100 96,88 Q104,100 112,88 Q120,100 128,88 Q136,100 144,88 Q152,100 160,88 L165,88" fill="#e8a090" stroke="#8a4830" stroke-width="1"/>
+
+  <!-- Inner smaller awning (beige) -->
+  <polygon points="100,75 200,75 200,95 100,95" fill="#dcc89a" stroke="#9a7840" stroke-width="1"/>
+  <path d="M100,95 Q108,107 116,95 Q124,107 132,95 Q140,107 148,95 Q156,107 164,95 Q172,107 180,95 Q188,107 196,95 L200,95" fill="#dcc89a" stroke="#9a7840" stroke-width="0.9"/>
+
+  <!-- ═══ CENTER TENT — beige pointed ═══ -->
+  <!-- Tent fabric -->
+  <polygon points="215,55 310,55 305,95 220,95" fill="#ddd0a0" stroke="#9a8050" stroke-width="1.1"/>
+  <!-- Center peaked tent -->
+  <polygon points="255,30 290,75 220,75" fill="#d8c890" stroke="#9a7840" stroke-width="1"/>
+  <polygon points="255,30 310,75 285,75" fill="#ccc080" stroke="#9a7840" stroke-width="0.9"/>
+  <!-- Scalloped fringe center tent -->
+  <path d="M218,95 Q225,107 232,95 Q239,107 246,95 Q253,107 260,95 Q267,107 274,95 Q281,107 288,95 Q295,107 302,95 L305,95" fill="#ddd0a0" stroke="#9a8050" stroke-width="0.9"/>
+  <!-- Center posts -->
+  <rect x="218" y="92" width="5" height="110" fill="#a08850" stroke="#7a6830" stroke-width="0.7"/>
+  <rect x="302" y="92" width="5" height="110" fill="#a08850" stroke="#7a6830" stroke-width="0.7"/>
+  <!-- Counter/table in center -->
+  <rect x="225" y="155" width="78" height="10" fill="#c0a868" stroke="#8a7040" stroke-width="0.8"/>
+  <rect x="230" y="165" width="68" height="25" fill="#b89850" stroke="#8a7040" stroke-width="0.7"/>
+
+  <!-- ═══ RIGHT STALL — teal awning ═══ -->
+  <!-- Back wall -->
+  <rect x="300" y="100" width="100" height="105" fill="#e0d8c8" stroke="#9a8858" stroke-width="0.8"/>
+  <!-- Wooden counter -->
+  <rect x="305" y="152" width="85" height="13" fill="#c0a060" stroke="#8a6830" stroke-width="0.9"/>
+  <rect x="308" y="165" width="80" height="28" fill="#b89050" stroke="#8a6030" stroke-width="0.8"/>
+  <!-- Produce/greens on counter -->
+  <ellipse cx="340" cy="150" rx="18" ry="8" fill="#90b870" stroke="#608040" stroke-width="0.9"/>
+  <ellipse cx="355" cy="152" rx="12" ry="6" fill="#a0c880" stroke="#608040" stroke-width="0.8"/>
+  <ellipse cx="325" cy="151" rx="10" ry="5" fill="#88b068" stroke="#608040" stroke-width="0.8"/>
+
+  <!-- Hanging cloths/linens right stall -->
+  <rect x="352" y="105" width="12" height="45" fill="#d8e8e0" stroke="#8aaa98" stroke-width="0.8"/>
+  <rect x="368" y="105" width="10" height="40" fill="#c8d8d0" stroke="#8aaa98" stroke-width="0.8"/>
+  <rect x="382" y="105" width="12" height="48" fill="#d8e0d8" stroke="#8aaa98" stroke-width="0.8"/>
+
+  <!-- Right awning teal -->
+  <polygon points="298,58 400,58 400,82 298,82" fill="#90c0b0" stroke="#508078" stroke-width="1.2"/>
+  <!-- Fold lines teal awning -->
+  <line x1="320" y1="58" x2="318" y2="82" stroke="#70a890" stroke-width="0.8" opacity="0.7"/>
+  <line x1="345" y1="58" x2="343" y2="82" stroke="#70a890" stroke-width="0.8" opacity="0.7"/>
+  <line x1="370" y1="58" x2="368" y2="82" stroke="#70a890" stroke-width="0.8" opacity="0.7"/>
+  <!-- Scalloped fringe teal -->
+  <path d="M298,82 Q306,94 314,82 Q322,94 330,82 Q338,94 346,82 Q354,94 362,82 Q370,94 378,82 Q386,94 394,82 L400,82" fill="#90c0b0" stroke="#508078" stroke-width="1"/>
+  <!-- Right awning post -->
+  <rect x="298" y="78" width="5" height="125" fill="#608870" stroke="#406050" stroke-width="0.7"/>
+
+  <!-- Barrel with plant (bottom right) -->
+  <rect x="368" y="220" width="28" height="32" rx="4" fill="#c09050" stroke="#8a6030" stroke-width="1"/>
+  <line x1="368" y1="228" x2="396" y2="228" stroke="#8a6030" stroke-width="0.8"/>
+  <line x1="368" y1="238" x2="396" y2="238" stroke="#8a6030" stroke-width="0.8"/>
+  <ellipse cx="382" cy="222" rx="14" ry="6" fill="#a07840" stroke="#7a5820" stroke-width="0.8"/>
+  <!-- Plant leaves in barrel -->
+  <path d="M376,218 Q372,208 368,212 Q374,210 376,218Z" fill="#70a050" stroke="#508030" stroke-width="0.6"/>
+  <path d="M382,216 Q382,204 378,206 Q382,208 382,216Z" fill="#88b860" stroke="#508030" stroke-width="0.6"/>
+  <path d="M386,218 Q392,208 396,212 Q390,210 386,218Z" fill="#70a050" stroke="#508030" stroke-width="0.6"/>
+
+  <!-- ═══ FIGURES ═══ -->
+
+  <!-- LEFT VENDOR 1 (apron, hat, left of table) -->
+  <!-- body -->
+  <ellipse cx="35" cy="175" rx="10" ry="14" fill="#c8a870" stroke="#7a6040" stroke-width="0.8"/>
+  <!-- apron -->
+  <path d="M28,168 Q35,185 42,168" fill="#e8dcc0" stroke="#9a8858" stroke-width="0.7"/>
+  <!-- head -->
+  <circle cx="35" cy="158" r="8" fill="#d4b080" stroke="#8a6040" stroke-width="0.8"/>
+  <!-- hat -->
+  <ellipse cx="35" cy="151" rx="10" ry="3.5" fill="#9a8060" stroke="#6a5840" stroke-width="0.8"/>
+  <rect x="30" y="144" width="10" height="8" rx="2" fill="#9a8060" stroke="#6a5840" stroke-width="0.8"/>
+  <!-- arms -->
+  <line x1="26" y1="170" x2="18" y2="180" stroke="#c8a870" stroke-width="4" stroke-linecap="round"/>
+  <line x1="44" y1="170" x2="52" y2="175" stroke="#c8a870" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- LEFT VENDOR 2 (tunic, behind) -->
+  <ellipse cx="75" cy="170" rx="10" ry="16" fill="#c0a060" stroke="#7a6040" stroke-width="0.8"/>
+  <circle cx="75" cy="152" r="8" fill="#d4b080" stroke="#8a6040" stroke-width="0.8"/>
+  <!-- simple hat -->
+  <ellipse cx="75" cy="145" rx="9" ry="3" fill="#8a7858" stroke="#6a5840" stroke-width="0.7"/>
+  <!-- arm with ladle -->
+  <line x1="65" y1="168" x2="55" y2="178" stroke="#c0a060" stroke-width="4" stroke-linecap="round"/>
+  <line x1="55" y1="178" x2="50" y2="183" stroke="#9a8858" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- CENTER-LEFT figures — woman in dress -->
+  <ellipse cx="178" cy="175" rx="10" ry="18" fill="#d4b878" stroke="#8a7040" stroke-width="0.8"/>
+  <!-- Skirt flare -->
+  <path d="M168,182 Q178,200 188,182" fill="#c8a860" stroke="#8a7040" stroke-width="0.7"/>
+  <circle cx="178" cy="155" r="8" fill="#d4b080" stroke="#8a6040" stroke-width="0.8"/>
+  <!-- hair -->
+  <path d="M171,152 Q178,148 185,152 Q185,158 178,160 Q171,158 171,152Z" fill="#a07848" stroke="#7a5830" stroke-width="0.7"/>
+
+  <!-- CENTER-LEFT man -->
+  <ellipse cx="200" cy="172" rx="9" ry="16" fill="#c8a860" stroke="#8a6840" stroke-width="0.8"/>
+  <circle cx="200" cy="154" r="7.5" fill="#d4b080" stroke="#8a6040" stroke-width="0.8"/>
+  <!-- belt -->
+  <line x1="191" y1="170" x2="209" y2="170" stroke="#8a6040" stroke-width="1.5"/>
+  <!-- legs -->
+  <line x1="195" y1="188" x2="192" y2="202" stroke="#a08060" stroke-width="4" stroke-linecap="round"/>
+  <line x1="205" y1="188" x2="208" y2="202" stroke="#a08060" stroke-width="4" stroke-linecap="round"/>
+  <!-- boots -->
+  <ellipse cx="192" cy="203" rx="5" ry="3" fill="#7a5830" stroke="#5a3810" stroke-width="0.7"/>
+  <ellipse cx="208" cy="203" rx="5" ry="3" fill="#7a5830" stroke="#5a3810" stroke-width="0.7"/>
+
+  <!-- RIGHT VENDOR — woman at counter -->
+  <ellipse cx="330" cy="170" rx="9" ry="15" fill="#c0a870" stroke="#8a7040" stroke-width="0.8"/>
+  <!-- head covering -->
+  <circle cx="330" cy="155" r="7.5" fill="#d4b080" stroke="#8a6040" stroke-width="0.8"/>
+  <path d="M323,155 Q330,148 337,155 Q337,165 330,166 Q323,165 323,155Z" fill="#d8c8a8" stroke="#9a8858" stroke-width="0.7"/>
+  <!-- arm reaching to counter -->
+  <line x1="321" y1="167" x2="315" y2="158" stroke="#c0a870" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Background figure center -->
+  <ellipse cx="250" cy="170" rx="7" ry="13" fill="#c8b878" stroke="#9a8848" stroke-width="0.7"/>
+  <circle cx="250" cy="158" r="6" fill="#d4b080" stroke="#8a6040" stroke-width="0.7"/>
+
+  <!-- ═══ FOREGROUND CHILDREN ═══ -->
+
+  <!-- Girl skipping rope (bottom left) -->
+  <!-- body -->
+  <ellipse cx="88" cy="238" rx="9" ry="13" fill="#e8c090" stroke="#9a7040" stroke-width="0.9"/>
+  <!-- skirt -->
+  <path d="M79,240 Q88,258 97,240" fill="#ddb878" stroke="#9a7040" stroke-width="0.8"/>
+  <!-- head -->
+  <circle cx="88" cy="222" r="8" fill="#d4b080" stroke="#8a6040" stroke-width="0.9"/>
+  <!-- hair -->
+  <path d="M81,220 Q88,215 95,220 Q96,228 88,230 Q80,228 81,220Z" fill="#b08050" stroke="#7a5030" stroke-width="0.7"/>
+  <!-- arms out with rope -->
+  <line x1="79" y1="232" x2="66" y2="240" stroke="#e8c090" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="97" y1="232" x2="110" y2="240" stroke="#e8c090" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- skip rope arc -->
+  <path d="M66,240 Q88,275 110,240" fill="none" stroke="#a07840" stroke-width="1.5"/>
+  <!-- legs skipping -->
+  <line x1="84" y1="251" x2="80" y2="265" stroke="#c8a060" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="92" y1="251" x2="96" y2="263" stroke="#c8a060" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Boy 1 running with hoop (bottom center-left) -->
+  <ellipse cx="218" cy="235" rx="9" ry="14" fill="#d8b878" stroke="#9a7840" stroke-width="0.9"/>
+  <circle cx="215" cy="220" r="8" fill="#d4b080" stroke="#8a6040" stroke-width="0.9"/>
+  <!-- hair -->
+  <path d="M208,218 Q215,213 222,218 Q222,224 215,226 Q208,224 208,218Z" fill="#a07840" stroke="#7a5830" stroke-width="0.7"/>
+  <!-- running legs -->
+  <line x1="213" y1="249" x2="205" y2="265" stroke="#b09060" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="223" y1="249" x2="233" y2="262" stroke="#b09060" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- boots -->
+  <ellipse cx="204" cy="266" rx="6" ry="3" fill="#8a6840" stroke="#5a3820" stroke-width="0.7"/>
+  <ellipse cx="234" cy="263" rx="6" ry="3" fill="#8a6840" stroke="#5a3820" stroke-width="0.7"/>
+  <!-- arm holding hoop -->
+  <line x1="225" y1="232" x2="240" y2="245" stroke="#d8b878" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Hoop (ring) -->
+  <circle cx="255" cy="255" r="20" fill="none" stroke="#9a7840" stroke-width="2.5"/>
+
+  <!-- Boy 2 running (bottom center) -->
+  <ellipse cx="285" cy="232" rx="9" ry="14" fill="#e0c890" stroke="#9a8040" stroke-width="0.9"/>
+  <circle cx="288" cy="217" r="8" fill="#d4b080" stroke="#8a6040" stroke-width="0.9"/>
+  <!-- hair -->
+  <path d="M281,215 Q288,210 295,215 Q296,222 288,224 Q281,222 281,215Z" fill="#a07840" stroke="#7a5830" stroke-width="0.7"/>
+  <!-- running legs -->
+  <line x1="280" y1="246" x2="272" y2="262" stroke="#b09060" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="290" y1="246" x2="300" y2="260" stroke="#b09060" stroke-width="3.5" stroke-linecap="round"/>
+  <ellipse cx="271" cy="264" rx="6" ry="3" fill="#8a6840" stroke="#5a3820" stroke-width="0.7"/>
+  <ellipse cx="301" cy="261" rx="6" ry="3" fill="#8a6840" stroke="#5a3820" stroke-width="0.7"/>
+  <!-- arms -->
+  <line x1="276" y1="232" x2="263" y2="240" stroke="#e0c890" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="294" y1="232" x2="306" y2="238" stroke="#e0c890" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- ═══ BIRDS (pigeons, bottom right) ═══ -->
+  <!-- Bird 1 -->
+  <ellipse cx="345" cy="272" rx="10" ry="6" fill="#c8b898" stroke="#8a7858" stroke-width="0.8"/>
+  <ellipse cx="355" cy="270" rx="7" ry="5" fill="#b8a888" stroke="#8a7858" stroke-width="0.7"/>
+  <!-- head -->
+  <circle cx="360" cy="267" r="4" fill="#a89878" stroke="#7a6848" stroke-width="0.7"/>
+  <!-- beak -->
+  <line x1="363" y1="267" x2="368" y2="268" stroke="#9a8050" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- tail feathers -->
+  <path d="M335,272 Q332,278 337,275" fill="#b0a088" stroke="#8a7858" stroke-width="0.7"/>
+  <!-- legs -->
+  <line x1="348" y1="278" x2="346" y2="284" stroke="#9a8858" stroke-width="1.2"/>
+  <line x1="352" y1="278" x2="354" y2="284" stroke="#9a8858" stroke-width="1.2"/>
+
+  <!-- Bird 2 (smaller, further right) -->
+  <ellipse cx="378" cy="268" rx="8" ry="5" fill="#c0b090" stroke="#8a7858" stroke-width="0.7"/>
+  <circle cx="385" cy="265" r="4" fill="#a89878" stroke="#7a6848" stroke-width="0.7"/>
+  <line x1="388" y1="265" x2="393" y2="266" stroke="#9a8050" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="370" y1="268" x2="368" y2="274" stroke="#9a8858" stroke-width="1"/>
+  <line x1="375" y1="269" x2="376" y2="275" stroke="#9a8858" stroke-width="1"/>
+
+  <!-- Warm ground wash overlay at bottom -->
+  <rect x="0" y="275" width="400" height="25" fill="#e8c888" opacity="0.35"/>
+</svg>
