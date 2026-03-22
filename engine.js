@@ -658,7 +658,7 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
 
 // ── ROOM TRANSITION ───────────────────────────────────────────
 const BUILDING_ART = {
-  market: `<img src="images/buildings/market_day.jpg" style="width:100%;height:100%;object-fit:cover">`,
+  market: `<img src="images/buildings/market_day.jpeg" style="width:100%;height:100%;object-fit:cover">`,
 
   bakery: `<img src="images/buildings/bakery.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
