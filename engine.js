@@ -1333,12 +1333,21 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
     const arrivals = { forest:'The trees close in around you.',
                        garden:'The air is cool and herb-sweet.',
                        temple_path:'The ancient road stretches ahead.',
-                       market: State.isMarketDay()
-                         ? 'Voices and colour fill the square. The stalls are open.'
-                         : 'The square is quiet. The stalls will open on market day.' };
+                       market:'Voices and colour fill the square.' };
     addNarrative(arrivals[sceneId] || `You arrive at ${zone.name}.`, 'sys');
     updateSleepButton();
     updateLeaveButton();
+
+    // Show transition art for zones that have an image
+    if (BUILDING_ART[sceneId]) {
+      document.getElementById('rt-art').innerHTML  = BUILDING_ART[sceneId];
+      document.getElementById('rt-name').textContent = zone.name;
+      document.getElementById('rt-sub').textContent  = arrivals[sceneId] || '';
+      const rt = document.getElementById('room-transition');
+      rt.classList.add('show');
+      pendingBuilding = null;
+      setTimeout(() => rt.classList.remove('show'), 2200);
+    }
     return;
   }
   if (sceneId === 'village') {
@@ -1398,6 +1407,8 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
 // ── ROOM TRANSITION ───────────────────────────────────────────
 // Placeholder SVG art per building — swap for <img src="..."> when real art exists
 const BUILDING_ART = {
+  market: `<img src="images/buildings/market.jpg" style="width:100%;height:100%;object-fit:cover">`,
+
   bakery: `<img src="images/buildings/bakery.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
   bakery_upper: `<img src="images/buildings/bakery_upper.jpg" style="width:100%;height:100%;object-fit:cover">`,
