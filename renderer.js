@@ -348,7 +348,7 @@ function drawTile(c, r) {
   }
   if (def.raised) {
     // Interior floor tiles — draw as flat image tile instead of a box
-    if (currentBuilding && currentMap[r]?.[c] === T.BUILDING) {
+    if (currentBuilding && currentMap[r]?.[c] === T.DIRT) {
       if (_tileImgs.floor) { drawTileImg(_tileImgs.floor, x, y); return; }
     }
     // Interior walls are short so the room is visible.
