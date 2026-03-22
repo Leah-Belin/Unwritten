@@ -66,8 +66,8 @@ const _FLOOR_IMG = {
   council_hall:    'floor_slate',
   jaxons_house:    'floor_wood',
   hestas_hut:      'floor_stone',
-  villager_house_a:'floor_brick',
-  villager_house_b:'floor_cobble',
+  villager_house_a:'floor_wood',
+  villager_house_b:'floor_stone',
   villager_house_c:'floor_wood',
 };
 
