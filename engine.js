@@ -1308,9 +1308,7 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
     currentMap       = zone.grid;
     mapRows          = zone.grid.length;
     mapCols          = zone.grid[0].length;
-    currentNPCs      = sceneId === 'market'
-      ? (State.isMarketDay() ? zone.npcs || [] : [])
-      : zone.npcs || [];
+    currentNPCs      = zone.npcs || [];
     currentStations  = zone.stations || [];
     currentFurniture = [];
     currentExits     = zone.exits || [];

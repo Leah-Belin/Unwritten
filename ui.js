@@ -371,10 +371,6 @@ function closeCraftingMenu() {
 
 // ── MARKET UI ─────────────────────────────────────────────────
 function showMarket() {
-  if (!State.isMarketDay()) {
-    addNarrative('The market is quiet today. It only opens once a week.', 'sys');
-    return;
-  }
   const overlay = document.getElementById('market-overlay');
   if (overlay) overlay.classList.add('open');
   renderMarket();
