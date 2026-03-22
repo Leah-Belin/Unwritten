@@ -1409,9 +1409,7 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
 // ── ROOM TRANSITION ───────────────────────────────────────────
 // Placeholder SVG art per building — swap for <img src="..."> when real art exists
 const BUILDING_ART = {
-  market: `<img src="images/buildings/market.svg" style="width:100%;height:100%;object-fit:cover">`,
-
-  bakery: `<img src="images/buildings/bakery.svg" style="width:100%;height:100%;object-fit:cover">`,
+  bakery: `<img src="images/buildings/bakery.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
   bakery_upper: `<img src="images/buildings/bakery_upper.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
@@ -1657,15 +1655,35 @@ function init() {
   const hasSave = State.load();
   buildVillageMap();
   initNPCPositions();
-  loadScene('village');
 
-  // Restore saved player position — only if the save was made in the village
-  // (interior saves store small map coords that would land inside a building footprint)
-  if (hasSave && State.playerCol !== undefined && State.scene === 'village') {
-    player.col = State.playerCol;
-    player.row = State.playerRow;
-    player.px  = isoX(player.col, player.row);
-    player.py  = isoY(player.col, player.row);
+  if (hasSave && State.scene) {
+    const savedScene = State.scene;
+    const savedCol   = State.playerCol;
+    const savedRow   = State.playerRow;
+
+    if (savedScene === 'village') {
+      loadScene('village');
+    } else if (ZONES?.[savedScene]) {
+      loadScene(savedScene);
+    } else {
+      // Building floor — find which building contains this floor id
+      const building = Object.values(BUILDINGS).find(b => b.floors?.some(f => f.id === savedScene));
+      if (building) {
+        loadFloor(building, savedScene);
+      } else {
+        loadScene('village');
+      }
+    }
+
+    // Restore exact position (load functions set a default spawn point)
+    if (savedCol !== undefined && savedRow !== undefined) {
+      player.col = savedCol;
+      player.row = savedRow;
+      player.px  = isoX(player.col, player.row);
+      player.py  = isoY(player.col, player.row);
+    }
+  } else {
+    loadScene('village');
   }
 
   // Starting inventory if fresh game
