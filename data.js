@@ -36,10 +36,10 @@ const BUILDINGS = {
         items: [
           { itemId:'cloth_scrap',  col:2,  row:5, oneTime:false, label:"Kaida's spare cloth", respawn:false },
           { itemId:'common_herb',  col:6,  row:5, oneTime:false, label:'Dried herbs on windowsill', respawn:false },
-          { itemId:'knotted_cord', col:10, row:3, oneTime:true,  label:"Knotted cord on Gallan's desk", respawn:false },
+          { itemId:'knotted_cord', col:10, row:3, oneTime:true,  label:"Knotted cord on Galen's desk", respawn:false },
           { itemId:'gallan_tools', col:10, row:4, oneTime:true,  label:"Father's tools, half-sorted", respawn:false },
         ],
-        stations: [{ type:'worktable', col:10, row:5, label:"Gallan's Worktable 🔧" }],
+        stations: [{ type:'worktable', col:10, row:5, label:"Galen's Worktable 🔧" }],
         furniture: [
           {type:'bed',   col:2, row:2},
           {type:'bed',   col:2, row:5},
@@ -52,9 +52,9 @@ const BUILDINGS = {
         ],
         cabinet: {
           col:10, row:3,
-          label:"Gallan's Medicinal Cabinet",
-          lockedLabel:"Gallan's Cabinet (locked)",
-          unlockedLabel:"Gallan's Cabinet",
+          label:"Galen's Medicinal Cabinet",
+          lockedLabel:"Galen's Cabinet (locked)",
+          unlockedLabel:"Galen's Cabinet",
           requiresKey:'garden_key',
           items:[
             { itemId:'healing_herb', label:'Healing herb bundles, carefully sorted by potency' },
@@ -303,14 +303,15 @@ const NPCS = [
   {
     id:'mariella', portrait:'images/portraits/mariella.jpg', name:'Mariella', emoji:'👩', col:5, row:5, color:'#c07850',
     lines:[
-      '"Good morning, love. Rolls are nearly done — take some to the square when they\'re cool, would you?"',
+      '"Welcome back, my joy. Rolls are nearly done — take some to the square when they\'re cool, would you?"',
       '"Market day tomorrow! I need you to fetch me some fresh herbs before then."',
-      '"Your father\'s up at the garden. You know how he gets when a new batch of something is coming in."',
+      '"Your father\'s up at the garden. You know how he gets when something new is coming in." She shakes her head fondly.',
       '"Try Sera\'s stall if you need anything — she got a lovely delivery of honey this week."',
-      '"It\'s a beautiful day, Kaida. Go enjoy it."',
+      '"Don\'t worry about Kell, my joy. You\'ll sour the dough if you don\'t let go of things that are out of your control."',
+      '"It\'s a beautiful day. Go enjoy it."',
     ],
     generalReplies: ['"Yes, Mum."', '"Of course."', '"I will soon."'],
-    quest: { id:'mariella_herbs', itemId:'common_herb', itemName:'Common Herb', reward:'chit', rewardColor:'red', rewardAmount:1, line:'"Could you find me some fresh herbs? The windowsill ones are going dry."' },
+    quest: { id:'mariella_herbs', itemId:'common_herb', itemName:'Common Herb', reward:'chit', rewardColor:'red', rewardAmount:1, line:'"Could you find me some fresh herbs, my joy? The windowsill ones are going dry."' },
     teachesAt: { goodwill:3, recipes:['spiced_rolls','fruit_preserve','morning_tea'], line:'"Come here — let me show you how to do the spiced rolls properly. Your father requests them every single morning."' },
   },
   {
@@ -318,40 +319,25 @@ const NPCS = [
     scene:'village',
     lines:[
       {
-        text: '"You know what I keep thinking about?" He looks out toward the east field. "A place of our own. Not your mum\'s, not my dad\'s — somewhere we chose. Somewhere that\'s just ours."',
+        text: '"Your bread is amazing, Kaida." He\'s looking at her, not at the loaf. "I\'m not sure how you did it."',
         replies: [
-          { label: '"I think about it too."' },
-          { label: '"It would be wonderful."' },
+          { label: '"It\'s all in the technique."' },
+          { label: '"Maybe I\'ll teach you someday."' },
         ],
       },
+      '"I\'ve been working on a new bowl. Something with a wider lip — better for soup, I think. You want to see it when it\'s done?" He\'s already grinning before she answers.',
       {
-        text: '"We could actually make it happen, Kaida. We save up, we gather what we need — a little at a time if we have to. But we could start now. There\'s nothing stopping us."',
+        text: '"I had a competition going with myself this morning." He holds up two near-identical cups. "Which one do you think came out better?"',
         replies: [
-          { label: '"You really think so?"' },
-          { label: '"I\'d like that more than anything."' },
+          { label: '"The left one."' },
+          { label: '"The right one. Definitely."' },
         ],
       },
-      {
-        text: '"A home we built ourselves. So when we\'re married, we\'re walking through our own door for the very first time. Together." He smiles. "That\'s what I want for us."',
-        replies: [
-          { label: '"Before the wedding?"' },
-          { label: '"That\'s exactly what I want too."' },
-        ],
-      },
-      {
-        text: '"I\'ve already been looking." He grins, a little sheepish. "There\'s a plot on the east edge — near the old elm. Nobody\'s claimed it. It\'s just sitting there. I wanted to show you before I did anything else."',
-        replies: [
-          { label: '"You already picked one out?"' },
-          { label: '"Show me."' },
-        ],
-      },
-      '"My dad thinks we could start the foundation before winter, if we save enough. Your work at the bakery, my carpentry — maybe by harvest?"',
-      '"I keep telling Sera we\'re saving up. She keeps telling everyone else." He grins. "Small village."',
-      '"Your mum offered to teach me her bread recipe. I think she likes me."',
-      '"Twenty gold chits is a lot. But we can do it. I know we can."',
+      '"Market day tomorrow. I always do better when you\'re at the stall next to mine." He says it like it\'s obvious.',
+      '"Your mother stopped and looked at my work for a full minute today. Didn\'t say anything, just nodded." He pauses. "I think that\'s good?"',
+      '"The clay\'s been good this week. I might actually have something worth selling at festival." He glances over. "Not that your bread ever has trouble moving."',
     ],
     generalReplies: ['"I\'ll keep that in mind."', '"Thanks, Jaxon."', '"I should get going."'],
-    houseSavingsGoal: 20,
   },
   {
     id:'sera', name:'Sera', emoji:'🧑‍🦳', col:23, row:21, color:'#907050',
@@ -365,7 +351,7 @@ const NPCS = [
     quest: { id:'sera_bread', itemId:'simple_bread', itemName:'Simple Bread', reward:'chit', rewardColor:'red', rewardAmount:2, line:'"Oh, I don\'t suppose you have any of your mother\'s bread spare? Mine burned this morning, catastrophe."' },
   },
   {
-    id:'blacksmith', name:'Oswin', emoji:'🧔', col:5, row:5, color:'#605040',
+    id:'blacksmith', name:'Kell', emoji:'🧔', col:5, row:5, color:'#605040',
     lines:[
       '"Morning! Good day for it. Whatever \'it\' is."',
       '"Your father\'s the only healer I\'d trust. Fixed my shoulder right up last winter."',
@@ -430,7 +416,7 @@ const NPCS = [
 
 // ── SPAWN TABLE FOR GARDEN ────────────────────────────────────
 const GARDEN_ITEMS = [
-  { itemId:'healing_herb', col:4, row:3, oneTime:false, label:"Gallan's herb patch", respawn:true },
+  { itemId:'healing_herb', col:4, row:3, oneTime:false, label:"Galen's herb patch", respawn:true },
   { itemId:'healing_herb', col:6, row:5, oneTime:false, label:'More healing herbs',  respawn:true },
   { itemId:'lavender',     col:3, row:6, oneTime:false, label:'Lavender row',        respawn:true },
   { itemId:'root',         col:7, row:3, oneTime:false, label:'Dug-up roots',        respawn:false },
@@ -696,10 +682,10 @@ const ZONES = {
   },
 
   garden: {
-    id:'garden', name:"Gallan's Garden",
+    id:'garden', name:"Galen's Garden",
     grid: buildGardenMap(),
     items:[
-      { itemId:'healing_herb', col:11, row:13, label:"Gallan's healing herb patch",   respawn:true  },
+      { itemId:'healing_herb', col:11, row:13, label:"Galen's healing herb patch",   respawn:true  },
       { itemId:'healing_herb', col:14, row:12, label:'More healing herbs',            respawn:true  },
       { itemId:'lavender',     col:9,  row:13, label:'Rows of lavender',              respawn:true  },
       { itemId:'spice_herb',   col:12, row:14, label:'Spice herbs in the terrace',    respawn:true  },
