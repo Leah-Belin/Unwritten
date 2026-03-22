@@ -11,7 +11,7 @@ function resize() {
 
 // ── PORTRAIT DATA
 const PORTRAIT_KAIDA     = 'images/portraits/kaida.jpg';
-const PORTRAIT_GALLAN    = 'images/portraits/gallan.jpg';
+const PORTRAIT_GALEN     = 'images/portraits/galen.jpg';
 const PORTRAIT_MARIELLA  = 'images/portraits/mariella.jpg';
 
 // ── ISO MATH ──────────────────────────────────────────────────
@@ -289,7 +289,7 @@ function promptPickup(item) {
   }
   if (item.itemId === 'gallan_tools') {
     showDialogue(
-      {emoji:'👨‍🔬', name:'Memory — Gallan', portrait:PORTRAIT_GALLAN},
+      {emoji:'👨‍🔬', name:'Memory — Galen', portrait:PORTRAIT_GALEN},
       '"Kaida, come look at this. See how the root structure mirrors the bloom? Everything in nature has a logic, if you look close enough." He held it up to the light, eyes bright.'
     );
   }
