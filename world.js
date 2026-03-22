@@ -149,7 +149,7 @@ function buildVillageMap() {
   for (let i = 0; i < VILLAGE_ROWS; i++) { villageMap[i][19] = T.PATH; villageMap[i][20] = T.PATH; }
   for (let j = 0; j < VILLAGE_COLS; j++) { villageMap[19][j] = T.PATH; villageMap[20][j] = T.PATH; }
   // Town square — cobblestone plaza around fountain
-  fillVRect(17, 17, 6, 6, T.COBBLE);
+  fillVRect(17, 17, 8, 8, T.COBBLE);
   // Flowers
   [[5,5],[8,12],[12,4],[30,6],[35,14],[6,28],[3,35],[32,32],[14,36],[22,8],[28,34],[15,22],[24,30]].forEach(([r,c])=>{
     if(villageMap[r][c]===T.GRASS)villageMap[r][c]=T.FLOWER;
@@ -180,7 +180,7 @@ function buildVillageMap() {
     if(villageMap[r][c]===T.GRASS) villageMap[r][c]=T.TREE;
   });
   // Market stalls (only visible on market day — handled in renderer)
-  fillVRect(21,17,2,6,T.PATH); // market area south of square
+  fillVRect(21,17,2,8,T.COBBLE); // market area south of square — same cobble as plaza
 
   // The Plot — east side near forest, row 22 col 34
   fillVRect(21, 33, 4, 4, T.DIRT);
