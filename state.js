@@ -13,7 +13,6 @@ const State = {
     volunteered_temple:   false,
     // cord reveal — when she has 3+ cords and talks to the priest
     cord_revealed:        false,
-    house_savings:        0,  // DEPRECATED - now tracked in State.plot
     jaxon_proposed:       false,
   },
 
@@ -64,7 +63,6 @@ const State = {
 
   // ── SCENE ────────────────────────────────────────────────────
   scene: 'village',   // 'village' | building id
-  priorScene: null,
   playerCol: 20,
   playerRow: 23,
 
