@@ -59,6 +59,43 @@ loadTileImg('floor_brick',  _IT + 'isometric_0100.png');
 loadTileImg('floor_slate',  _IT + 'isometric_0201.png');
 loadTileImg('floor_cobble', _IT + 'isometric_0215.png');
 
+// ── BUILDING EXTERIOR SPRITES ─────────────────────────────────
+const _FI = _IT + 'free%20isometric%20tileset%20for%20prototyping/';
+const _HN = _IT + 'hernandack-houses/';
+loadTileImg('bldg_fi1', _FI + 'house%201.png'); // purple/slate — inn, council
+loadTileImg('bldg_fi2', _FI + 'house%202.png'); // red/timber   — bakery, town hall
+loadTileImg('bldg_fi3', _FI + 'house%203.png'); // dark slate   — forge
+loadTileImg('bldg_hn1', _HN + 'Isometric-Houses-1.png'); // blue-roof sheet
+loadTileImg('bldg_hn2', _HN + 'Isometric-Houses-2.png'); // pink-roof sheet
+loadTileImg('bldg_hn3', _HN + 'Isometric-Houses-3.png'); // green-roof sheet
+
+// Village building sprite overlays.
+// r1,c1..r2,c2 = tile footprint (inclusive).
+// img = tile image key. sx,sy,sw,sh = source crop for sprite sheets.
+// yOff = extra vertical offset (positive = down) to fine-tune ground alignment.
+const VILLAGE_BLDG_SPRITES = [
+  // ── Main character buildings (Free Isometric, ~500×640 px) ──
+  { id:'bakery',           r1:4,  c1:3,  r2:9,  c2:8,  img:'bldg_fi2' },
+  { id:'forge',            r1:4,  c1:25, r2:8,  c2:30, img:'bldg_fi3' },
+  { id:'inn',              r1:4,  c1:32, r2:9,  c2:37, img:'bldg_fi1' },
+  { id:'town_hall',        r1:10, c1:15, r2:15, c2:24, img:'bldg_fi2' },
+  { id:'council_hall',     r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
+  // ── Residential buildings (Hernandack sheet, each house ~43×64 px) ──
+  { id:'jaxons_house',     r1:25, c1:10, r2:29, c2:14, img:'bldg_hn1', sx:0,  sy:0, sw:43, sh:64 },
+  { id:'hestas_hut',       r1:31, c1:4,  r2:35, c2:8,  img:'bldg_hn2', sx:0,  sy:0, sw:43, sh:64 },
+  { id:'villager_house_a', r1:28, c1:22, r2:31, c2:25, img:'bldg_hn1', sx:43, sy:0, sw:43, sh:64 },
+  { id:'villager_house_b', r1:12, c1:28, r2:15, c2:31, img:'bldg_hn2', sx:43, sy:0, sw:43, sh:64 },
+  { id:'villager_house_c', r1:32, c1:14, r2:35, c2:17, img:'bldg_hn3', sx:0,  sy:0, sw:43, sh:64 },
+];
+
+// Tiles inside a building footprint — skip procedural raised-box drawing so
+// the single building sprite covers them cleanly.
+const _BLDG_TILE_SKIP = new Set();
+for (const b of VILLAGE_BLDG_SPRITES)
+  for (let r = b.r1; r <= b.r2; r++)
+    for (let c = b.c1; c <= b.c2; c++)
+      _BLDG_TILE_SKIP.add(`${c},${r}`);
+
 // Per-building floor tile
 const _FLOOR_IMG = {
   bakery:          'floor_wood',
@@ -221,9 +258,40 @@ function drawChimney(x, y, bh) {
 }
 
 // ── DRAWING ───────────────────────────────────────────────────
+function drawBuildingSprite(b) {
+  const img = _tileImgs[b.img];
+  if (!img) return;
+
+  const srcX = b.sx ?? 0, srcY = b.sy ?? 0;
+  const srcW = b.sw ?? img.naturalWidth;
+  const srcH = b.sh ?? img.naturalHeight;
+  if (!srcW || !srcH) return;
+
+  // Scale to footprint screen width: (colSpan + rowSpan) * TW/2
+  const fW = (b.c2 - b.c1 + b.r2 - b.r1) * TW / 2;
+  const scale = fW / srcW;
+  const dw = srcW * scale;
+  const dh = srcH * scale;
+
+  // Horizontal centre at the footprint centre tile; bottom at south-face ground level
+  const cc = (b.c1 + b.c2) / 2;
+  const cr = (b.r1 + b.r2) / 2;
+  const cx = isoX(cc, cr) + offX;
+  const cy = isoY(cc, b.r2) + TH / 2 + offY + (b.yOff ?? 0);
+
+  // Pixel-art (Hernandack) sprites need crisp nearest-neighbour scaling
+  const pixelArt = (b.sw !== undefined);
+  if (pixelArt) ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(img, srcX, srcY, srcW, srcH, cx - dw / 2, cy - dh, dw, dh);
+  if (pixelArt) ctx.imageSmoothingEnabled = true;
+}
+
 function drawTile(c, r) {
   const def = TILE_DEF[currentMap[r]?.[c]];
   if (!def) return;
+  // Skip the procedural 3D-box rendering for tiles inside a building-sprite footprint.
+  // Only skip raised tiles (WALL/BUILDING); DOOR tiles are not raised so they still show.
+  if (!currentBuilding && def.raised && _BLDG_TILE_SKIP.has(`${c},${r}`)) return;
   const {x,y} = toScreen(c,r);
   if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
   const hw=TW/2, hh=TH/2;
@@ -720,6 +788,11 @@ function render() {
   currentStations.forEach(st => items.push({k:'station',st,z:st.row+st.col+0.6}));
   currentFurniture.forEach(f => items.push({k:'furniture',f,z:f.row+f.col+0.55}));
   if (currentCabinet) items.push({k:'cabinet',z:currentCabinet.row+currentCabinet.col+0.6});
+  // Building sprite overlays — depth at mid-footprint so south-of-building things draw on top
+  if (!currentBuilding) {
+    for (const b of VILLAGE_BLDG_SPRITES)
+      items.push({k:'bldg', b, z:(b.r1+b.r2+b.c1+b.c2)/2 + 0.45});
+  }
   currentNPCs.forEach(n => items.push({k:'npc',n,z:n.row+n.col+0.8}));
   items.push({k:'player',z:player.row+player.col+0.8});
   items.sort((a,b) => a.z-b.z);
@@ -727,6 +800,7 @@ function render() {
   ctx.textAlign='center';
   for (const d of items) {
     if      (d.k==='tile')    drawTile(d.c,d.r);
+    else if (d.k==='bldg')   drawBuildingSprite(d.b);
     else if (d.k==='item')    drawItem(d.item);
     else if (d.k==='station') drawStation(d.st);
     else if (d.k==='cabinet') drawCabinet(currentCabinet);
