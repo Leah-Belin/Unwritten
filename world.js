@@ -133,17 +133,16 @@ const BUILDINGS = {
         stations: [{ type:'worktable', col:10, row:5, label:"Gallan's Worktable 🔧" }],
         furniture: [
           {type:'bed',   col:2, row:2},
-          {type:'bed',   col:2, row:6},
-          {type:'table', col:5, row:4},
-          {type:'chair', col:6, row:4},
-          {type:'chest', col:3, row:5},
+          {type:'bed',   col:2, row:5},
+          {type:'table', col:8, row:2},
+          {type:'chair', col:7, row:3},
+          {type:'chest', col:9, row:6},
         ],
         exits: [
           { label:'Go downstairs', targetFloor:'bakery_ground', col:9, row:5 },
-          { label:'Go downstairs', targetFloor:'bakery_ground', col:6, row:7 },
         ],
         cabinet: {
-          col:11, row:3,
+          col:10, row:3,
           label:"Gallan's Medicinal Cabinet",
           lockedLabel:"Gallan's Cabinet (locked)",
           unlockedLabel:"Gallan's Cabinet",
@@ -393,7 +392,7 @@ const BUILDINGS = {
 
 // ── INTERIOR MAP BUILDER ──────────────────────────────────────
 function buildInteriorMap(type) {
-  // Bakery upper floor is wider — 12 cols, 8 rows — 3 rooms side by side
+  // Bakery upper floor is wider — 12 cols, 8 rows — 2 rooms side by side
   const cols = (type === 'bakery_upper') ? 12 : 10;
   const rows = (type === 'small') ? 8 : (type === 'hall') ? 12 : 10;
   const grid = [];
@@ -414,13 +413,11 @@ function buildInteriorMap(type) {
   }
 
   if (type === 'bakery_upper') {
-    for (let r = 1; r < rows-1; r++) grid[r][4] = T.WALL;
-    grid[4][4] = T.DIRT;
-    for (let r = 1; r < rows-1; r++) grid[r][8] = T.WALL;
-    grid[4][8] = T.DIRT;
-    grid[5][9] = T.STAIRS;  // col 9, inside right wall of 12-wide map
-    grid[2][2] = T.WALL; grid[2][3] = T.WALL;
-    grid[2][6] = T.WALL; grid[2][7] = T.WALL;
+    // Single dividing wall at col 5, passage rows 3-5 (3 tiles wide)
+    for (let r = 1; r < rows-1; r++) {
+      if (r < 3 || r > 5) grid[r][5] = T.WALL;
+    }
+    grid[5][9] = T.STAIRS;  // stairs in right room
   }
 
   if (type === 'inn') {
