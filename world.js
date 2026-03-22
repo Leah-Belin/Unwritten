@@ -1,5 +1,5 @@
 // ── TILE TYPES ────────────────────────────────────────────────
-const T = { GRASS:0, PATH:1, DIRT:2, BUILDING:3, WALL:4, TREE:5, FLOWER:6, WATER:7, DOOR:8, STAIRS:9, PLOT:10, FOUNTAIN:11, EXIT:12 };
+const T = { GRASS:0, PATH:1, DIRT:2, BUILDING:3, WALL:4, TREE:5, FLOWER:6, WATER:7, DOOR:8, STAIRS:9, PLOT:10, FOUNTAIN:11, EXIT:12, COBBLE:13 };
 
 const TILE_DEF = {
   [T.GRASS]:    { walk:true,  top:'#8a9a6a', left:'#6a7a4a', right:'#7a8a5a' },
@@ -15,6 +15,7 @@ const TILE_DEF = {
   [T.PLOT]:     { walk:true,  top:'#b8a060', left:'#907840', right:'#a89050', plot:true },
   [T.FOUNTAIN]: { walk:false, fountain:true },
   [T.EXIT]:     { walk:true,  top:'#f0e870', left:'#c8b830', right:'#e0d050', exit:true },
+  [T.COBBLE]:   { walk:true,  top:'#b0a898', left:'#807870', right:'#988880' },
 };
 
 // Visual styles per building — walls, roof/interior, chimney & window flags
@@ -147,8 +148,8 @@ function buildVillageMap() {
   // Main paths
   for (let i = 0; i < VILLAGE_ROWS; i++) { villageMap[i][19] = T.PATH; villageMap[i][20] = T.PATH; }
   for (let j = 0; j < VILLAGE_COLS; j++) { villageMap[19][j] = T.PATH; villageMap[20][j] = T.PATH; }
-  // Town square
-  fillVRect(17, 17, 6, 6, T.DIRT);
+  // Town square — cobblestone plaza around fountain
+  fillVRect(17, 17, 6, 6, T.COBBLE);
   // Flowers
   [[5,5],[8,12],[12,4],[30,6],[35,14],[6,28],[3,35],[32,32],[14,36],[22,8],[28,34],[15,22],[24,30]].forEach(([r,c])=>{
     if(villageMap[r][c]===T.GRASS)villageMap[r][c]=T.FLOWER;

@@ -82,6 +82,7 @@ const _GROUND_IMG = {
   [T.PLOT]:   'dirt',
   [T.WATER]:  'water',
   [T.STAIRS]: 'path',
+  [T.COBBLE]: 'floor_stone',
 };
 
 // Draw a 32×32 Miniature World tile at 2× scale.
