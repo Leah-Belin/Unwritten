@@ -50,7 +50,26 @@ loadTileImg('dirt',         _MWT + 'Tiles/Dirt%20Block%201.png');
 loadTileImg('water',        _MWT + 'Tiles/Water%20Block.png');
 loadTileImg('tree_a',       _MWT + 'Outline/Objects/Tree%201.png');
 loadTileImg('tree_b',       _MWT + 'Outline/Objects/Tree%202.png');
-loadTileImg('floor',        _MWT + 'Tiles/Rock%20Block%201.png');
+const _IT = 'images/tiles/';
+loadTileImg('floor_wood',   _IT + 'isometric_0086.png');
+loadTileImg('floor_stone',  _IT + 'isometric_0072.png');
+loadTileImg('floor_brick',  _IT + 'isometric_0100.png');
+loadTileImg('floor_slate',  _IT + 'isometric_0201.png');
+loadTileImg('floor_cobble', _IT + 'isometric_0215.png');
+
+// Per-building floor tile
+const _FLOOR_IMG = {
+  bakery:          'floor_wood',
+  inn:             'floor_stone',
+  forge:           'floor_brick',
+  town_hall:       'floor_slate',
+  council_hall:    'floor_slate',
+  jaxons_house:    'floor_wood',
+  hestas_hut:      'floor_stone',
+  villager_house_a:'floor_brick',
+  villager_house_b:'floor_cobble',
+  villager_house_c:'floor_wood',
+};
 
 // Map tile type → image id for ground tiles
 const _GROUND_IMG = {
@@ -69,7 +88,7 @@ const _GROUND_IMG = {
 // Top-face top-vertex lands at (x, y − TH/2), matching the iso diamond.
 function drawTileImg(img, x, y) {
   ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(img, 0, 0, 32, 32, x - TW/2, y - TH/2, TW, TW);
+  ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, x - TW/2, y - TH/2, TW, TW);
 }
 
 // ── DRAW MORTAR/GRAIN TEXTURE ─────────────────────────────────
@@ -211,7 +230,7 @@ function drawTile(c, r) {
     const tileType = currentMap[r]?.[c];
     const isFloor = currentBuilding && tileType === T.DIRT;
     if (isFloor && !window._floorLogged) { window._floorLogged=true; console.log('[floor] currentBuilding:', !!currentBuilding, 'tileType:', tileType, 'T.DIRT:', T.DIRT, 'img loaded:', !!_tileImgs.floor); }
-    const imgId = isFloor ? 'floor' : _GROUND_IMG[tileType];
+    const imgId = isFloor ? (_FLOOR_IMG[currentBuilding.id] || 'floor_stone') : _GROUND_IMG[tileType];
     const tileImg = imgId && _tileImgs[imgId];
     if (tileImg) {
       drawTileImg(tileImg, x, y);
