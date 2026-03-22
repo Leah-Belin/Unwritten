@@ -94,7 +94,7 @@ function attachInputHandlers() {
               enterBuilding(building.id);
             } else {
               // Walk to the door tile of this building
-              const doorEntry = Object.entries(DOOR_MAP).find(([k,v]) => v === building.id);
+              const doorEntry = Object.entries(DOOR_MAP).find(([_k,v]) => v === building.id);
               if (doorEntry) {
                 const [dc, dr] = doorEntry[0].split(',').map(Number);
                 // Walk to tile adjacent to door

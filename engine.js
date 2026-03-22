@@ -385,8 +385,6 @@ function checkPendingDoor() {
 
 // ── NPC TALK ──────────────────────────────────────────────────
 function talkTo(npc) {
-  // Guard: never open dialogue if sleep warning is showing
-  if (false) return;
 
   const idx = State.npcDialogueIndex[npc.id] || 0;
   const lineData = npc.lines[idx % npc.lines.length];
@@ -627,7 +625,7 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
       const pos = zoneReturn[fromZone] || { col:20, row:23 };
       player.col=pos.col; player.row=pos.row;
     } else if (fromBuildingId) {
-      const doorEntry = Object.entries(DOOR_MAP).find(([k,v]) => v === fromBuildingId);
+      const doorEntry = Object.entries(DOOR_MAP).find(([_k,v]) => v === fromBuildingId);
       if (doorEntry) {
         const [dc, dr] = doorEntry[0].split(',').map(Number);
         player.col = dc; player.row = dr + 1;
@@ -880,7 +878,7 @@ function getBuildingAtTile(col, row) {
 
 function isAdjacentToBuilding(building) {
   // Check if player is adjacent to the building's door tile
-  const doorKey = Object.entries(DOOR_MAP).find(([k,v]) => v === building.id);
+  const doorKey = Object.entries(DOOR_MAP).find(([_k,v]) => v === building.id);
   if (!doorKey) return false;
   const [dc, dr] = doorKey[0].split(',').map(Number);
   return Math.abs(player.col - dc) <= 1 && Math.abs(player.row - dr) <= 1;

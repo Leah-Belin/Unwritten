@@ -82,7 +82,7 @@ function renderWallet() {
   row.innerHTML = '';
   const chits = [['red','🔴',State.wallet.red],['blue','🔵',State.wallet.blue],['gold','🟡',State.wallet.gold]];
   let any = false;
-  chits.forEach(([cls, emoji, count]) => {
+  chits.forEach(([cls, _emoji, count]) => {
     if (count <= 0) return;
     any = true;
     const g = document.createElement('div');
@@ -350,7 +350,7 @@ function showCraftingMenu(stationType, stationLabel) {
     if (craftable) {
       div.onclick = () => {
         doCraft(recipe.id,
-          (r, out) => {
+          (r, _out) => {
             addNarrative(`You craft ${r.emoji} ${r.name} ×${r.output.count}.`, 'sys');
             renderInventory(); renderWallet(); updateEnergyUI();
             showCraftingMenu(stationType, stationLabel); // refresh
