@@ -1307,7 +1307,9 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
     currentMap       = zone.grid;
     mapRows          = zone.grid.length;
     mapCols          = zone.grid[0].length;
-    currentNPCs      = zone.npcs || [];
+    currentNPCs      = sceneId === 'market'
+      ? (State.isMarketDay() ? zone.npcs || [] : [])
+      : zone.npcs || [];
     currentStations  = zone.stations || [];
     currentFurniture = [];
     currentExits     = zone.exits || [];
@@ -1332,7 +1334,9 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
     const arrivals = { forest:'The trees close in around you.',
                        garden:'The air is cool and herb-sweet.',
                        temple_path:'The ancient road stretches ahead.',
-                       market:'Voices and colour fill the square.' };
+                       market: State.isMarketDay()
+                         ? 'Voices and colour fill the square. The stalls are open.'
+                         : 'The square is quiet. The stalls will open on market day.' };
     addNarrative(arrivals[sceneId] || `You arrive at ${zone.name}.`, 'sys');
     updateSleepButton();
     updateLeaveButton();
