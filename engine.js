@@ -58,7 +58,9 @@ function walkable(c, r) {
   if (t === undefined) return false;
   if (!TILE_DEF[t]?.walk) return false;
   if (currentNPCs.some(n => n.col===c && n.row===r)) return false;
-  if (currentFurniture.some(f => f.col===c && f.row===r)) return false;
+  // Small furniture (chairs, stools) is passable; large pieces block
+  const BLOCKS_WALK = new Set(['table','counter','bed','cot','barrel','shelf','chest']);
+  if (currentFurniture.some(f => f.col===c && f.row===r && BLOCKS_WALK.has(f.type))) return false;
   // In interiors, block outer border EXCEPT for door and stairs tiles
   if (currentBuilding && (c === 0 || r === 0 || c === mapCols-1 || r === mapRows-1)) {
     if (t !== T.DOOR && t !== T.STAIRS) return false;
@@ -338,7 +340,14 @@ function drawTile(c, r) {
     return;
   }
   if (def.raised) {
-    const bh = def.raised;
+    // Interior walls are short so the room is visible.
+    // The "near" sides (bottom row, right col) are almost flush with the floor
+    // so they don't obscure the interior from the isometric camera.
+    let bh = def.raised;
+    if (currentBuilding) {
+      const nearSide = (r === mapRows-1 || c === mapCols-1);
+      bh = nearSide ? 3 : 9;
+    }
     // Resolve building-specific colors when in the village
     let leftCol=def.left, rightCol=def.right, topCol=def.top;
     let bldg=null, style=null;
