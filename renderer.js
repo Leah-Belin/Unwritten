@@ -50,7 +50,7 @@ loadTileImg('dirt',         _MWT + 'Tiles/Dirt%20Block%201.png');
 loadTileImg('water',        _MWT + 'Tiles/Water%20Block.png');
 loadTileImg('tree_a',       _MWT + 'Outline/Objects/Tree%201.png');
 loadTileImg('tree_b',       _MWT + 'Outline/Objects/Tree%202.png');
-loadTileImg('floor',        'images/tiles/floor.png');
+loadTileImg('floor',        _MWT + 'Tiles/Rock%20Block%201.png');
 
 // Map tile type → image id for ground tiles
 const _GROUND_IMG = {
