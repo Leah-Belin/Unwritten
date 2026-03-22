@@ -207,7 +207,8 @@ function drawTile(c, r) {
 
   // Top face — Miniature World block sprite when loaded, else procedural diamond
   if (!def.raised) {
-    const imgId = _GROUND_IMG[currentMap[r]?.[c]];
+    const tileType = currentMap[r]?.[c];
+    const imgId = (currentBuilding && tileType === T.DIRT) ? 'floor' : _GROUND_IMG[tileType];
     const tileImg = imgId && _tileImgs[imgId];
     if (tileImg) {
       drawTileImg(tileImg, x, y);
@@ -347,10 +348,6 @@ function drawTile(c, r) {
     return;
   }
   if (def.raised) {
-    // Interior floor tiles — draw as flat image tile instead of a box
-    if (currentBuilding && currentMap[r]?.[c] === T.DIRT) {
-      if (_tileImgs.floor) { drawTileImg(_tileImgs.floor, x, y); return; }
-    }
     // Interior walls are short so the room is visible.
     // The "near" sides (bottom row, right col) are almost flush with the floor
     // so they don't obscure the interior from the isometric camera.
