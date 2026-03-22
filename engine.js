@@ -922,6 +922,7 @@ function updateNPCWander(dt) {
   npcWanderTimer = 0;
 
   currentNPCs.forEach(npc => {
+    if (npc.stationary) return; // stall holders etc. stay put
     if (npc.wanderPath && npc.wanderPath.length > 0) return; // already moving
 
     // Pick a random nearby walkable tile within radius of home

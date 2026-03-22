@@ -980,7 +980,7 @@ const ZONES = {
     npcs:[
       {
         id:'sera_market', name:'Sera', emoji:'🧑‍🦳', col:9, row:5,
-        color:'#c09070', scene:'market', shop:'sera_stall',
+        color:'#c09070', scene:'market', shop:'sera_stall', stationary:true,
         lines:[
           "Good morning! Fresh herbs and fruit today.",
           "The bees have been busy — got lovely honey in.",
@@ -990,7 +990,7 @@ const ZONES = {
       },
       {
         id:'tool_vendor', name:'Edric', emoji:'🧔', col:14, row:5,
-        color:'#907060', scene:'market', shop:'tool_stall',
+        color:'#907060', scene:'market', shop:'tool_stall', stationary:true,
         lines:[
           "Best tools this side of the mountain. Guaranteed.",
           "Iron fittings fresh from the forge. Good price.",
@@ -999,7 +999,7 @@ const ZONES = {
       },
       {
         id:'fabric_merchant', name:'Marta', emoji:'👩', col:20, row:5,
-        color:'#b08070', scene:'market', shop:'fabric_stall',
+        color:'#b08070', scene:'market', shop:'fabric_stall', stationary:true,
         lines:[
           "Fine cloth, all hand-spun. Nothing finer in the valley.",
           "Looking for something specific? I can order it in.",
@@ -1008,7 +1008,7 @@ const ZONES = {
       },
       {
         id:'travelling_trader', name:'Davan', emoji:'🧳', col:24, row:9,
-        color:'#608080', scene:'market', shop:'trader_stall',
+        color:'#608080', scene:'market', shop:'trader_stall', stationary:true,
         lines:[
           "Fresh in from the eastern passes. Rare goods.",
           "Glass panes — you won't find these in the village. Trust me.",
