@@ -44,6 +44,7 @@ let currentMap  = null;   // 2D tile array
 let currentNPCs = [];     // NPC objects visible in this scene
 let currentItems = [];    // Interactable items on map { itemId, col, row, label, oneTime, taken }
 let currentStations = []; // Crafting stations { type, col, row, label }
+let currentFurniture = [];
 let currentExits = [];    // Exit points { label, targetScene, targetFloor, col, row }
 let currentBuilding = null;
 let currentFloor    = null;
@@ -57,6 +58,9 @@ function walkable(c, r) {
   if (t === undefined) return false;
   if (!TILE_DEF[t]?.walk) return false;
   if (currentNPCs.some(n => n.col===c && n.row===r)) return false;
+  // Small furniture (chairs, stools) is passable; large pieces block
+  const BLOCKS_WALK = new Set(['table','counter','bed','cot','barrel','shelf','chest']);
+  if (currentFurniture.some(f => f.col===c && f.row===r && BLOCKS_WALK.has(f.type))) return false;
   // In interiors, block outer border EXCEPT for door and stairs tiles
   if (currentBuilding && (c === 0 || r === 0 || c === mapCols-1 || r === mapRows-1)) {
     if (t !== T.DOOR && t !== T.STAIRS) return false;
@@ -87,6 +91,131 @@ function astar(sc, sr, ec, er) {
   return [];
 }
 
+// Draw mortar/grain texture lines on a face, clipped to the parallelogram shape.
+function drawWallTexture(x, y, bh, face, texture) {
+  const hw=TW/2, hh=TH/2;
+  const x0 = face==='left' ? x-hw : x;
+  const faceW=hw, faceH=bh+hh;
+  ctx.save();
+  ctx.beginPath();
+  if (face==='left') {
+    ctx.moveTo(x-hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
+  } else {
+    ctx.moveTo(x+hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x+hw,y);
+  }
+  ctx.clip();
+  ctx.strokeStyle='rgba(0,0,0,0.18)';
+  if (texture==='wood') {
+    ctx.lineWidth=0.7;
+    for (let dy=7; dy<faceH+7; dy+=7) {
+      ctx.beginPath(); ctx.moveTo(x0-4,y-bh+dy); ctx.lineTo(x0+faceW+4,y-bh+dy); ctx.stroke();
+    }
+    ctx.strokeStyle='rgba(0,0,0,0.05)'; ctx.lineWidth=0.4;
+    for (let dx=5; dx<faceW; dx+=9) {
+      ctx.beginPath(); ctx.moveTo(x0+dx,y-bh-2); ctx.lineTo(x0+dx-2,y+hh+2); ctx.stroke();
+    }
+  } else if (texture==='brick') {
+    ctx.lineWidth=0.7;
+    const bH=5,bW=11; let row=0;
+    for (let dy=0; dy<faceH+bH; dy+=bH+1,row++) {
+      ctx.beginPath(); ctx.moveTo(x0-4,y-bh+dy); ctx.lineTo(x0+faceW+4,y-bh+dy); ctx.stroke();
+      const xOff=(row%2===0)?0:(bW+1)/2;
+      for (let dx=xOff; dx<faceW+bW; dx+=bW+1) {
+        ctx.beginPath(); ctx.moveTo(x0+dx,y-bh+dy); ctx.lineTo(x0+dx,y-bh+dy+bH+1); ctx.stroke();
+      }
+    }
+  } else if (texture==='stone'||texture==='stone_cut') {
+    ctx.lineWidth=0.8;
+    const rows=texture==='stone_cut'?[14,14,14,14]:[11,13,12,14];
+    let curY=0,ri=0;
+    while(curY<faceH+20) {
+      const sh=rows[ri%rows.length];
+      ctx.beginPath(); ctx.moveTo(x0-4,y-bh+curY); ctx.lineTo(x0+faceW+4,y-bh+curY); ctx.stroke();
+      const vxList=(ri%2===0)?[9,22,32]:[4,16,28,38];
+      for(const vx of vxList) {
+        if(vx<faceW){ ctx.beginPath(); ctx.moveTo(x0+vx,y-bh+curY); ctx.lineTo(x0+vx,y-bh+curY+sh); ctx.stroke(); }
+      }
+      curY+=sh+1; ri++;
+    }
+  }
+  ctx.restore();
+}
+
+// ── DRAWING HELPERS ───────────────────────────────────────────
+
+// Draw a perspective-correct window inset on one face of a raised tile.
+// face: 'left' (SW-facing) or 'right' (SE-facing)
+// large: wider display window (bakery)
+function drawFaceWindow(x, y, bh, face, large, fillCol, borderCol) {
+  const hw = TW/2, hh = TH/2;
+  const u1 = large ? 0.10 : 0.20, u2 = large ? 0.90 : 0.80;
+  const v1 = 0.18, v2 = 0.80;
+  // Face corners: BL, BR, TL, TR
+  let BL, BR, TL, TR;
+  if (face === 'right') {
+    BL=[x,    y+hh];      BR=[x+hw, y];
+    TL=[x,    y+hh-bh];   TR=[x+hw, y-bh];
+  } else {
+    BL=[x-hw, y];         BR=[x,    y+hh];
+    TL=[x-hw, y-bh];      TR=[x,    y+hh-bh];
+  }
+  // Bilinear point on face
+  function pt(u,v) {
+    const bx=BL[0]+u*(BR[0]-BL[0]), by=BL[1]+u*(BR[1]-BL[1]);
+    const tx=TL[0]+u*(TR[0]-TL[0]), ty=TL[1]+u*(TR[1]-TL[1]);
+    return [bx+v*(tx-bx), by+v*(ty-by)];
+  }
+  const wTL=pt(u1,v2), wTR=pt(u2,v2), wBR=pt(u2,v1), wBL=pt(u1,v1);
+  // Pane fill
+  ctx.beginPath();
+  ctx.moveTo(wTL[0],wTL[1]); ctx.lineTo(wTR[0],wTR[1]);
+  ctx.lineTo(wBR[0],wBR[1]); ctx.lineTo(wBL[0],wBL[1]);
+  ctx.closePath(); ctx.fillStyle=fillCol; ctx.fill();
+  // Border
+  ctx.strokeStyle=borderCol; ctx.lineWidth=0.8; ctx.stroke();
+  // Mullion cross
+  const mH=pt((u1+u2)/2,v1), mHt=pt((u1+u2)/2,v2);
+  const mVl=pt(u1,(v1+v2)/2), mVr=pt(u2,(v1+v2)/2);
+  ctx.strokeStyle=borderCol; ctx.lineWidth=0.7;
+  ctx.beginPath(); ctx.moveTo(mH[0],mH[1]);  ctx.lineTo(mHt[0],mHt[1]); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mVl[0],mVl[1]); ctx.lineTo(mVr[0],mVr[1]); ctx.stroke();
+}
+
+// Draw a small stone chimney on top of a tile, offset toward the NW corner.
+// Called after the main tile box is painted so it sits on top.
+function drawChimney(x, y, bh) {
+  const ch=14, cw=4;
+  const cx=x-12, cy=y-bh-5; // NW area of tile top, just above surface
+  // Left face
+  ctx.beginPath();
+  ctx.moveTo(cx-cw, cy-ch); ctx.lineTo(cx, cy-ch+cw*0.5);
+  ctx.lineTo(cx, cy);        ctx.lineTo(cx-cw, cy-cw*0.5);
+  ctx.closePath(); ctx.fillStyle='#585048'; ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.6; ctx.stroke();
+  // Right face
+  ctx.beginPath();
+  ctx.moveTo(cx+cw, cy-ch); ctx.lineTo(cx, cy-ch+cw*0.5);
+  ctx.lineTo(cx, cy);        ctx.lineTo(cx+cw, cy-cw*0.5);
+  ctx.closePath(); ctx.fillStyle='#706860'; ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.6; ctx.stroke();
+  // Top cap
+  ctx.beginPath();
+  ctx.moveTo(cx, cy-ch-cw*0.5); ctx.lineTo(cx+cw, cy-ch);
+  ctx.lineTo(cx, cy-ch+cw*0.5); ctx.lineTo(cx-cw, cy-ch);
+  ctx.closePath(); ctx.fillStyle='#888078'; ctx.fill();
+  // Smoke wisps (in cooler periods)
+  const p = State.period;
+  if (p === 0 || p === 1 || p >= 4) {
+    const t = Date.now()*0.0015;
+    ctx.save();
+    ctx.globalAlpha = 0.22 + Math.sin(t+x*0.1)*0.08;
+    ctx.fillStyle='#c8c8c0';
+    ctx.beginPath(); ctx.ellipse(cx-1, cy-ch-7,  2.5, 4,   0.2, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx-2, cy-ch-14, 3.5, 5.5, 0.2, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+}
+
 // ── DRAWING ───────────────────────────────────────────────────
 function drawTile(c, r) {
   const def = TILE_DEF[currentMap[r]?.[c]];
@@ -103,6 +232,68 @@ function drawTile(c, r) {
     ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=0.5; ctx.stroke();
   }
 
+  if (def.fountain) {
+    const hw=TW/2, hh=TH/2;
+    const basinH=10; // height of basin rim above ground
+    // Left face of basin rim
+    ctx.beginPath();
+    ctx.moveTo(x-hw+3, y-basinH); ctx.lineTo(x, y+hh-basinH);
+    ctx.lineTo(x, y+hh);          ctx.lineTo(x-hw+3, y);
+    ctx.closePath(); ctx.fillStyle='#888090'; ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.7; ctx.stroke();
+    // Right face of basin rim
+    ctx.beginPath();
+    ctx.moveTo(x+hw-3, y-basinH); ctx.lineTo(x, y+hh-basinH);
+    ctx.lineTo(x, y+hh);          ctx.lineTo(x+hw-3, y);
+    ctx.closePath(); ctx.fillStyle='#a0a0b0'; ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.7; ctx.stroke();
+    // Top rim (flat diamond at basinH)
+    ctx.beginPath();
+    ctx.moveTo(x, y-hh-basinH); ctx.lineTo(x+hw-3, y-basinH);
+    ctx.lineTo(x, y+hh-basinH); ctx.lineTo(x-hw+3, y-basinH);
+    ctx.closePath(); ctx.fillStyle='#b0b0c0'; ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,0.2)'; ctx.lineWidth=0.6; ctx.stroke();
+    // Water pool (inset diamond)
+    const ps=9; // pool shrink
+    ctx.beginPath();
+    ctx.moveTo(x, y-hh-basinH+3);       ctx.lineTo(x+hw-3-ps, y-basinH+ps*0.5);
+    ctx.lineTo(x, y+hh-basinH-ps*0.5);  ctx.lineTo(x-hw+3+ps, y-basinH+ps*0.5);
+    ctx.closePath();
+    const wc=['#3870a8','#5090c0','#60a8cc','#4888b8','#305890','#284070','#1c2c50'][State.period];
+    ctx.fillStyle=wc; ctx.fill();
+    ctx.strokeStyle='rgba(140,210,255,0.5)'; ctx.lineWidth=0.5; ctx.stroke();
+    // Pedestal (thin raised box at centre)
+    const pedH=18, pedW=4;
+    ctx.beginPath();
+    ctx.moveTo(x-pedW, y-basinH-pedH); ctx.lineTo(x, y-basinH-pedH+pedW*0.5);
+    ctx.lineTo(x, y-basinH);           ctx.lineTo(x-pedW, y-basinH-pedW*0.5);
+    ctx.closePath(); ctx.fillStyle='#787080'; ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(x+pedW, y-basinH-pedH); ctx.lineTo(x, y-basinH-pedH+pedW*0.5);
+    ctx.lineTo(x, y-basinH);           ctx.lineTo(x+pedW, y-basinH-pedW*0.5);
+    ctx.closePath(); ctx.fillStyle='#9090a0'; ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(x, y-basinH-pedH, pedW, pedW*0.5, 0, 0, Math.PI*2);
+    ctx.fillStyle='#a0a0b0'; ctx.fill();
+    // Water jets — three arching streams, gently animated
+    const t=Date.now()*0.002;
+    ctx.save();
+    ctx.globalAlpha=0.72+Math.sin(t)*0.12;
+    ctx.strokeStyle='rgba(170,220,255,0.85)'; ctx.lineWidth=1.4;
+    const jBase=[x, y-basinH-pedH]; // jet origin (top of pedestal)
+    const jets=[
+      [jBase[0]-10, y-basinH-3],  // left arc
+      [jBase[0]+10, y-basinH-3],  // right arc
+      [jBase[0],    y-basinH-3],  // centre drop
+    ];
+    for (const [ex,ey] of jets) {
+      const mx=(jBase[0]+ex)/2, my=Math.min(jBase[1],ey)-14+Math.sin(t*1.3)*2;
+      ctx.beginPath(); ctx.moveTo(jBase[0],jBase[1]);
+      ctx.quadraticCurveTo(mx, my, ex, ey); ctx.stroke();
+    }
+    ctx.restore();
+    return;
+  }
   if (def.plot) {
     // Draw stake marker — only visible after jaxon_proposed
     if (State.flags.jaxon_proposed) {
@@ -120,6 +311,15 @@ function drawTile(c, r) {
       ctx.textAlign='center'; ctx.fillText('🏡 Our plot', x, y-24);
       ctx.shadowBlur=0;
     }
+    return;
+  }
+  if (def.exit) {
+    // Golden path with a small signpost arrow
+    const pulse = 0.65 + 0.35 * Math.sin(Date.now() / 500);
+    ctx.strokeStyle = `rgba(220,180,30,${pulse})`; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x,y-hh); ctx.lineTo(x+hw,y); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y); ctx.closePath(); ctx.stroke();
+    ctx.font = '11px serif'; ctx.textAlign = 'center';
+    ctx.fillText('➤', x, y+3);
     return;
   }
   if (def.stairs) {
@@ -149,31 +349,65 @@ function drawTile(c, r) {
     return;
   }
   if (def.raised) {
-    const bh = def.raised;
-    // Left face — goes UP from bottom-left diamond corner
+    // Interior walls are short so the room is visible.
+    // The "near" sides (bottom row, right col) are almost flush with the floor
+    // so they don't obscure the interior from the isometric camera.
+    let bh = def.raised;
+    if (currentBuilding) {
+      const nearSide = (r === mapRows-1 || c === mapCols-1);
+      bh = nearSide ? 3 : 9;
+    }
+    // Resolve building-specific colors when in the village
+    let leftCol=def.left, rightCol=def.right, topCol=def.top;
+    let bldg=null, style=null;
+    if (!currentBuilding) {
+      bldg = getBuildingAtTile(c, r);
+      if (bldg) {
+        style = BUILDING_STYLES[bldg.id];
+        if (style) {
+          const isRoof = (currentMap[r]?.[c] === T.BUILDING); // interior tile = roof
+          if (isRoof) {
+            leftCol=style.roof; rightCol=style.roof; topCol=style.roof;
+          } else {
+            leftCol=style.wallL; rightCol=style.wallR; topCol=style.wall;
+          }
+        }
+      }
+    }
+    // Left face
     ctx.beginPath();
-    ctx.moveTo(x-hw, y-bh);
-    ctx.lineTo(x,    y+hh-bh);
-    ctx.lineTo(x,    y+hh);
-    ctx.lineTo(x-hw, y);
-    ctx.closePath(); ctx.fillStyle=def.left; ctx.fill();
+    ctx.moveTo(x-hw, y-bh); ctx.lineTo(x, y+hh-bh);
+    ctx.lineTo(x, y+hh);    ctx.lineTo(x-hw, y);
+    ctx.closePath(); ctx.fillStyle=leftCol; ctx.fill();
     ctx.strokeStyle='rgba(0,0,0,0.25)'; ctx.lineWidth=0.8; ctx.stroke();
     // Right face
     ctx.beginPath();
-    ctx.moveTo(x+hw, y-bh);
-    ctx.lineTo(x,    y+hh-bh);
-    ctx.lineTo(x,    y+hh);
-    ctx.lineTo(x+hw, y);
-    ctx.closePath(); ctx.fillStyle=def.right; ctx.fill();
+    ctx.moveTo(x+hw, y-bh); ctx.lineTo(x, y+hh-bh);
+    ctx.lineTo(x, y+hh);    ctx.lineTo(x+hw, y);
+    ctx.closePath(); ctx.fillStyle=rightCol; ctx.fill();
     ctx.strokeStyle='rgba(0,0,0,0.25)'; ctx.lineWidth=0.8; ctx.stroke();
-    // Top face (shifted up by bh)
+    // Top face
     ctx.beginPath();
-    ctx.moveTo(x,    y-hh-bh);
-    ctx.lineTo(x+hw, y-bh);
-    ctx.lineTo(x,    y+hh-bh);
-    ctx.lineTo(x-hw, y-bh);
-    ctx.closePath(); ctx.fillStyle=def.top; ctx.fill();
+    ctx.moveTo(x, y-hh-bh); ctx.lineTo(x+hw, y-bh);
+    ctx.lineTo(x, y+hh-bh); ctx.lineTo(x-hw, y-bh);
+    ctx.closePath(); ctx.fillStyle=topCol; ctx.fill();
     ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=0.6; ctx.stroke();
+
+    // Building details — windows and chimneys on WALL tiles in village mode
+    if (!currentBuilding && bldg && style && currentMap[r]?.[c] === T.WALL) {
+      const onS = r===bldg.rMax, onE=c===bldg.cMax, onN=r===bldg.rMin, onW=c===bldg.cMin;
+      const isCorner = (onS||onN)&&(onE||onW);
+      if (!isCorner) {
+        const glowing = State.period >= 4; // dusk→night: warm light inside
+        const winFill   = glowing ? 'rgba(190,140,50,0.88)' : 'rgba(12,8,4,0.92)';
+        const winBorder = '#807060';
+        if (onS && !onE && !onW) drawFaceWindow(x, y, bh, 'right', style.bigWindows||false, winFill, winBorder);
+        if (onE && !onS && !onN) drawFaceWindow(x, y, bh, 'left',  style.bigWindows||false, winFill, winBorder);
+      }
+      if (style.chimney && r===bldg.rMin && c===bldg.cMin) drawChimney(x, y, bh);
+      drawWallTexture(x, y, bh, 'left',  style.texture);
+      drawWallTexture(x, y, bh, 'right', style.texture);
+    }
   }
 }
 
@@ -191,8 +425,9 @@ function drawSprite(x, y, emoji, label, bodyColor, isPlayer) {
   ctx.fillStyle=bodyColor; ctx.fill();
   ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=1.2; ctx.stroke();
   // Face emoji
-  ctx.font=`${isPlayer?15:13}px serif`; ctx.textAlign='center';
-  ctx.fillText(emoji, x, centre+5);
+  ctx.font=`${isPlayer?15:13}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(emoji, x, centre);
+  ctx.textBaseline='alphabetic';
   // Name label
   ctx.font=`${isPlayer?'bold ':''}9px Caveat,cursive`;
   ctx.fillStyle=isPlayer?'#ffe8c0':'#f0e8d5';
@@ -222,6 +457,167 @@ function drawStation(station) {
   ctx.font='8px Caveat,cursive'; ctx.fillStyle='#f0e8d5';
   ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=4;
   ctx.fillText(station.label, x, y+6); ctx.shadowBlur=0;
+}
+
+// ── FURNITURE DRAWING ──────────────────────────────────────────
+// Iso-box helper: left/right/top faces
+function _isoBox(x, y, hw, hh, bh, topC, leftC, rightC, lw=0.75) {
+  ctx.lineWidth = lw;
+  ctx.beginPath();
+  ctx.moveTo(x-hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
+  ctx.closePath(); ctx.fillStyle=leftC; ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.30)'; ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x+hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x+hw,y);
+  ctx.closePath(); ctx.fillStyle=rightC; ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.30)'; ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x,y-hh-bh); ctx.lineTo(x+hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x-hw,y-bh);
+  ctx.closePath(); ctx.fillStyle=topC; ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.16)'; ctx.stroke();
+}
+
+// Wood grain lines clipped to iso-box top face
+function _woodGrain(x, y, hw, hh, bh) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x,y-hh-bh); ctx.lineTo(x+hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x-hw,y-bh);
+  ctx.closePath(); ctx.clip();
+  ctx.strokeStyle='rgba(80,40,10,0.10)'; ctx.lineWidth=0.7;
+  for (let i=-5; i<=5; i++) {
+    const ox = i * hw * 0.22;
+    ctx.beginPath();
+    ctx.moveTo(x+ox-hw*0.6, y-bh-hh*0.5); ctx.lineTo(x+ox+hw*0.6, y-bh+hh*0.5); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// Render an emoji centred on the tile with a drop shadow
+function _furnitureEmoji(x, y, emoji, size, yOff=0) {
+  ctx.save();
+  ctx.font = `${size}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(0,0,0,0.45)';
+  ctx.shadowBlur = 5;
+  ctx.shadowOffsetY = 2;
+  ctx.fillText(emoji, x, y + yOff);
+  ctx.restore();
+}
+
+function drawFurniturePiece(piece) {
+  const {x,y} = toScreen(piece.col, piece.row);
+  const HW=TW/2, HH=TH/2;
+
+  switch (piece.type) {
+
+    case 'table': {
+      // Clean flat surface — legs hidden below, just show the top
+      const s=0.62, hw=HW*s, hh=HH*s, bh=9;
+      // Leg stubs (just visible below the top)
+      const legC='#6a4020';
+      ctx.fillStyle=legC;
+      [[x-hw*0.48,y+hh*0.45],[x+hw*0.48,y+hh*0.45],
+       [x-hw*0.48,y-hh*0.45],[x+hw*0.48,y-hh*0.45]].forEach(([lx,ly])=>{
+        ctx.beginPath(); ctx.moveTo(lx-2,ly-1); ctx.lineTo(lx,ly+hh*0.5);
+        ctx.lineTo(lx+2,ly+hh*0.5); ctx.lineTo(lx+4,ly-1); ctx.closePath(); ctx.fill();
+      });
+      _isoBox(x, y, hw, hh, bh, '#d4aa68','#8a5a2e','#b07838');
+      _woodGrain(x, y, hw, hh, bh);
+      break;
+    }
+
+    case 'counter': {
+      const s=0.66, hw=HW*s, hh=HH*s, bh=13;
+      _isoBox(x, y, hw, hh, bh, '#c09050','#7a4e26','#a07038');
+      // Horizontal plank lines on sides
+      ctx.strokeStyle='rgba(0,0,0,0.10)'; ctx.lineWidth=0.65;
+      for (let i=1; i<4; i++) {
+        const t=i/4;
+        ctx.beginPath(); ctx.moveTo(x-hw,y-bh*(1-t)); ctx.lineTo(x,y+hh-bh*(1-t)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x+hw,y-bh*(1-t)); ctx.lineTo(x,y+hh-bh*(1-t)); ctx.stroke();
+      }
+      _woodGrain(x, y, hw, hh, bh);
+      break;
+    }
+
+    case 'chair':
+      _furnitureEmoji(x, y, '🪑', 22, -4);
+      break;
+
+    case 'stool':
+      _furnitureEmoji(x, y, '🪑', 16, -2);
+      break;
+
+    case 'bed':
+      _furnitureEmoji(x, y, '🛏️', 32, -6);
+      break;
+
+    case 'cot':
+      _furnitureEmoji(x, y, '🛏️', 26, -4);
+      break;
+
+    case 'barrel': {
+      const s=0.28, hw=HW*s, hh=HH*s, bh=16;
+      const topY = y - bh;
+      // Left face (slightly curved via two segments)
+      ctx.beginPath();
+      ctx.moveTo(x-hw*0.82, topY+hh*0.82);
+      ctx.quadraticCurveTo(x-hw*1.1, y-bh*0.45+hh*0.45, x-hw, y+hh*0.25);
+      ctx.lineTo(x, y+hh); ctx.lineTo(x, topY+hh); ctx.closePath();
+      ctx.fillStyle='#7a5820'; ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,0.28)'; ctx.lineWidth=0.7; ctx.stroke();
+      // Right face
+      ctx.beginPath();
+      ctx.moveTo(x+hw*0.82, topY+hh*0.82);
+      ctx.quadraticCurveTo(x+hw*1.1, y-bh*0.45+hh*0.45, x+hw, y+hh*0.25);
+      ctx.lineTo(x, y+hh); ctx.lineTo(x, topY+hh); ctx.closePath();
+      ctx.fillStyle='#6a4c18'; ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,0.28)'; ctx.lineWidth=0.7; ctx.stroke();
+      // Top ellipse
+      ctx.beginPath(); ctx.ellipse(x, topY+hh*0.85, hw*0.85, hh*0.85, 0, 0, Math.PI*2);
+      ctx.fillStyle='#8a6428'; ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,0.38)'; ctx.lineWidth=0.85; ctx.stroke();
+      // Metal hoops
+      ctx.strokeStyle='rgba(40,28,10,0.60)'; ctx.lineWidth=1.1;
+      for (const frac of [0.22, 0.54, 0.84]) {
+        const hy = topY+hh*0.85 + (y+hh - topY - hh*0.85)*frac;
+        const hw2 = hw*(0.80+0.22*Math.sin(frac*Math.PI));
+        ctx.beginPath(); ctx.moveTo(x-hw2,hy); ctx.lineTo(x,hy+hh*0.70); ctx.lineTo(x+hw2,hy); ctx.stroke();
+      }
+      break;
+    }
+
+    case 'shelf': {
+      const s=0.56, hw=HW*s, hh=HH*s, bh=20;
+      // Back panel
+      _isoBox(x-hw*0.04, y, hw, hh*0.16, bh, '#9a7848','#685030','#887040');
+      // Three shelf planks with coloured jars
+      const jarColors = ['#8ab880','#c08060','#7898c0','#d4a840','#a07888'];
+      for (let si=0; si<3; si++) {
+        const sby = y - bh*(0.16+si*0.29);
+        _isoBox(x, sby, hw*0.86, hh*0.42, 2.2, '#b09050','#786038','#988048');
+        if (si < 2) {
+          for (let ji=0; ji<3; ji++) {
+            const jx = x - hw*0.38 + ji*hw*0.40;
+            const jy = sby - 2.2 - hh*0.20;
+            const jc = jarColors[(si*3+ji)%jarColors.length];
+            ctx.fillStyle=jc;
+            ctx.beginPath(); ctx.ellipse(jx, jy-3, 2.6, 1.5, 0.3, 0, Math.PI*2); ctx.fill();
+            ctx.fillRect(jx-2.2, jy-8, 4.4, 5);
+            ctx.strokeStyle='rgba(0,0,0,0.22)'; ctx.lineWidth=0.5; ctx.strokeRect(jx-2.2, jy-8, 4.4, 5);
+          }
+        }
+      }
+      break;
+    }
+
+    case 'chest':
+      _furnitureEmoji(x, y, '📦', 26, -4);
+      break;
+
+    default: break;
+  }
 }
 
 function drawCabinet(cabinet) {
@@ -271,6 +667,7 @@ function render() {
     if (!item.taken) items.push({k:'item',item,z:item.row+item.col+0.5});
   });
   currentStations.forEach(st => items.push({k:'station',st,z:st.row+st.col+0.6}));
+  currentFurniture.forEach(f => items.push({k:'furniture',f,z:f.row+f.col+0.55}));
   if (currentCabinet) items.push({k:'cabinet',z:currentCabinet.row+currentCabinet.col+0.6});
   currentNPCs.forEach(n => items.push({k:'npc',n,z:n.row+n.col+0.8}));
   items.push({k:'player',z:player.row+player.col+0.8});
@@ -282,6 +679,7 @@ function render() {
     else if (d.k==='item')    drawItem(d.item);
     else if (d.k==='station') drawStation(d.st);
     else if (d.k==='cabinet') drawCabinet(currentCabinet);
+    else if (d.k==='furniture') drawFurniturePiece(d.f);
     else if (d.k==='npc') {
       const n = d.n;
       // Use pixel position if NPC is wandering, else tile position
@@ -391,10 +789,16 @@ function checkArrival() {
     }
   }
 
+  // Check zone exits in village (golden EXIT tiles at path borders)
+  if (!currentBuilding) {
+    const zoneId = ZONE_EXIT_MAP?.[`${c},${r}`];
+    if (zoneId) { loadScene(zoneId); return; }
+  }
+
   // Check exits — player must step ON the exit tile
   currentExits.forEach(exit => {
     if (c === exit.col && r === exit.row) {
-      if (exit.targetScene) loadScene(exit.targetScene);
+      if (exit.targetScene) loadScene(exit.targetScene, currentBuilding?.id, exit.fromZone);
       else if (exit.targetFloor) loadFloor(currentBuilding, exit.targetFloor);
     }
   });
@@ -452,11 +856,17 @@ function promptPickup(item) {
     return;
   }
 
-  // Key includes day for respawning forest items
-  const isForest = ITEMS[item.itemId]?.category === 'building' && !currentBuilding;
-  const takenKey = isForest
-    ? `village_${item.itemId}_${item.col}_${item.row}_day_${State.day}`
-    : `${currentBuilding?.id||'village'}_${item.itemId}_${item.col}_${item.row}`;
+  // Build the taken-key appropriate to where the item lives
+  const currentZone = !currentBuilding && State.scene !== 'village' ? State.scene : null;
+  let takenKey;
+  if (currentZone) {
+    const dayKey = `day_${State.day}`;
+    takenKey = `zone_${currentZone}_${item.itemId}_${item.col}_${item.row}_${item.oneTime ? 'once' : dayKey}`;
+  } else if (!currentBuilding && ITEMS[item.itemId]?.category === 'building') {
+    takenKey = `village_${item.itemId}_${item.col}_${item.row}_day_${State.day}`;
+  } else {
+    takenKey = `${currentBuilding?.id||'village'}_${item.itemId}_${item.col}_${item.row}`;
+  }
   if (State.takenItems.includes(takenKey)) return;
 
   // Add to inventory
@@ -512,6 +922,7 @@ function updateNPCWander(dt) {
   npcWanderTimer = 0;
 
   currentNPCs.forEach(npc => {
+    if (npc.stationary) return; // stall holders etc. stay put
     if (npc.wanderPath && npc.wanderPath.length > 0) return; // already moving
 
     // Pick a random nearby walkable tile within radius of home
@@ -698,6 +1109,21 @@ function attachInputHandlers() {
       }
     }
 
+    // ── Furniture click — walk to adjacent tile (never an exit) ──
+    for (const f of currentFurniture) {
+      const {x:fx, y:fy} = toScreen(f.col, f.row);
+      if (Math.abs(sx-fx) < 34 && Math.abs(sy-fy) < 26) {
+        const adj = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]]
+          .map(([dc,dr]) => ({col:f.col+dc, row:f.row+dr}))
+          .filter(p => walkable(p.col, p.row)
+                    && !currentExits.some(e => e.col===p.col && e.row===p.row))
+          .sort((a,b) => (Math.abs(a.col-player.col)+Math.abs(a.row-player.row))
+                       - (Math.abs(b.col-player.col)+Math.abs(b.row-player.row)))[0];
+        if (adj) player.path = astar(player.col, player.row, adj.col, adj.row);
+        return;
+      }
+    }
+
     // ── Move click ────────────────────────────────────────────
     if (clickCol>=0&&clickRow>=0&&clickCol<mapCols&&clickRow<mapRows
         && TILE_DEF[currentMap[clickRow]?.[clickCol]]?.walk) {
@@ -719,28 +1145,42 @@ function talkTo(npc) {
   // Always advance index, wrapping safely
   State.npcDialogueIndex[npc.id] = (idx + 1) % npc.lines.length;
 
-  // Check quest completion first
+  // Check quest completion first — show Give button
   const completable = checkQuestCompletion(npc.id);
   if (completable) {
-    const result = completeQuest(completable.id);
-    if (result) {
-      showDialogue(npc, line);
-      addNarrative(result, 'sys');
-      renderInventory(); renderWallet(); renderQuestList();
-      tickActionSafe(3);
-      State.save();
-      return;
-    }
+    const item = ITEMS[completable.itemId];
+    showDialogue(npc, line, [{
+      label: `Give ${item?.emoji || ''} ${completable.itemId.replace(/_/g,' ')}`,
+      onClick: () => {
+        const result = completeQuest(completable.id);
+        if (result) {
+          addNarrative(result, 'sys');
+          renderInventory(); renderWallet(); renderQuestList();
+          tickActionSafe(3);
+          State.save();
+        }
+      }
+    }]);
+    tickActionSafe(1);
+    State.save();
+    return;
   }
 
-  // Check if should offer quest
-  const questLine = offerQuest(npc);
-  if (questLine) {
-    showDialogue(npc, questLine);
-    addNarrative(`↳ ${npc.name} has a task for you.`, 'sys');
-    renderQuestList();
-    State.raiseGoodwill(npc.id);
-    tickActionSafe(3);
+  // Check if should offer quest — show Accept button
+  if (canOfferQuest(npc)) {
+    const q = npc.quest;
+    showDialogue(npc, q.line, [{
+      label: `Accept: ${q.itemName}`,
+      onClick: () => {
+        offerQuest(npc);
+        addNarrative(`↳ ${npc.name} has a task for you.`, 'sys');
+        renderQuestList();
+        State.raiseGoodwill(npc.id);
+        tickActionSafe(2);
+        State.save();
+      }
+    }]);
+    tickActionSafe(1);
     State.save();
     return;
   }
@@ -769,6 +1209,12 @@ function talkTo(npc) {
   } else if (npc.generalReplies) {
     replyActions = npc.generalReplies.map(r => ({ label: r, onClick: () => {} }));
   }
+  // If NPC runs a shop, append a "Browse wares" action
+  if (npc.shop) {
+    replyActions.push({ label:'Browse wares 🛒', onClick: () => openNPCShop(npc.shop) });
+  }
+
+
   showDialogue(npc, line, replyActions);
   addNarrative(`You spoke with ${npc.name}.`);
   State.raiseGoodwill(npc.id);
@@ -852,8 +1298,60 @@ function interactCabinet() {
 }
 
 // ── SCENE MANAGEMENT ──────────────────────────────────────────
-function loadScene(sceneId, fromBuildingId) {
+function loadScene(sceneId, fromBuildingId, fromZone) {
   pendingDoorEntry = null;
+  clearNarrative();
+  if (sceneId !== 'village' && ZONES?.[sceneId]) {
+    // ── Load an outdoor zone ───────────────────────────────────
+    const zone = ZONES[sceneId];
+    currentBuilding  = null;
+    currentFloor     = null;
+    currentCabinet   = null;
+    currentMap       = zone.grid;
+    mapRows          = zone.grid.length;
+    mapCols          = zone.grid[0].length;
+    currentNPCs      = zone.npcs || [];
+    currentStations  = zone.stations || [];
+    currentFurniture = [];
+    currentExits     = zone.exits || [];
+
+    // Zone items respawn daily
+    const dayKey = `day_${State.day}`;
+    currentItems = (zone.items || []).map(item => {
+      const takenKey = `zone_${sceneId}_${item.itemId}_${item.col}_${item.row}_${item.oneTime ? 'once' : dayKey}`;
+      return { ...item, taken: State.takenItems.includes(takenKey) };
+    });
+
+    // Place player at the entry point (opposite edge from the exit)
+    const entryPos = { forest:{col:28,row:10}, garden:{col:10,row:24},
+                       temple_path:{col:13,row:2}, market:{col:3,row:10} };
+    const pos = entryPos[sceneId] || { col:Math.floor(mapCols/2), row:Math.floor(mapRows/2) };
+    player.col=pos.col; player.row=pos.row;
+    player.px=isoX(player.col,player.row); player.py=isoY(player.col,player.row);
+    player.path=[];
+
+    updateSceneLabel(zone.name);
+    State.scene = sceneId; State.save();
+    const arrivals = { forest:'The trees close in around you.',
+                       garden:'The air is cool and herb-sweet.',
+                       temple_path:'The ancient road stretches ahead.',
+                       market:'Voices and colour fill the square.' };
+    addNarrative(arrivals[sceneId] || `You arrive at ${zone.name}.`, 'sys');
+    updateSleepButton();
+    updateLeaveButton();
+
+    // Show transition art for zones that have an image
+    if (BUILDING_ART[sceneId]) {
+      document.getElementById('rt-art').innerHTML  = BUILDING_ART[sceneId];
+      document.getElementById('rt-name').textContent = zone.name;
+      document.getElementById('rt-sub').textContent  = arrivals[sceneId] || '';
+      const rt = document.getElementById('room-transition');
+      rt.classList.add('show');
+      pendingBuilding = null;
+      setTimeout(() => rt.classList.remove('show'), 2200);
+    }
+    return;
+  }
   if (sceneId === 'village') {
     currentBuilding = null;
     currentFloor    = null;
@@ -872,12 +1370,17 @@ function loadScene(sceneId, fromBuildingId) {
       return { ...item, taken: State.takenItems.includes(takenKey) };
     });
 
-    // Place player at the building door they just exited, or default starting position
-    if (fromBuildingId) {
+    // Place player at the zone exit they came from, or the building door, or default
+    if (fromZone) {
+      const zoneReturn = { forest:{col:2,row:19}, garden:{col:19,row:2},
+                           temple_path:{col:19,row:37}, market:{col:37,row:19} };
+      const pos = zoneReturn[fromZone] || { col:20, row:23 };
+      player.col=pos.col; player.row=pos.row;
+    } else if (fromBuildingId) {
       const doorEntry = Object.entries(DOOR_MAP).find(([k,v]) => v === fromBuildingId);
       if (doorEntry) {
         const [dc, dr] = doorEntry[0].split(',').map(Number);
-        player.col = dc; player.row = dr;
+        player.col = dc; player.row = dr + 1;
       } else {
         player.col=20; player.row=23;
       }
@@ -886,10 +1389,12 @@ function loadScene(sceneId, fromBuildingId) {
     }
     player.px=isoX(player.col,player.row);
     player.py=isoY(player.col,player.row);
-    updateSceneLabel('🏛️ The Village');
+    player.path=[];
+    updateSceneLabel('The Village');
     State.scene='village'; State.save();
     addNarrative('You step outside.','sys');
     updateSleepButton();
+    updateLeaveButton();
 
     // Check story triggers on scene change
     if (typeof checkStoryTriggers === 'function') checkStoryTriggers();
@@ -904,7 +1409,9 @@ function loadScene(sceneId, fromBuildingId) {
 // ── ROOM TRANSITION ───────────────────────────────────────────
 // Placeholder SVG art per building — swap for <img src="..."> when real art exists
 const BUILDING_ART = {
-  bakery: `<img src="images/buildings/bakery.jpg" style="width:100%;height:100%;object-fit:cover">`,
+  market: `<img src="images/buildings/market.svg" style="width:100%;height:100%;object-fit:cover">`,
+
+  bakery: `<img src="images/buildings/bakery.svg" style="width:100%;height:100%;object-fit:cover">`,
 
   bakery_upper: `<img src="images/buildings/bakery_upper.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
@@ -1006,19 +1513,21 @@ function loadFloor(building, floorId) {
     return { ...item, taken: isTaken };
   });
 
-  currentStations = floor.stations || [];
-  currentExits    = floor.exits    || [];
+  currentStations  = floor.stations  || [];
+  currentFurniture = floor.furniture || [];
+  currentExits     = floor.exits     || [];
 
-  // Place player 3 rows from the bottom so they don't immediately trigger the exit
+  // Place player just inside the door (1 tile above the exit row)
   player.col = Math.floor(mapCols/2);
-  player.row = mapRows - 4;
+  player.row = mapRows - 2;
   player.px  = isoX(player.col, player.row);
   player.py  = isoY(player.col, player.row);
   player.path = [];
 
-  updateSceneLabel(`${building.emoji} ${floor.name}`);
+  updateSceneLabel(floor.name);
   State.scene = floorId; State.save();
   updateSleepButton();
+  updateLeaveButton();
 }
 
 // ── TIME & ENERGY ─────────────────────────────────────────────
@@ -1150,8 +1659,9 @@ function init() {
   initNPCPositions();
   loadScene('village');
 
-  // Restore saved player position (overrides loadScene default)
-  if (hasSave && State.playerCol !== undefined) {
+  // Restore saved player position — only if the save was made in the village
+  // (interior saves store small map coords that would land inside a building footprint)
+  if (hasSave && State.playerCol !== undefined && State.scene === 'village') {
     player.col = State.playerCol;
     player.row = State.playerRow;
     player.px  = isoX(player.col, player.row);
@@ -1168,7 +1678,8 @@ function init() {
   initPanelState();
   initOverlayDismiss();
   resize();
-  window.addEventListener('resize', resize);
+  // ResizeObserver catches both window resize and panel collapse/expand
+  new ResizeObserver(resize).observe(document.getElementById('canvas-wrap'));
   attachInputHandlers();
   renderInventory();
   renderWallet();
@@ -1178,8 +1689,6 @@ function init() {
 
   addNarrative('The village is already busy. Someone is laughing near the well.');
   addNarrative('The bakery smells like warm bread and spiced rolls. A perfect morning.');
-  addNarrative('↳ Click to move · Click buildings to enter · Click villagers to talk', 'sys');
-  addNarrative('↳ Click crafting stations inside buildings to cook and brew', 'sys');
 
   requestAnimationFrame(loop);
 }

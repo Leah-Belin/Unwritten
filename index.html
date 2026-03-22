@@ -13,11 +13,11 @@
   <!-- ═══ CANVAS PANEL ═══════════════════════════════════════ -->
   <div id="canvas-wrap">
     <canvas id="game-canvas"></canvas>
-    <div id="scene-label">🏛️ The Village</div>
+    <div id="scene-label">The Village</div>
     <div id="time-badge">🌅 Dawn · Day 1</div>
-    <div id="hint-badge">click to move · click buildings to enter · click villagers to talk</div>
     <button id="map-btn" onclick="toggleWorldMap()">🗺️ World Map</button>
     <button id="nap-btn" onclick="doNap()">😴 Rest (2hrs)</button>
+    <button id="leave-btn" onclick="leaveBuilding()" style="display:none">🚪 Leave</button>
     <button id="panel-toggle" onclick="togglePanel()" title="Toggle sidebar">‹</button>
 
     <!-- Room transition -->
@@ -123,29 +123,29 @@
       <div id="game-subtitle">Chapter I &nbsp;·&nbsp; The Healer's Daughter</div>
     </div>
 
-    <div id="narrative-box"></div>
-
-    <div class="divlabel">tasks</div>
-    <div class="divline"></div>
-    <div id="quest-box"><div id="quest-list"></div></div>
-
-    <div class="divlabel">purse</div>
-    <div class="divline"></div>
-    <div id="wallet-box"><div id="wallet-row"></div></div>
-
-    <div class="divlabel">carried</div>
-    <div class="divline"></div>
-    <div id="inventory-box">
-      <div id="inv-grid"></div>
-      <button id="use-item-btn" onclick="useSelectedItem()"></button>
-    </div>
-
-    <div class="divline"></div>
-    <div class="divlabel">condition</div>
     <div id="status-box">
       <div class="stat-row">
         <span class="stat-label" id="energy-label">✨ energy — well rested</span>
         <div class="stat-track"><div class="stat-fill f-energy-full" id="s-energy" style="width:100%"></div></div>
+      </div>
+    </div>
+
+    <div id="panel-scroll">
+      <div id="narrative-box"></div>
+
+      <div class="divlabel">tasks</div>
+      <div class="divline"></div>
+      <div id="quest-box"><div id="quest-list"></div></div>
+
+      <div class="divlabel">purse</div>
+      <div class="divline"></div>
+      <div id="wallet-box"><div id="wallet-row"></div></div>
+
+      <div class="divlabel">carried</div>
+      <div class="divline"></div>
+      <div id="inventory-box">
+        <div id="inv-grid"></div>
+        <button id="use-item-btn" onclick="useSelectedItem()"></button>
       </div>
     </div>
 

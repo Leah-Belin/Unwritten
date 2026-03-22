@@ -23,6 +23,11 @@ function initOverlayDismiss() {
   });
 }
 
+function clearNarrative() {
+  const box = document.getElementById('narrative-box');
+  if (box) box.innerHTML = '';
+}
+
 function addNarrative(text, cls = '') {
   const box = document.getElementById('narrative-box');
   if (!box) return;
@@ -30,7 +35,11 @@ function addNarrative(text, cls = '') {
   el.className = 'n-line' + (cls ? ' ' + cls : '');
   el.textContent = text;
   box.appendChild(el);
-  setTimeout(() => box.scrollTop = box.scrollHeight, 50);
+  // Keep max 3 entries — remove oldest when exceeded
+  while (box.children.length > 3) box.removeChild(box.firstChild);
+  // Scroll panel wrapper to bottom
+  const scroll = document.getElementById('panel-scroll');
+  if (scroll) setTimeout(() => scroll.scrollTop = scroll.scrollHeight, 50);
 }
 
 // ── TIME & ENERGY UI ──────────────────────────────────────────
@@ -103,10 +112,11 @@ function renderInventory() {
   const grid = document.getElementById('inv-grid');
   if (!grid) return;
   grid.innerHTML = '';
+  const invItems = State.inventory.filter(i => i.category !== 'currency');
   const slots = 12;
   for (let i = 0; i < slots; i++) {
     const slot = document.createElement('div');
-    const item = State.inventory[i];
+    const item = invItems[i];
     if (item) {
       slot.className = 'inv-slot' + (i === selectedInvIndex ? ' sel' : '');
       slot.textContent = item.emoji;
@@ -124,7 +134,7 @@ function renderInventory() {
   // Use button
   const useBtn = document.getElementById('use-item-btn');
   if (useBtn) {
-    const item = selectedInvIndex !== null ? State.inventory[selectedInvIndex] : null;
+    const item = selectedInvIndex !== null ? invItems[selectedInvIndex] : null;
     useBtn.style.display = (item && (item.energyRestore > 0 || item.sleepEffect)) ? 'block' : 'none';
     if (item) useBtn.textContent = `Use ${item.emoji} ${item.name}`;
   }
@@ -361,21 +371,25 @@ function closeCraftingMenu() {
 
 // ── MARKET UI ─────────────────────────────────────────────────
 function showMarket() {
-  if (!State.isMarketDay()) {
-    addNarrative('The market is quiet today. It only opens once a week.', 'sys');
-    return;
-  }
   const overlay = document.getElementById('market-overlay');
   if (overlay) overlay.classList.add('open');
   renderMarket();
 }
 
-function renderMarket() {
+// Open a single NPC's stall without the market-day requirement
+function openNPCShop(stallId) {
+  const overlay = document.getElementById('market-overlay');
+  if (overlay) overlay.classList.add('open');
+  renderMarket(stallId);
+}
+
+function renderMarket(filterStallId) {
   const container = document.getElementById('market-stalls');
   if (!container) return;
   container.innerHTML = '';
 
-  MARKET_STALLS.forEach(stall => {
+  const stalls = filterStallId ? MARKET_STALLS.filter(s => s.id === filterStallId) : MARKET_STALLS;
+  stalls.forEach(stall => {
     const section = document.createElement('div');
     section.className = 'market-stall';
     section.innerHTML = `<div class="stall-name">${stall.emoji} ${stall.name}</div>`;
