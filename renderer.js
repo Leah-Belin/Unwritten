@@ -229,7 +229,7 @@ function drawTile(c, r) {
   if (!def.raised) {
     const tileType = currentMap[r]?.[c];
     const isFloor = currentBuilding && tileType === T.DIRT;
-    if (isFloor && !window._floorLogged) { window._floorLogged=true; console.log('[floor] currentBuilding:', !!currentBuilding, 'tileType:', tileType, 'T.DIRT:', T.DIRT, 'img loaded:', !!_tileImgs.floor); }
+    if (isFloor && !window._floorLogged) { window._floorLogged=true; const _fid=_FLOOR_IMG[currentBuilding.id]; console.log('[floor] building.id:', currentBuilding.id, 'floorImgId:', _fid, 'img loaded:', !!_tileImgs[_fid]); }
     const imgId = isFloor ? (_FLOOR_IMG[currentBuilding.id] || 'floor_stone') : _GROUND_IMG[tileType];
     const tileImg = imgId && _tileImgs[imgId];
     if (tileImg) {
