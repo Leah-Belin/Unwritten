@@ -158,14 +158,17 @@
 
 </div><!-- /layout -->
 
-<!-- Scripts — order matters: data first, then logic, then rendering -->
+<!-- Scripts — load order: base data → systems → rendering → input → engine -->
 <script src="state.js"></script>
-<script src="world.js"></script>
+<script src="world.js"></script>   <!-- tile types, styles, items, map builders -->
+<script src="data.js"></script>    <!-- buildings, NPCs, zones, market stalls -->
 <script src="crafting.js"></script>
 <script src="quests.js"></script>
 <script src="ui.js"></script>
 <script src="events.js"></script>
-<script src="engine.js"></script>
+<script src="renderer.js"></script> <!-- all canvas drawing functions -->
+<script src="input.js"></script>    <!-- click handler -->
+<script src="engine.js"></script>   <!-- game loop, scene management, init -->
 <script>window.addEventListener('load', init);</script>
 </body>
 </html>

@@ -1,6 +1,9 @@
 name: Auto-merge Claude branches
 
 on:
+  push:
+    branches:
+      - 'claude/**'
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -9,8 +12,22 @@ permissions:
   pull-requests: write
 
 jobs:
-  auto-merge:
-    if: startsWith(github.head_ref, 'claude/')
+  # Triggered by a direct push to a claude/* branch — merge into main via API
+  merge-on-push:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge branch into main
+        run: |
+          curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            "${{ github.api_url }}/repos/${{ github.repository }}/merges" \
+            -d "{\"base\":\"main\",\"head\":\"${{ github.ref_name }}\",\"commit_message\":\"Auto-merge ${{ github.ref_name }} into main\"}"
+
+  # Triggered when a PR is opened/updated — auto-merge the PR
+  merge-on-pr:
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'claude/')
     runs-on: ubuntu-latest
     steps:
       - name: Merge PR
