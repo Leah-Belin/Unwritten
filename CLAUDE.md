@@ -17,4 +17,4 @@ Do **not** create SVG files. Do **not** embed inline SVG in engine.js.
 
 ## Branch
 
-All work goes on `claude/organize-netlify-structure-dHuiD`. Always commit and push changes.
+All work goes on `main`. Always commit and push directly to `main`.
