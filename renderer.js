@@ -219,7 +219,7 @@ function drawTile(c, r) {
       ctx.beginPath();
       ctx.moveTo(x,y-hh); ctx.lineTo(x+hw,y); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
       ctx.closePath();
-      ctx.fillStyle = isFloor ? '#d4b86a' : def.top;
+      ctx.fillStyle = isFloor ? '#ff0000' : def.top;
       ctx.fill();
       ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=0.5; ctx.stroke();
     }
