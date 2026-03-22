@@ -1,0 +1,69 @@
+body/bodies/child/walk/black.png
+	- Licenses:
+		- OGA-BY 3.0
+		- CC-BY-SA 3.0
+		- GPL 3.0
+	- Authors:
+		- bluecarrot16
+		- Benjamin K. Smith (BenCreating)
+		- ElizaWy
+		- MuffinElZangano
+		- Durrani
+		- Nila122
+		- kheftel
+		- Stephen Challener (Redshrike)
+	- Links:
+		- https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles
+		- https://opengameart.org/content/lpc-child-standing-template
+		- https://opengameart.org/content/lpc-children-walk-animation
+		- https://opengameart.org/content/lpc-male-jumping-animation-by-durrani
+		- https://opengameart.org/content/lpc-male-jumping-animation-by-durrani
+		- https://opengameart.org/content/lpc-jump-expanded
+		- https://opengameart.org/content/lpc-jump-expanded
+
+head/heads/human/child/walk/black.png
+	- Licenses:
+		- OGA-BY 3.0
+		- CC-BY 3.0
+		- GPL 3.0
+	- Authors:
+		- Stephen Challener (Redshrike)
+		- kheftel
+		- bluecarrot16
+	- Links:
+		- https://opengameart.org/content/
+		- https://opengameart.org/content/lpc-child-standing-template
+		- https://opengameart.org/content/lpc-character-bases
+
+hair/jewfro/child/walk/black.png
+	- Licenses:
+		- OGA-BY 3.0+
+		- CC-BY 3.0+
+		- CC-BY-SA 3.0
+		- GPL 3.0
+	- Authors:
+		- JaidynReiman
+	- Links:
+		- https://opengameart.org/content/lpc-1-hairstyle-2-hair-extensions-3-previously-unofficially-released-hairstyles
+		- https://github.com/jrconway3/Universal-LPC-spritesheet/commit/46ddcf05a0e43e7aa6ffd47d350eef0eb529ac24
+
+torso/clothes/shirt/child/walk/blue.png
+	- Licenses:
+		- OGA-BY 3.0
+		- CC-BY-SA 3.0
+		- GPL 3.0
+	- Authors:
+		- Nila122
+	- Links:
+		- https://opengameart.org/content/lpc-clothes-for-children
+
+legs/skirts/child/walk/lightblue.png
+	- Licenses:
+		- OGA-BY 3.0
+		- CC-BY-SA 3.0
+		- GPL 3.0
+	- Authors:
+		- Nila122
+	- Links:
+		- https://opengameart.org/content/lpc-clothes-for-children
+

@@ -1,0 +1,123 @@
+{
+  "exportTimestamp": "2026-03-22T17-51-51",
+  "bodyType": "child",
+  "standardAnimations": {
+    "exported": {
+      "spellcast": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "thrust": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "walk": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png",
+        "035 child_shirts__green_.png",
+        "020 child_skirts__black_.png"
+      ],
+      "slash": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "shoot": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "hurt": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "climb": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "idle": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "jump": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "sit": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "emote": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "run": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "combat": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "1h_backslash": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ],
+      "1h_halfslash": [
+        "010 body_color__olive_.png",
+        "100 human_child__olive_.png",
+        "120 short_topknot__chestnut_.png",
+        "145 short_topknot__chestnut_.png"
+      ]
+    },
+    "failed": {
+      "spellcast": [],
+      "thrust": [],
+      "walk": [],
+      "slash": [],
+      "shoot": [],
+      "hurt": [],
+      "climb": [],
+      "idle": [],
+      "jump": [],
+      "sit": [],
+      "emote": [],
+      "run": [],
+      "combat": [],
+      "1h_backslash": [],
+      "1h_halfslash": []
+    }
+  },
+  "customAnimations": {
+    "exported": {},
+    "failed": {}
+  },
+  "frameSize": 64,
+  "frameCounts": {}
+}

@@ -1,0 +1,67 @@
+body/bodies/child/walk/olive.png
+	- Licenses:
+		- OGA-BY 3.0
+		- CC-BY-SA 3.0
+		- GPL 3.0
+	- Authors:
+		- bluecarrot16
+		- Benjamin K. Smith (BenCreating)
+		- ElizaWy
+		- MuffinElZangano
+		- Durrani
+		- Nila122
+		- kheftel
+		- Stephen Challener (Redshrike)
+	- Links:
+		- https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles
+		- https://opengameart.org/content/lpc-child-standing-template
+		- https://opengameart.org/content/lpc-children-walk-animation
+		- https://opengameart.org/content/lpc-male-jumping-animation-by-durrani
+		- https://opengameart.org/content/lpc-male-jumping-animation-by-durrani
+		- https://opengameart.org/content/lpc-jump-expanded
+		- https://opengameart.org/content/lpc-jump-expanded
+
+head/heads/human/child/walk/olive.png
+	- Licenses:
+		- OGA-BY 3.0
+		- CC-BY 3.0
+		- GPL 3.0
+	- Authors:
+		- Stephen Challener (Redshrike)
+		- kheftel
+		- bluecarrot16
+	- Links:
+		- https://opengameart.org/content/
+		- https://opengameart.org/content/lpc-child-standing-template
+		- https://opengameart.org/content/lpc-character-bases
+
+hair/relm_short/child/walk/dark_brown.png
+	- Licenses:
+		- OGA-BY 3.0+
+		- CC-BY 3.0+
+		- GPL 3.0
+	- Authors:
+		- JaidynReiman
+	- Links:
+		- https://opengameart.org/content/lpc-relm-hair-xlong-ponytail
+
+torso/clothes/shirt/child/walk/brown.png
+	- Licenses:
+		- OGA-BY 3.0
+		- CC-BY-SA 3.0
+		- GPL 3.0
+	- Authors:
+		- Nila122
+	- Links:
+		- https://opengameart.org/content/lpc-clothes-for-children
+
+legs/pants/child/walk/black.png
+	- Licenses:
+		- OGA-BY 3.0
+		- CC-BY-SA 3.0
+		- GPL 3.0
+	- Authors:
+		- Nila122
+	- Links:
+		- https://opengameart.org/content/lpc-clothes-for-children
+
