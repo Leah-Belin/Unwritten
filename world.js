@@ -1,5 +1,5 @@
 // ── TILE TYPES ────────────────────────────────────────────────
-const T = { GRASS:0, PATH:1, DIRT:2, BUILDING:3, WALL:4, TREE:5, FLOWER:6, WATER:7, DOOR:8, STAIRS:9, PLOT:10 };
+const T = { GRASS:0, PATH:1, DIRT:2, BUILDING:3, WALL:4, TREE:5, FLOWER:6, WATER:7, DOOR:8, STAIRS:9, PLOT:10, FOUNTAIN:11, EXIT:12 };
 
 const TILE_DEF = {
   [T.GRASS]:    { walk:true,  top:'#8a9a6a', left:'#6a7a4a', right:'#7a8a5a' },
@@ -13,6 +13,22 @@ const TILE_DEF = {
   [T.DOOR]:     { walk:true,  top:'#c8a060', left:'#8a6030', right:'#a07040', door:true },
   [T.STAIRS]:   { walk:true,  top:'#b8a878', left:'#806848', right:'#a08858', stairs:true },
   [T.PLOT]:     { walk:true,  top:'#b8a060', left:'#907840', right:'#a89050', plot:true },
+  [T.FOUNTAIN]: { walk:false, fountain:true },
+  [T.EXIT]:     { walk:true,  top:'#f0e870', left:'#c8b830', right:'#e0d050', exit:true },
+};
+
+// Visual styles per building — walls, roof/interior, chimney & window flags
+const BUILDING_STYLES = {
+  bakery:           { wall:'#ece0c8', wallL:'#8a6840', wallR:'#b08858', roof:'#5a3020', chimney:true, bigWindows:true, texture:'wood' },
+  forge:            { wall:'#b0a898', wallL:'#504840', wallR:'#706860', roof:'#2a2420', chimney:true, texture:'stone' },
+  inn:              { wall:'#d8c890', wallL:'#9a7840', wallR:'#bea060', roof:'#5a3018', chimney:true, texture:'wood' },
+  town_hall:        { wall:'#dcd8c8', wallL:'#706860', wallR:'#908878', roof:'#484038', texture:'stone_cut' },
+  council_hall:     { wall:'#d4d0c0', wallL:'#686058', wallR:'#888070', roof:'#404038', texture:'stone_cut' },
+  hestas_hut:       { wall:'#d0c8a0', wallL:'#7a6840', wallR:'#988858', roof:'#4a2c1c', chimney:true, texture:'stone' },
+  jaxons_house:     { wall:'#ccc8a8', wallL:'#706040', wallR:'#907858', roof:'#503020', chimney:true, texture:'brick' },
+  villager_house_a: { wall:'#d4caa8', wallL:'#7a6840', wallR:'#987860', roof:'#5c3020', chimney:true, texture:'brick' },
+  villager_house_b: { wall:'#cac4a0', wallL:'#706040', wallR:'#908058', roof:'#502818', chimney:true, texture:'brick' },
+  villager_house_c: { wall:'#cecaa8', wallL:'#7a6840', wallR:'#988860', roof:'#5a3020', chimney:true, texture:'brick' },
 };
 
 // ── TIME PERIODS ──────────────────────────────────────────────
@@ -93,6 +109,11 @@ const BUILDINGS = {
           { itemId:'common_herb', col:7, row:3, oneTime:false, label:'Herbs on the windowsill', respawn:true },
         ],
         stations: [{ type:'oven', col:2, row:3, label:'The Oven 🔥' }],
+        furniture: [
+          {type:'counter', col:3, row:2}, {type:'counter', col:4, row:2},
+          {type:'stool',   col:3, row:6},
+          {type:'barrel',  col:7, row:7},
+        ],
         exits: [
           { label:'Go upstairs',   targetFloor:'bakery_upper', col:8, row:5 },
           { label:'Leave bakery',  targetScene:'village',      col:5, row:9 },
@@ -110,11 +131,18 @@ const BUILDINGS = {
           { itemId:'gallan_tools', col:10, row:4, oneTime:true,  label:"Father's tools, half-sorted", respawn:false },
         ],
         stations: [{ type:'worktable', col:10, row:5, label:"Gallan's Worktable 🔧" }],
+        furniture: [
+          {type:'bed',   col:2, row:2},
+          {type:'bed',   col:2, row:5},
+          {type:'table', col:8, row:2},
+          {type:'chair', col:7, row:3},
+          {type:'chest', col:9, row:6},
+        ],
         exits: [
           { label:'Go downstairs', targetFloor:'bakery_ground', col:9, row:5 },
         ],
         cabinet: {
-          col:11, row:3,
+          col:10, row:3,
           label:"Gallan's Medicinal Cabinet",
           lockedLabel:"Gallan's Cabinet (locked)",
           unlockedLabel:"Gallan's Cabinet",
@@ -147,6 +175,12 @@ const BUILDINGS = {
           { itemId:'mint_herb',  col:7, row:2, oneTime:false, label:'Mint sprigs',   respawn:false },
         ],
         stations: [{ type:'hearth', col:1, row:3, label:'Hearth 🔥' }],
+        furniture: [
+          {type:'counter', col:5, row:2}, {type:'counter', col:6, row:2},
+          {type:'stool',   col:5, row:3}, {type:'stool',   col:6, row:3},
+          {type:'table',   col:4, row:5}, {type:'chair',   col:3, row:5}, {type:'chair', col:5, row:5},
+          {type:'table',   col:7, row:5}, {type:'chair',   col:6, row:5}, {type:'chair', col:8, row:5},
+        ],
         exits: [{ label:'Leave inn', targetScene:'village', col:5, row:9 }],
         sleepOption: { cost:{blue:2}, label:'Rent a room (2 🔵)' },
       },
@@ -171,6 +205,12 @@ const BUILDINGS = {
           { itemId:'iron_fitting', col:5, row:6, oneTime:false, label:'More fittings by the anvil', respawn:false },
         ],
         stations: [{ type:'forge', col:2, row:2, label:'The Forge 🔥' }],
+        furniture: [
+          {type:'barrel',  col:2, row:7},
+          {type:'barrel',  col:3, row:7},
+          {type:'counter', col:6, row:2},
+          {type:'stool',   col:7, row:3},
+        ],
         exits: [{ label:'Leave forge', targetScene:'village', col:5, row:9 }],
       },
     ],
@@ -189,7 +229,13 @@ const BUILDINGS = {
         npcs: ['elder'],
         items: [],
         stations: [],
-        exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
+        furniture: [
+          {type:'table', col:4, row:3}, {type:'table', col:5, row:3}, {type:'table', col:6, row:3},
+          {type:'chair', col:3, row:3}, {type:'chair', col:7, row:3},
+          {type:'chair', col:4, row:2}, {type:'chair', col:5, row:2}, {type:'chair', col:6, row:2},
+          {type:'chair', col:5, row:8}, {type:'chair', col:6, row:8},
+        ],
+        exits: [{ label:'Leave', targetScene:'village', col:5, row:11 }],
       },
     ],
   },
@@ -211,6 +257,12 @@ const BUILDINGS = {
           { itemId:'knotted_cord',col:7, row:2, oneTime:true,  label:'Knotted cord hanging on hook' },
         ],
         stations: [],
+        furniture: [
+          {type:'bed',   col:2, row:3},
+          {type:'table', col:5, row:6},
+          {type:'chair', col:4, row:6}, {type:'chair', col:6, row:6},
+          {type:'chest', col:2, row:7},
+        ],
         exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
       },
     ],
@@ -233,7 +285,12 @@ const BUILDINGS = {
           { itemId:'honey',        col:2, row:5, oneTime:true,  label:'Small jar of honey' },
         ],
         stations: [{ type:'hearth', col:1, row:4, label:'Hearth 🔥' }],
-        exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
+        furniture: [
+          {type:'bed',   col:2, row:2},
+          {type:'shelf', col:6, row:2},
+          {type:'chair', col:4, row:6},
+        ],
+        exits: [{ label:'Leave', targetScene:'village', col:5, row:7 }],
         sleepOption: { cost:null, goodwill:'hesta', goodwillMin:1, label:"Sleep on Hesta's floor" },
       },
     ],
@@ -256,6 +313,11 @@ const BUILDINGS = {
         { itemId:'red_chit',    col:8, row:6, oneTime:true,  label:'Red chit left on table' },
       ],
       stations: [],
+      furniture: [
+        {type:'bed',   col:2, row:2},
+        {type:'table', col:5, row:5}, {type:'chair', col:4, row:5}, {type:'chair', col:6, row:5},
+        {type:'chest', col:7, row:7},
+      ],
       exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
     }],
   },
@@ -274,6 +336,11 @@ const BUILDINGS = {
         { itemId:'fruit',       col:7, row:5, oneTime:false, label:'Bowl of fruit on the table', respawn:false },
       ],
       stations: [],
+      furniture: [
+        {type:'bed',   col:2, row:2},
+        {type:'table', col:5, row:5}, {type:'chair', col:4, row:5}, {type:'chair', col:6, row:5},
+        {type:'barrel', col:7, row:2},
+      ],
       exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
     }],
   },
@@ -292,6 +359,11 @@ const BUILDINGS = {
         { itemId:'useful_tool', col:7, row:6, oneTime:true,  label:'A small tool left on the floor' },
       ],
       stations: [],
+      furniture: [
+        {type:'bed',   col:2, row:2},
+        {type:'table', col:5, row:5}, {type:'chair', col:4, row:5}, {type:'chair', col:6, row:5},
+        {type:'shelf', col:7, row:2},
+      ],
       exits: [{ label:'Leave', targetScene:'village', col:5, row:9 }],
     }],
   },
@@ -307,6 +379,12 @@ const BUILDINGS = {
       npcs: [{ id:'elder', col:5, row:4 }],
       items: [],
       stations: [],
+      furniture: [
+        {type:'table', col:4, row:3}, {type:'table', col:5, row:3}, {type:'table', col:6, row:3},
+        {type:'chair', col:3, row:3}, {type:'chair', col:7, row:3},
+        {type:'chair', col:4, row:2}, {type:'chair', col:6, row:2},
+        {type:'chair', col:5, row:8},
+      ],
       exits: [{ label:'Leave', targetScene:'village', col:5, row:11 }],
     }],
   },
@@ -314,7 +392,7 @@ const BUILDINGS = {
 
 // ── INTERIOR MAP BUILDER ──────────────────────────────────────
 function buildInteriorMap(type) {
-  // Bakery upper floor is wider — 12 cols, 8 rows — 3 rooms side by side
+  // Bakery upper floor is wider — 12 cols, 8 rows — 2 rooms side by side
   const cols = (type === 'bakery_upper') ? 12 : 10;
   const rows = (type === 'small') ? 8 : (type === 'hall') ? 12 : 10;
   const grid = [];
@@ -335,13 +413,11 @@ function buildInteriorMap(type) {
   }
 
   if (type === 'bakery_upper') {
-    for (let r = 1; r < rows-1; r++) grid[r][4] = T.WALL;
-    grid[4][4] = T.DIRT;
-    for (let r = 1; r < rows-1; r++) grid[r][8] = T.WALL;
-    grid[4][8] = T.DIRT;
-    grid[5][9] = T.STAIRS;  // col 9, inside right wall of 12-wide map
-    grid[2][2] = T.WALL; grid[2][3] = T.WALL;
-    grid[2][6] = T.WALL; grid[2][7] = T.WALL;
+    // Single dividing wall at col 5, passage rows 3-5 (3 tiles wide)
+    for (let r = 1; r < rows-1; r++) {
+      if (r < 3 || r > 5) grid[r][5] = T.WALL;
+    }
+    grid[5][9] = T.STAIRS;  // stairs in right room
   }
 
   if (type === 'inn') {
@@ -384,8 +460,8 @@ function buildVillageMap() {
   placeBuilding(28,22,4,4);  // Villager house A
   placeBuilding(12,28,4,4);  // Villager house B
   placeBuilding(32,14,4,4);  // Villager house C
-  // Well
-  villageMap[19][19] = T.WALL;
+  // Central fountain
+  villageMap[19][19] = T.FOUNTAIN;
   // Tree border — only on pure grass tiles
   for (let i=0;i<VILLAGE_ROWS;i++) for (let j=0;j<VILLAGE_COLS;j++)
     if(i<2||i>VILLAGE_ROWS-3||j<2||j>VILLAGE_COLS-3)
@@ -402,10 +478,32 @@ function buildVillageMap() {
   fillVRect(21,17,2,6,T.PATH); // market area south of square
 
   // The Plot — east side near forest, row 22 col 34
-  // A small cleared area: 3x3 dirt patch with the plot marker in centre
   fillVRect(21, 33, 4, 4, T.DIRT);
-  villageMap[22][34] = T.PLOT; // the actual plot tile
+  villageMap[22][34] = T.PLOT;
+
+  // Zone exits — golden tiles at the 4 path borders leading to outdoor zones
+  // North (rows 0-1, cols 19-20) → Gallan's Garden / mountain path
+  villageMap[0][19]=T.EXIT; villageMap[0][20]=T.EXIT;
+  villageMap[1][19]=T.EXIT; villageMap[1][20]=T.EXIT;
+  // South (rows 38-39, cols 19-20) → Temple Path
+  villageMap[38][19]=T.EXIT; villageMap[38][20]=T.EXIT;
+  villageMap[39][19]=T.EXIT; villageMap[39][20]=T.EXIT;
+  // West (rows 19-20, cols 0-1) → The Birchwood
+  villageMap[19][0]=T.EXIT; villageMap[20][0]=T.EXIT;
+  villageMap[19][1]=T.EXIT; villageMap[20][1]=T.EXIT;
+  // East (rows 19-20, cols 38-39) → Market Road
+  villageMap[19][38]=T.EXIT; villageMap[20][38]=T.EXIT;
+  villageMap[19][39]=T.EXIT; villageMap[20][39]=T.EXIT;
 }
+
+// ── ZONE EXIT MAP — village tile → zone scene ID ──────────────
+// Format: 'col,row'
+const ZONE_EXIT_MAP = {
+  '19,0':'garden','20,0':'garden','19,1':'garden','20,1':'garden',
+  '19,38':'temple_path','20,38':'temple_path','19,39':'temple_path','20,39':'temple_path',
+  '0,19':'forest','0,20':'forest','1,19':'forest','1,20':'forest',
+  '38,19':'market','39,19':'market','38,20':'market','39,20':'market',
+};
 
 // ── PLOT MATERIAL SPAWNS — east forest edge ───────────────────
 // These respawn each day and can only be gathered near the forest
@@ -530,7 +628,7 @@ const NPCS = [
     quest: { id:'hesta_water', itemId:'common_herb', itemName:'Common Herb', reward:'item', rewardItemId:'honey', line:'"Could you fetch me some fresh herbs from the wood\'s edge? My knees won\'t manage it today."' },
   },
   {
-    id:'innkeeper', name:'The Innkeeper', emoji:'🧑‍🍳', col:5, row:5, color:'#806858',
+    id:'innkeeper', name:'The Innkeeper', emoji:'🧑‍🍳', col:5, row:5, color:'#806858', shop:'inn_stall',
     lines:[
       '"Morning! Festival\'s coming up — half the region will be through that door. Exciting!"',
       '"Your mother\'s rolls are the best thing about market day. Don\'t tell her I said that, she\'ll raise her prices."',
@@ -611,4 +709,316 @@ const MARKET_STALLS = [
     ],
     buys:['healing_tonic','energy_salve'],
   },
+  // Inn sells basic supplies any day
+  {
+    id:'inn_stall', name:'Inn Supplies', emoji:'🍺',
+    sells:[
+      { itemId:'fruit',         cost:{red:1}, label:'Bowl of fruit 🍎' },
+      { itemId:'grain',         cost:{red:1}, label:'Bag of grain 🌾' },
+      { itemId:'simple_bread',  cost:{red:2}, label:'Fresh loaf 🍞' },
+      { itemId:'mint_herb',     cost:{red:1}, label:'Fresh mint 🫚' },
+      { itemId:'morning_tea',   cost:{red:2}, label:'Morning tea blend 🍵' },
+    ],
+    buys:['fruit','simple_bread','herb_bundle'],
+  },
 ];
+
+// ── ZONE MAP BUILDERS ──────────────────────────────────────────
+function buildForestMap() {
+  const cols=32, rows=24;
+  const g = Array.from({length:rows}, ()=>Array(cols).fill(T.TREE));
+  const set=(r,c,t)=>{ if(r>=0&&r<rows&&c>=0&&c<cols) g[r][c]=t; };
+  const fill=(r,c,h,w,t)=>{ for(let i=r;i<r+h;i++) for(let j=c;j<c+w;j++) set(i,j,t); };
+
+  // Entry corridor from east — connects to village west exit (rows 19-20 in village → rows 10-11 here)
+  fill(9,27,4,5,T.GRASS); g[10][30]=T.EXIT; g[11][30]=T.EXIT; g[10][31]=T.EXIT; g[11][31]=T.EXIT;
+
+  // Main east-west path, gently winding
+  for(let c=22;c<30;c++){ g[10][c]=T.PATH; g[11][c]=T.PATH; }
+  // Jog south
+  for(let r=11;r<=15;r++){ g[r][22]=T.PATH; g[r][21]=T.PATH; }
+  // Continue west
+  for(let c=16;c<22;c++){ g[15][c]=T.PATH; g[14][c]=T.PATH; }
+  // Jog north to cross stream
+  for(let r=10;r<=15;r++){ g[r][16]=T.PATH; }
+  // West to campfire clearing
+  for(let c=7;c<16;c++){ g[10][c]=T.PATH; g[11][c]=T.PATH; }
+  // North spur into berry clearing
+  for(let r=5;r<=10;r++){ g[r][20]=T.PATH; }
+  for(let c=16;c<21;c++){ g[5][c]=T.PATH; }
+
+  // Stream running north-south (col 13-14)
+  for(let r=2;r<22;r++){ g[r][13]=T.WATER; if(r>3&&r<20) g[r][14]=T.WATER; }
+  g[10][13]=T.PATH; g[11][13]=T.PATH; g[10][14]=T.PATH; g[11][14]=T.PATH; // bridge
+
+  // Clearings
+  fill(8,18,6,8,T.GRASS);   // east clearing
+  fill(3,16,6,7,T.GRASS);   // north berry clearing
+  fill(7,5,8,9,T.GRASS);    // campfire clearing (west)
+  fill(12,18,6,8,T.GRASS);  // south meadow
+  fill(2,20,5,9,T.GRASS);   // far north clearing
+
+  // Flowers
+  [[4,19],[5,17],[3,23],[4,22],[9,6],[13,7],[14,20],[13,22],[2,21]].forEach(([r,c])=>{
+    if(g[r][c]===T.GRASS) g[r][c]=T.FLOWER;
+  });
+
+  // Campfire station at (10,8) — handled as a zone station
+  return g;
+}
+
+function buildGardenMap() {
+  const cols=22, rows=28;
+  const g = Array.from({length:rows}, ()=>Array(cols).fill(T.TREE));
+  const fill=(r,c,h,w,t)=>{ for(let i=r;i<r+h;i++) for(let j=c;j<c+w;j++){ if(i>=0&&i<rows&&j>=0&&j<cols) g[i][j]=t; }};
+
+  // Entry from south — connects to village north exit (cols 19-20 in village → cols 10-11 here)
+  g[27][10]=T.EXIT; g[27][11]=T.EXIT; g[26][10]=T.EXIT; g[26][11]=T.EXIT;
+
+  // Main mountain path winding north
+  for(let r=22;r<26;r++){ g[r][10]=T.PATH; g[r][11]=T.PATH; }
+  // Bend west then north
+  for(let c=7;c<11;c++){ g[22][c]=T.PATH; g[21][c]=T.PATH; }
+  for(let r=16;r<=22;r++){ g[r][7]=T.PATH; g[r][8]=T.PATH; }
+  // Open terraced area
+  for(let c=7;c<16;c++){ g[16][c]=T.PATH; g[17][c]=T.PATH; }
+  for(let r=10;r<=16;r++){ g[r][15]=T.PATH; }
+  for(let c=10;c<16;c++){ g[10][c]=T.PATH; }
+  // Upper garden path
+  for(let r=5;r<=10;r++){ g[r][10]=T.PATH; g[r][11]=T.PATH; }
+  for(let c=7;c<12;c++){ g[5][c]=T.PATH; }
+
+  // Lower valley (open)
+  fill(19,5,7,14,T.GRASS);
+  // Garden terraces (dirt beds)
+  fill(12,9,5,8,T.DIRT);
+  fill(11,14,3,4,T.DIRT);
+  fill(7,6,5,6,T.GRASS);
+  fill(3,8,5,8,T.GRASS);   // upper garden
+
+  // Stone wall gate position (col 15, rows 13-15) — partial wall
+  g[13][15]=T.WALL; g[14][15]=T.WALL;
+
+  // Stream trickle on right side
+  for(let r=4;r<20;r++) g[r][18]=T.WATER;
+
+  // Flowers in upper garden
+  [[4,9],[5,11],[6,8],[3,13],[8,7],[9,9]].forEach(([r,c])=>{
+    if(g[r][c]==='undefined'||g[r][c]===T.GRASS||g[r][c]===T.DIRT) g[r][c]=T.FLOWER;
+  });
+
+  return g;
+}
+
+function buildTempleMap() {
+  const cols=28, rows=22;
+  const g = Array.from({length:rows}, ()=>Array(cols).fill(T.TREE));
+  const fill=(r,c,h,w,t)=>{ for(let i=r;i<r+h;i++) for(let j=c;j<c+w;j++){ if(i>=0&&i<rows&&j>=0&&j<cols) g[i][j]=t; }};
+
+  // Entry from north — connects to village south exit (cols 19-20 in village → cols 13-14 here)
+  g[0][13]=T.EXIT; g[0][14]=T.EXIT; g[1][13]=T.EXIT; g[1][14]=T.EXIT;
+
+  // Long ceremonial path south
+  for(let r=2;r<19;r++){ g[r][13]=T.PATH; g[r][14]=T.PATH; }
+
+  // Wide entry plaza
+  fill(1,10,4,8,T.DIRT);
+
+  // Ancient stone ruins flanking path
+  fill(5,5,5,4,T.DIRT);   // west ruins
+  fill(5,19,5,4,T.DIRT);  // east ruins
+  g[5][5]=T.WALL;  g[5][6]=T.WALL;  g[5][8]=T.WALL;
+  g[5][19]=T.WALL; g[5][20]=T.WALL; g[5][22]=T.WALL;
+  g[8][5]=T.WALL;  g[8][8]=T.WALL;
+  g[8][19]=T.WALL; g[8][22]=T.WALL;
+
+  // Mid clearing — stone circle
+  fill(9,9,5,10,T.DIRT);
+  [[10,11],[10,12],[10,14],[10,15],[12,11],[12,15],[11,10],[11,16]].forEach(([r,c])=>g[r][c]=T.WALL);
+
+  // Temple facade at south (rows 16-20, cols 9-18)
+  fill(16,9,5,10,T.DIRT);
+  for(let c=9;c<19;c++){ g[16][c]=T.WALL; }
+  for(let r=16;r<20;r++){ g[r][9]=T.WALL; g[r][18]=T.WALL; }
+  g[17][13]=T.DOOR; g[17][14]=T.DOOR; // temple door (closed — story locked)
+  for(let c=10;c<13;c++) g[16][c]=T.WALL;
+  for(let c=15;c<18;c++) g[16][c]=T.WALL;
+
+  // Grass clearings beside path
+  fill(3,5,14,5,T.GRASS);  // west
+  fill(3,18,14,5,T.GRASS); // east
+
+  // Flowers/atmosphere
+  [[4,6],[6,7],[13,6],[14,7],[4,20],[6,21],[13,21]].forEach(([r,c])=>{
+    if(g[r][c]===T.GRASS||g[r][c]===T.DIRT) g[r][c]=T.FLOWER;
+  });
+
+  return g;
+}
+
+function buildMarketMap() {
+  const cols=30, rows=22;
+  const g = Array.from({length:rows}, ()=>Array(cols).fill(T.TREE));
+  const fill=(r,c,h,w,t)=>{ for(let i=r;i<r+h;i++) for(let j=c;j<c+w;j++){ if(i>=0&&i<rows&&j>=0&&j<cols) g[i][j]=t; }};
+
+  // Entry from west — connects to village east exit (rows 19-20 in village → rows 10-11 here)
+  g[10][0]=T.EXIT; g[11][0]=T.EXIT; g[10][1]=T.EXIT; g[11][1]=T.EXIT;
+
+  // Entry road from west
+  for(let c=2;c<8;c++){ g[10][c]=T.PATH; g[11][c]=T.PATH; }
+
+  // Main market square (open dirt)
+  fill(4,7,14,16,T.DIRT);
+
+  // Cobbled central area
+  fill(7,10,8,10,T.PATH);
+
+  // Well in centre
+  g[11][14]=T.FOUNTAIN;
+
+  // Stall row — north side (rows 4-7, with WALL backs)
+  fill(4,8,3,4,T.DIRT);  g[4][8]=T.WALL; g[4][9]=T.WALL; g[4][10]=T.WALL; g[4][11]=T.WALL;
+  fill(4,13,3,4,T.DIRT); g[4][13]=T.WALL; g[4][14]=T.WALL; g[4][15]=T.WALL; g[4][16]=T.WALL;
+  fill(4,18,3,4,T.DIRT); g[4][18]=T.WALL; g[4][19]=T.WALL; g[4][20]=T.WALL; g[4][21]=T.WALL;
+
+  // Stall row — east side
+  fill(8,23,4,3,T.DIRT); for(let r=8;r<12;r++) g[r][25]=T.WALL;
+  fill(12,23,4,3,T.DIRT); for(let r=12;r<16;r++) g[r][25]=T.WALL;
+
+  // Side paths
+  for(let r=4;r<18;r++){ g[r][7]=T.PATH; } // west side path
+  for(let r=4;r<18;r++){ g[r][22]=T.PATH; } // east side path
+  for(let c=7;c<23;c++){ g[4][c]=T.PATH; g[17][c]=T.PATH; } // north/south border paths
+
+  // Grass/trees framing
+  fill(1,6,3,18,T.GRASS);
+  fill(18,6,3,18,T.GRASS);
+
+  // Flowers around square
+  [[2,8],[2,14],[2,20],[19,9],[19,16],[19,22]].forEach(([r,c])=>{
+    if(g[r][c]===T.GRASS) g[r][c]=T.FLOWER;
+  });
+
+  return g;
+}
+
+// ── OUTDOOR ZONES ──────────────────────────────────────────────
+const ZONES = {
+  forest: {
+    id:'forest', name:'The Birchwood',
+    grid: buildForestMap(),
+    items:[
+      { itemId:'common_herb',   col:19, row:4,  label:'Wild herbs in a sunny patch',     respawn:true  },
+      { itemId:'common_herb',   col:9,  row:8,  label:'Herbs at the edge of the path',   respawn:true  },
+      { itemId:'root',          col:15, row:5,  label:'Roots by the stream bank',        respawn:true  },
+      { itemId:'root',          col:14, row:16, label:'Tangled roots in the meadow',     respawn:false },
+      { itemId:'honey',         col:7,  row:8,  label:'Wild honeycomb in the hollow',    respawn:false },
+      { itemId:'mint_herb',     col:21, row:9,  label:'Mint growing near the water',     respawn:true  },
+      { itemId:'lavender',      col:4,  row:5,  label:'Wild lavender in the clearing',   respawn:true  },
+      { itemId:'common_herb',   col:23, row:4,  label:'Herbs in the north clearing',     respawn:true  },
+    ],
+    stations:[{ type:'campfire', col:8, row:10, label:'Campfire 🏕️' }],
+    npcs:[],
+    exits:[
+      { label:'Back to village', targetScene:'village', fromZone:'forest', col:30, row:10 },
+      { label:'Back to village', targetScene:'village', fromZone:'forest', col:31, row:10 },
+      { label:'Back to village', targetScene:'village', fromZone:'forest', col:30, row:11 },
+      { label:'Back to village', targetScene:'village', fromZone:'forest', col:31, row:11 },
+    ],
+  },
+
+  garden: {
+    id:'garden', name:"Gallan's Garden",
+    grid: buildGardenMap(),
+    items:[
+      { itemId:'healing_herb', col:11, row:13, label:"Gallan's healing herb patch",   respawn:true  },
+      { itemId:'healing_herb', col:14, row:12, label:'More healing herbs',            respawn:true  },
+      { itemId:'lavender',     col:9,  row:13, label:'Rows of lavender',              respawn:true  },
+      { itemId:'spice_herb',   col:12, row:14, label:'Spice herbs in the terrace',    respawn:true  },
+      { itemId:'common_herb',  col:8,  row:8,  label:'Common herbs in the upper bed', respawn:true  },
+      { itemId:'root',         col:10, row:12, label:'Roots ready to harvest',        respawn:false },
+      { itemId:'knotted_cord', col:10, row:7,  label:'A knotted cord on a post',     respawn:false, oneTime:true },
+      { itemId:'garden_key',   col:9,  row:6,  label:'Small key under a stone',      respawn:false, oneTime:true },
+    ],
+    stations:[],
+    npcs:[],
+    exits:[
+      { label:'Return to village', targetScene:'village', fromZone:'garden', col:10, row:26 },
+      { label:'Return to village', targetScene:'village', fromZone:'garden', col:11, row:26 },
+      { label:'Return to village', targetScene:'village', fromZone:'garden', col:10, row:27 },
+      { label:'Return to village', targetScene:'village', fromZone:'garden', col:11, row:27 },
+    ],
+  },
+
+  temple_path: {
+    id:'temple_path', name:'The Old Temple Road',
+    grid: buildTempleMap(),
+    items:[
+      { itemId:'stone_fragment', col:6,  row:6,  label:'Carved stone in the ruins',       respawn:false },
+      { itemId:'stone_fragment', col:21, row:7,  label:'Worn stone with faded markings',  respawn:false },
+      { itemId:'common_herb',   col:6,  row:13, label:'Herbs growing in old stonework',   respawn:true  },
+      { itemId:'common_herb',   col:21, row:12, label:'Herbs in the east ruins',          respawn:true  },
+      { itemId:'lavender',      col:7,  row:4,  label:'Lavender beside the path',         respawn:true  },
+    ],
+    stations:[],
+    npcs:[],
+    exits:[
+      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:13, row:0 },
+      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:14, row:0 },
+      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:13, row:1 },
+      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:14, row:1 },
+    ],
+  },
+
+  market: {
+    id:'market', name:'The Market Road',
+    grid: buildMarketMap(),
+    items:[],
+    stations:[],
+    npcs:[
+      {
+        id:'sera_market', name:'Sera', emoji:'🧑‍🦳', col:9, row:5,
+        color:'#c09070', scene:'market', shop:'sera_stall', stationary:true,
+        lines:[
+          "Good morning! Fresh herbs and fruit today.",
+          "The bees have been busy — got lovely honey in.",
+          "I always save the best herbs for healing. You never know when you'll need them.",
+          "Take care on the road north. The old mountain path can be treacherous.",
+        ],
+      },
+      {
+        id:'tool_vendor', name:'Edric', emoji:'🧔', col:14, row:5,
+        color:'#907060', scene:'market', shop:'tool_stall', stationary:true,
+        lines:[
+          "Best tools this side of the mountain. Guaranteed.",
+          "Iron fittings fresh from the forge. Good price.",
+          "You building something? I can sort you out.",
+        ],
+      },
+      {
+        id:'fabric_merchant', name:'Marta', emoji:'👩', col:20, row:5,
+        color:'#b08070', scene:'market', shop:'fabric_stall', stationary:true,
+        lines:[
+          "Fine cloth, all hand-spun. Nothing finer in the valley.",
+          "Looking for something specific? I can order it in.",
+          "The dyes this season are beautiful. You should see the new bolts.",
+        ],
+      },
+      {
+        id:'travelling_trader', name:'Davan', emoji:'🧳', col:24, row:9,
+        color:'#608080', scene:'market', shop:'trader_stall', stationary:true,
+        lines:[
+          "Fresh in from the eastern passes. Rare goods.",
+          "Glass panes — you won't find these in the village. Trust me.",
+          "I travel light, trade heavy. What are you looking for?",
+        ],
+      },
+    ],
+    exits:[
+      { label:'Back to village', targetScene:'village', fromZone:'market', col:0, row:10 },
+      { label:'Back to village', targetScene:'village', fromZone:'market', col:1, row:10 },
+      { label:'Back to village', targetScene:'village', fromZone:'market', col:0, row:11 },
+      { label:'Back to village', targetScene:'village', fromZone:'market', col:1, row:11 },
+    ],
+  },
+};
