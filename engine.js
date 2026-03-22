@@ -924,7 +924,7 @@ const BUILDING_ART = {
 
   bakery_upper: `<img src="images/buildings/bakery_upper.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
-  inn: `<img src="images/buildings/inn.jpg" style="width:100%;height:100%;object-fit:cover">`,
+  inn: `<img src="images/buildings/inn.jpeg" style="width:100%;height:100%;object-fit:cover">`,
 
   forge: `<img src="images/buildings/forge.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
