@@ -325,6 +325,43 @@ function initNPCPositions() {
   });
 }
 
+// Apply period-based schedules: update home positions, filter out NPCs not active this period,
+// and add any NPCs newly scheduled for this period.
+function applyNPCSchedules() {
+  if (currentBuilding || State.scene !== 'village') return;
+  const p = State.period;
+
+  // Update homes + remove NPCs whose schedule doesn't include this period
+  currentNPCs = currentNPCs.filter(npc => {
+    if (!npc.schedule) return true; // no schedule = always present
+    const entry = npc.schedule.find(s => s.periods.includes(p));
+    if (!entry) return false;
+    npc.homeCol = entry.col;
+    npc.homeRow = entry.row;
+    npc.wanderRadius = entry.radius;
+    npc.wanderPath = [];
+    return true;
+  });
+
+  // Add NPCs that become active this period but aren't in the scene yet
+  const presentIds = new Set(currentNPCs.map(n => n.id));
+  for (const npc of NPCS) {
+    if (!npc.schedule || npc.scene !== 'village' || npc.visible === false) continue;
+    if (presentIds.has(npc.id)) continue;
+    const entry = npc.schedule.find(s => s.periods.includes(p));
+    if (!entry) continue;
+    npc.homeCol = entry.col;
+    npc.homeRow = entry.row;
+    npc.wanderRadius = entry.radius;
+    npc.col = entry.col;
+    npc.row = entry.row;
+    npc.wanderPath = [];
+    npc.px = undefined;
+    npc.py = undefined;
+    currentNPCs.push(npc);
+  }
+}
+
 function updateNPCWander(dt) {
   if (currentBuilding) return; // NPCs don't wander inside buildings
   npcWanderTimer += dt;
@@ -336,9 +373,10 @@ function updateNPCWander(dt) {
     if (npc.wanderPath && npc.wanderPath.length > 0) return; // already moving
 
     // Pick a random nearby walkable tile within radius of home
+    const radius = npc.wanderRadius || NPC_WANDER_RADIUS;
     const candidates = [];
-    for (let dr = -NPC_WANDER_RADIUS; dr <= NPC_WANDER_RADIUS; dr++) {
-      for (let dc = -NPC_WANDER_RADIUS; dc <= NPC_WANDER_RADIUS; dc++) {
+    for (let dr = -radius; dr <= radius; dr++) {
+      for (let dc = -radius; dc <= radius; dc++) {
         const tc = (npc.homeCol||npc.col) + dc;
         const tr = (npc.homeRow||npc.row) + dr;
         if (walkable(tc, tr) && !(tc===npc.col && tr===npc.row))
@@ -637,6 +675,7 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
     mapCols         = VILLAGE_COLS;
     mapRows         = VILLAGE_ROWS;
     currentNPCs     = NPCS.filter(n => n.scene==='village' && (n.visible!==false || State.flags.harvest_festival));
+    applyNPCSchedules();
     currentStations = [];
     currentExits    = [];
 
@@ -863,6 +902,7 @@ function advancePeriod() {
       if (!anyOpen) showSleepWarning(false);
     }, 800);
   updateTimeUI();
+  applyNPCSchedules(); // reposition/show/hide NPCs based on new period
   // Check for story events on period change
   if (typeof checkStoryTriggers === 'function') checkStoryTriggers();
 }

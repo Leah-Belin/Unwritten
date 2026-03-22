@@ -302,6 +302,14 @@ const BUILDINGS = {
 const NPCS = [
   {
     id:'mariella', portrait:'images/portraits/mariella.jpg', name:'Mariella', emoji:'👩', col:5, row:5, color:'#c07850',
+    scene:'village',
+    // 0=Dawn 1=Morning 2=Midday 3=Afternoon 4=Dusk — absent at evening/night (inside bakery)
+    schedule:[
+      { periods:[1],   col:6,  row:10, radius:2 }, // morning: near bakery
+      { periods:[2],   col:20, row:20, radius:3 }, // midday: town square
+      { periods:[3],   col:29, row:27, radius:3 }, // afternoon: council hall area
+      { periods:[4],   col:6,  row:10, radius:2 }, // dusk: back near bakery
+    ],
     lines:[
       '"Welcome back, my joy. Rolls are nearly done — take some to the square when they\'re cool, would you?"',
       '"Market day tomorrow! I need you to fetch me some fresh herbs before then."',
@@ -315,8 +323,17 @@ const NPCS = [
     teachesAt: { goodwill:3, recipes:['spiced_rolls','fruit_preserve','morning_tea'], line:'"Come here — let me show you how to do the spiced rolls properly. Your father requests them every single morning."' },
   },
   {
-    id:'jaxon', portrait:'images/portraits/jaxon.jpg', name:'Jaxon', emoji:'🧑', col:21, row:22, color:'#507090',
+    id:'jaxon', portrait:'images/portraits/jaxon.jpg', name:'Jaxon', emoji:'🧑', col:20, row:20, color:'#507090',
     scene:'village',
+    // Dawn & evening: near home. Day: square, forge, inn. Night: inside.
+    schedule:[
+      { periods:[0],   col:12, row:30, radius:2 }, // dawn: near house
+      { periods:[1],   col:20, row:20, radius:4 }, // morning: town square
+      { periods:[2],   col:28, row:9,  radius:3 }, // midday: near forge
+      { periods:[3],   col:35, row:10, radius:3 }, // afternoon: near inn
+      { periods:[4],   col:20, row:20, radius:3 }, // dusk: town square
+      { periods:[5],   col:12, row:30, radius:2 }, // evening: near home
+    ],
     lines:[
       {
         text: '"Your bread is amazing, Kaida." He\'s looking at her, not at the loaf. "I\'m not sure how you did it."',
@@ -371,7 +388,15 @@ const NPCS = [
     generalReplies: ['"I understand."', '"Thank you, Elder."', '"I\'ll bear that in mind."'],
   },
   {
-    id:'hesta', portrait:'images/portraits/hesta.jpg', name:'Hesta', emoji:'🧓', col:5, row:4, color:'#7a6050',
+    id:'hesta', portrait:'images/portraits/hesta.jpg', name:'Hesta', emoji:'🧓', col:6, row:36, color:'#7a6050',
+    scene:'village',
+    schedule:[
+      { periods:[0],   col:6,  row:36, radius:2 }, // dawn: near hut
+      { periods:[1],   col:20, row:16, radius:3 }, // morning: town hall area
+      { periods:[2],   col:29, row:27, radius:3 }, // midday: council hall area
+      { periods:[3],   col:6,  row:10, radius:3 }, // afternoon: bakery area
+      { periods:[4,5], col:6,  row:36, radius:2 }, // dusk/evening: near hut
+    ],
     lines:[
       '"Oh, it\'s you! Come and sit a moment, my knees are giving me trouble today."',
       '"I\'ve been out here forty years. Village hasn\'t changed much. That\'s the way I like it."',
@@ -392,25 +417,67 @@ const NPCS = [
     teachesAt: { goodwill:2, recipes:['strong_tea'], line:'"My house blend. Travelers come back year after year just for this. Secret\'s in the steep time."' },
     quest: { id:'inn_fruit', itemId:'fruit', itemName:'Fruit', reward:'chit', rewardColor:'red', rewardAmount:2, line:'"I\'m short on fruit for the festival pies. Bring me some and I\'ll see you right."' },
   },
+  // Three children — play near fountain by day, head to villager houses at evening
   {
-    id:'children', name:'Children', emoji:'👧', col:20, row:17, color:'#a08060',
+    id:'child1', name:'Children', emoji:'👧', col:20, row:19, color:'#a08060',
     scene:'village',
-    lines:[
-      'They\'re playing a chasing game around the well, shrieking with laughter.',
-      'A girl drags a stick through the dirt idly — draws a curve — then stops. Scuffs it out fast with her shoe. The others don\'t even notice.',
-      'They\'re sorting colored stones into elaborate patterns. Someone disagrees about the rules. Loudly.',
+    schedule:[
+      { periods:[0,1,2,3,4], col:20, row:20, radius:3 }, // day: fountain plaza
+      { periods:[5],         col:24, row:32, radius:2 }, // evening: near house A
     ],
-    generalReplies: ['"Hello."', '"Don\'t mind me."'],
+    lines:[
+      'She\'s playing a chasing game around the fountain, shrieking with laughter.',
+      'She drags a stick through the dirt — draws a curve — then scuffs it out fast.',
+      'She\'s sorting coloured stones into elaborate patterns.',
+    ],
+    generalReplies: ['"Hello."', '"Can\'t stop — I\'m it!"'],
+  },
+  {
+    id:'child2', name:'Children', emoji:'👧', col:21, row:21, color:'#805040',
+    scene:'village',
+    schedule:[
+      { periods:[0,1,2,3,4], col:20, row:20, radius:3 }, // day: fountain plaza
+      { periods:[5],         col:30, row:16, radius:2 }, // evening: near house B
+    ],
+    lines:[
+      'She squeals and ducks behind the fountain.',
+      'She\'s arguing about the rules of a game only she fully understands.',
+      'She spots you and waves, then immediately forgets you were there.',
+    ],
+    generalReplies: ['"Hello."', '"You\'re it!"'],
+  },
+  {
+    id:'child3', name:'Children', emoji:'👦', col:19, row:21, color:'#907060',
+    scene:'village',
+    schedule:[
+      { periods:[0,1,2,3,4], col:20, row:20, radius:3 }, // day: fountain plaza
+      { periods:[5],         col:16, row:36, radius:2 }, // evening: near house C
+    ],
+    lines:[
+      'He\'s running in wide circles for no clear reason.',
+      'He stops, looks very serious for a moment, then runs off again.',
+      'He\'s building something out of pebbles. It might be a house.',
+    ],
+    generalReplies: ['"Hi."', '"Watch this!"'],
   },
   {
     id:'father', portrait:'images/portraits/father.jpg', name:'The Priest', emoji:'👴', col:20, row:20, color:'#c0b090',
-    scene:'village',
     visible: false,
     lines:[
       '"A good harvest this year. Nature is generous when we honor the compact."',
       '"The temple welcomes all who wish to serve. It is a quiet life, but a meaningful one."',
       '"Writing is a sacred responsibility. We treat it with the reverence it deserves."',
     ],
+  },
+  {
+    id:'galen', portrait:'images/portraits/father.jpg', name:'Galen', emoji:'👨', col:12, row:10, color:'#8a7060',
+    lines:[
+      '"Morning, love. The lavender\'s coming in well this year."',
+      '"Don\'t tell your mother I skipped breakfast — I got distracted by the new seedlings."',
+      '"There\'s something your grandmother used to say: tend the small things and the large ones take care of themselves."',
+      '"I left something in the kitchen for you. Don\'t let it go cold."',
+    ],
+    generalReplies: ['"I know, Dad."', '"Be careful out here."', '"I won\'t stay long."'],
   },
 ];
 
@@ -695,7 +762,7 @@ const ZONES = {
       { itemId:'garden_key',   col:9,  row:6,  label:'Small key under a stone',      respawn:false, oneTime:true },
     ],
     stations:[],
-    npcs:[],
+    npcs:[{ id:'galen', col:12, row:10 }],
     exits:[
       { label:'Return to village', targetScene:'village', fromZone:'garden', col:10, row:26 },
       { label:'Return to village', targetScene:'village', fromZone:'garden', col:11, row:26 },
