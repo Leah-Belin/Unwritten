@@ -32,6 +32,44 @@ loadSprite('elder');
 loadSprite('father');
 loadSprite('innkeeper');
 
+// ── TILE IMAGE LOADER ─────────────────────────────────────────
+// Miniature World isometric block sprites (32×32 source → drawn at 64×64).
+// Each tile image sits aligned to the game's 64×32 iso diamond.
+const _tileImgs = {};
+function loadTileImg(id, src) {
+  const img = new Image();
+  img.onload = () => { _tileImgs[id] = img; };
+  img.src = src;
+}
+const _MWT = 'images/tiles/Miniature%20world/';
+loadTileImg('grass',        _MWT + 'Tiles/Grass%20Block%201.png');
+loadTileImg('grass_flower', _MWT + 'Tiles/Grass%20Block%201(flowered).png');
+loadTileImg('path',         _MWT + 'Tiles/Path%20Block.png');
+loadTileImg('dirt',         _MWT + 'Tiles/Dirt%20Block%201.png');
+loadTileImg('water',        _MWT + 'Tiles/Water%20Block.png');
+loadTileImg('tree_a',       _MWT + 'Outline/Objects/Tree%201.png');
+loadTileImg('tree_b',       _MWT + 'Outline/Objects/Tree%202.png');
+
+// Map tile type → image id for ground tiles
+const _GROUND_IMG = {
+  [T.GRASS]:  'grass',
+  [T.FLOWER]: 'grass_flower',
+  [T.TREE]:   'grass',
+  [T.PATH]:   'path',
+  [T.DOOR]:   'path',
+  [T.DIRT]:   'dirt',
+  [T.PLOT]:   'dirt',
+  [T.WATER]:  'water',
+  [T.STAIRS]: 'path',
+};
+
+// Draw a 32×32 Miniature World tile at 2× scale.
+// Top-face top-vertex lands at (x, y − TH/2), matching the iso diamond.
+function drawTileImg(img, x, y) {
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(img, 0, 0, 32, 32, x - TW/2, y - TH/2, TW, TW);
+}
+
 // ── DRAW MORTAR/GRAIN TEXTURE ─────────────────────────────────
 // Draw mortar/grain texture lines on a face, clipped to the parallelogram shape.
 function drawWallTexture(x, y, bh, face, texture) {
@@ -166,12 +204,18 @@ function drawTile(c, r) {
   if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
   const hw=TW/2, hh=TH/2;
 
-  // Top diamond (flat tiles only — raised tiles draw their own top)
+  // Top face — Miniature World block sprite when loaded, else procedural diamond
   if (!def.raised) {
-    ctx.beginPath();
-    ctx.moveTo(x,y-hh); ctx.lineTo(x+hw,y); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
-    ctx.closePath(); ctx.fillStyle=def.top; ctx.fill();
-    ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=0.5; ctx.stroke();
+    const imgId = _GROUND_IMG[currentMap[r]?.[c]];
+    const tileImg = imgId && _tileImgs[imgId];
+    if (tileImg) {
+      drawTileImg(tileImg, x, y);
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(x,y-hh); ctx.lineTo(x+hw,y); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
+      ctx.closePath(); ctx.fillStyle=def.top; ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=0.5; ctx.stroke();
+    }
   }
 
   if (def.fountain) {
@@ -275,18 +319,29 @@ function drawTile(c, r) {
     return;
   }
   if (def.flower) {
-    ctx.font='9px serif'; ctx.textAlign='center';
-    ctx.fillText(['✿','❀','✾'][((c*7+r*3)%3)], x, y+3);
+    // grass_flower tile image already drawn above as the ground; no overlay needed
+    if (!_tileImgs.grass_flower) {
+      ctx.font='9px serif'; ctx.textAlign='center';
+      ctx.fillText(['✿','❀','✾'][((c*7+r*3)%3)], x, y+3);
+    }
     return;
   }
   if (def.tree) {
-    ctx.fillStyle='#5a4028'; ctx.fillRect(x-3,y-4,6,12);
-    for (const [ox,oy,rx,ry,col] of [
-      [0,-26,18,14,'#5a7830'],[0,-32,13,10,'#6a8840'],[0,-38,8,7,'#7a9848']
-    ]) {
-      ctx.beginPath(); ctx.ellipse(x+ox,y+oy,rx,ry,0,0,Math.PI*2);
-      ctx.fillStyle=col; ctx.fill();
-      ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=0.5; ctx.stroke();
+    // Draw tree object on top of the grass block ground
+    const treeImg = _tileImgs[((c*7+r*3)%2===0) ? 'tree_a' : 'tree_b'];
+    if (treeImg) {
+      ctx.imageSmoothingEnabled = false;
+      // Object base anchored at tile diamond centre (x, y); extends upward TW px
+      ctx.drawImage(treeImg, 0, 0, 32, 32, x - TW/2, y - TW, TW, TW);
+    } else {
+      ctx.fillStyle='#5a4028'; ctx.fillRect(x-3,y-4,6,12);
+      for (const [ox,oy,rx,ry,col] of [
+        [0,-26,18,14,'#5a7830'],[0,-32,13,10,'#6a8840'],[0,-38,8,7,'#7a9848']
+      ]) {
+        ctx.beginPath(); ctx.ellipse(x+ox,y+oy,rx,ry,0,0,Math.PI*2);
+        ctx.fillStyle=col; ctx.fill();
+        ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=0.5; ctx.stroke();
+      }
     }
     return;
   }
