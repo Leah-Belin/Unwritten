@@ -39,6 +39,7 @@ const _tileImgs = {};
 function loadTileImg(id, src) {
   const img = new Image();
   img.onload = () => { _tileImgs[id] = img; };
+  img.onerror = () => { console.error('[tiles] failed to load:', id, src); };
   img.src = src;
 }
 const _MWT = 'images/tiles/Miniature%20world/';
@@ -208,7 +209,9 @@ function drawTile(c, r) {
   // Top face — Miniature World block sprite when loaded, else procedural diamond
   if (!def.raised) {
     const tileType = currentMap[r]?.[c];
-    const imgId = (currentBuilding && tileType === T.DIRT) ? 'floor' : _GROUND_IMG[tileType];
+    const isFloor = currentBuilding && tileType === T.DIRT;
+    if (isFloor && !window._floorLogged) { window._floorLogged=true; console.log('[floor] currentBuilding:', !!currentBuilding, 'tileType:', tileType, 'T.DIRT:', T.DIRT, 'img loaded:', !!_tileImgs.floor); }
+    const imgId = isFloor ? 'floor' : _GROUND_IMG[tileType];
     const tileImg = imgId && _tileImgs[imgId];
     if (tileImg) {
       drawTileImg(tileImg, x, y);
