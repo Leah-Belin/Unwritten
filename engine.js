@@ -10,8 +10,9 @@ function resize() {
 }
 
 // ── PORTRAIT DATA
-const PORTRAIT_KAIDA  = 'images/portraits/kaida.jpg';
-const PORTRAIT_GALLAN = 'images/portraits/gallan.jpg';
+const PORTRAIT_KAIDA     = 'images/portraits/kaida.jpg';
+const PORTRAIT_GALLAN    = 'images/portraits/gallan.jpg';
+const PORTRAIT_MARIELLA  = 'images/portraits/mariella.jpg';
 
 // ── ISO MATH ──────────────────────────────────────────────────
 const TW = 64, TH = 32;
