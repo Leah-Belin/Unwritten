@@ -313,6 +313,15 @@ function drawTile(c, r) {
     }
     return;
   }
+  if (def.exit) {
+    // Golden path with a small signpost arrow
+    const pulse = 0.65 + 0.35 * Math.sin(Date.now() / 500);
+    ctx.strokeStyle = `rgba(220,180,30,${pulse})`; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x,y-hh); ctx.lineTo(x+hw,y); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y); ctx.closePath(); ctx.stroke();
+    ctx.font = '11px serif'; ctx.textAlign = 'center';
+    ctx.fillText('➤', x, y+3);
+    return;
+  }
   if (def.stairs) {
     // Draw stair steps
     ctx.fillStyle='#a08858';
@@ -780,10 +789,16 @@ function checkArrival() {
     }
   }
 
+  // Check zone exits in village (golden EXIT tiles at path borders)
+  if (!currentBuilding) {
+    const zoneId = ZONE_EXIT_MAP?.[`${c},${r}`];
+    if (zoneId) { loadScene(zoneId); return; }
+  }
+
   // Check exits — player must step ON the exit tile
   currentExits.forEach(exit => {
     if (c === exit.col && r === exit.row) {
-      if (exit.targetScene) loadScene(exit.targetScene, currentBuilding?.id);
+      if (exit.targetScene) loadScene(exit.targetScene, currentBuilding?.id, exit.fromZone);
       else if (exit.targetFloor) loadFloor(currentBuilding, exit.targetFloor);
     }
   });
@@ -841,11 +856,17 @@ function promptPickup(item) {
     return;
   }
 
-  // Key includes day for respawning forest items
-  const isForest = ITEMS[item.itemId]?.category === 'building' && !currentBuilding;
-  const takenKey = isForest
-    ? `village_${item.itemId}_${item.col}_${item.row}_day_${State.day}`
-    : `${currentBuilding?.id||'village'}_${item.itemId}_${item.col}_${item.row}`;
+  // Build the taken-key appropriate to where the item lives
+  const currentZone = !currentBuilding && State.scene !== 'village' ? State.scene : null;
+  let takenKey;
+  if (currentZone) {
+    const dayKey = `day_${State.day}`;
+    takenKey = `zone_${currentZone}_${item.itemId}_${item.col}_${item.row}_${item.oneTime ? 'once' : dayKey}`;
+  } else if (!currentBuilding && ITEMS[item.itemId]?.category === 'building') {
+    takenKey = `village_${item.itemId}_${item.col}_${item.row}_day_${State.day}`;
+  } else {
+    takenKey = `${currentBuilding?.id||'village'}_${item.itemId}_${item.col}_${item.row}`;
+  }
   if (State.takenItems.includes(takenKey)) return;
 
   // Add to inventory
@@ -1187,6 +1208,11 @@ function talkTo(npc) {
   } else if (npc.generalReplies) {
     replyActions = npc.generalReplies.map(r => ({ label: r, onClick: () => {} }));
   }
+  // If NPC runs a shop, append a "Browse wares" action
+  if (npc.shop) {
+    replyActions.push({ label:'Browse wares 🛒', onClick: () => openNPCShop(npc.shop) });
+  }
+
   showDialogue(npc, line, replyActions);
   addNarrative(`You spoke with ${npc.name}.`);
   State.raiseGoodwill(npc.id);
@@ -1270,8 +1296,48 @@ function interactCabinet() {
 }
 
 // ── SCENE MANAGEMENT ──────────────────────────────────────────
-function loadScene(sceneId, fromBuildingId) {
+function loadScene(sceneId, fromBuildingId, fromZone) {
   clearNarrative();
+  if (sceneId !== 'village' && ZONES?.[sceneId]) {
+    // ── Load an outdoor zone ───────────────────────────────────
+    const zone = ZONES[sceneId];
+    currentBuilding  = null;
+    currentFloor     = null;
+    currentCabinet   = null;
+    currentMap       = zone.grid;
+    mapRows          = zone.grid.length;
+    mapCols          = zone.grid[0].length;
+    currentNPCs      = zone.npcs || [];
+    currentStations  = zone.stations || [];
+    currentFurniture = [];
+    currentExits     = zone.exits || [];
+
+    // Zone items respawn daily
+    const dayKey = `day_${State.day}`;
+    currentItems = (zone.items || []).map(item => {
+      const takenKey = `zone_${sceneId}_${item.itemId}_${item.col}_${item.row}_${item.oneTime ? 'once' : dayKey}`;
+      return { ...item, taken: State.takenItems.includes(takenKey) };
+    });
+
+    // Place player at the entry point (opposite edge from the exit)
+    const entryPos = { forest:{col:28,row:10}, garden:{col:10,row:24},
+                       temple_path:{col:13,row:2}, market:{col:3,row:10} };
+    const pos = entryPos[sceneId] || { col:Math.floor(mapCols/2), row:Math.floor(mapRows/2) };
+    player.col=pos.col; player.row=pos.row;
+    player.px=isoX(player.col,player.row); player.py=isoY(player.col,player.row);
+    player.path=[];
+
+    updateSceneLabel(zone.name);
+    State.scene = sceneId; State.save();
+    const arrivals = { forest:'The trees close in around you.',
+                       garden:'The air is cool and herb-sweet.',
+                       temple_path:'The ancient road stretches ahead.',
+                       market:'Voices and colour fill the square.' };
+    addNarrative(arrivals[sceneId] || `You arrive at ${zone.name}.`, 'sys');
+    updateSleepButton();
+    updateLeaveButton();
+    return;
+  }
   if (sceneId === 'village') {
     currentBuilding = null;
     currentFloor    = null;
@@ -1290,8 +1356,13 @@ function loadScene(sceneId, fromBuildingId) {
       return { ...item, taken: State.takenItems.includes(takenKey) };
     });
 
-    // Place player at the building door they just exited, or default starting position
-    if (fromBuildingId) {
+    // Place player at the zone exit they came from, or the building door, or default
+    if (fromZone) {
+      const zoneReturn = { forest:{col:2,row:19}, garden:{col:19,row:2},
+                           temple_path:{col:19,row:37}, market:{col:37,row:19} };
+      const pos = zoneReturn[fromZone] || { col:20, row:23 };
+      player.col=pos.col; player.row=pos.row;
+    } else if (fromBuildingId) {
       const doorEntry = Object.entries(DOOR_MAP).find(([k,v]) => v === fromBuildingId);
       if (doorEntry) {
         const [dc, dr] = doorEntry[0].split(',').map(Number);

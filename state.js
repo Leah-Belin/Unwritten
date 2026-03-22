@@ -144,6 +144,9 @@ const State = {
 
   // ── HELPERS ──────────────────────────────────────────────────
   addItem(item) {
+    // Currency items go straight to the purse, never into the pack
+    if (item.id === 'red_chit')  { this.wallet.red++;  this.save(); return; }
+    if (item.id === 'blue_chit') { this.wallet.blue++; this.save(); return; }
     this.inventory.push({ ...item });
   },
 
