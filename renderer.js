@@ -50,7 +50,7 @@ loadTileImg('dirt',         _MWT + 'Tiles/Dirt%20Block%201.png');
 loadTileImg('water',        _MWT + 'Tiles/Water%20Block.png');
 loadTileImg('tree_a',       _MWT + 'Outline/Objects/Tree%201.png');
 loadTileImg('tree_b',       _MWT + 'Outline/Objects/Tree%202.png');
-loadTileImg('floor',        _MWT + 'Tiles/Sand%20Block%201.png');
+loadTileImg('floor',        'images/tiles/floor.png');
 
 // Map tile type → image id for ground tiles
 const _GROUND_IMG = {
@@ -218,7 +218,9 @@ function drawTile(c, r) {
     } else {
       ctx.beginPath();
       ctx.moveTo(x,y-hh); ctx.lineTo(x+hw,y); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
-      ctx.closePath(); ctx.fillStyle=def.top; ctx.fill();
+      ctx.closePath();
+      ctx.fillStyle = isFloor ? '#d4b86a' : def.top;
+      ctx.fill();
       ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=0.5; ctx.stroke();
     }
   }
