@@ -1,3 +1,30 @@
+// ── SPRITE SHEET LOADER ───────────────────────────────────────
+// Place PNG files at images/characters/<id>.png to replace emoji rendering.
+// Expected format (compatible with LPC Universal Spritesheet Generator):
+//   - Frame size: 64×64 px (configurable via SPRITE_W / SPRITE_H)
+//   - Rows:  0=walk_up, 1=walk_left, 2=walk_down, 3=walk_right
+//   - Columns: 0-3 walk frames (only first 4 used even if sheet has more)
+//
+// Character IDs:
+//   player  → images/characters/player.png
+//   NPCs    → images/characters/<npc.id>.png  (npc.id = lowercase name, e.g. "mariella")
+const SPRITE_W = 64, SPRITE_H = 64;
+const SPRITE_ROWS = { up:0, left:1, down:2, right:3 };
+const _sprites = {};   // id → HTMLImageElement (null = load failed)
+
+function loadSprite(id) {
+  if (id in _sprites) return;
+  _sprites[id] = null; // mark as attempted
+  const img = new Image();
+  img.onload = () => { _sprites[id] = img; };
+  img.src = `images/characters/${id}.png`;
+}
+
+// Pre-attempt loads for known characters at startup.
+// Add NPC ids here as sprite sheets become available.
+loadSprite('player');
+
+// ── DRAW MORTAR/GRAIN TEXTURE ─────────────────────────────────
 // Draw mortar/grain texture lines on a face, clipped to the parallelogram shape.
 function drawWallTexture(x, y, bh, face, texture) {
   const hw=TW/2, hh=TH/2;
@@ -318,28 +345,53 @@ function drawTile(c, r) {
   }
 }
 
-function drawSprite(x, y, emoji, label, bodyColor, isPlayer) {
-  // Sprite sits ON the tile surface — base at top vertex of diamond, body above
-  const base = y - TH/2;                  // feet at tile top vertex (not centre)
-  const radius = isPlayer ? 14 : 12;
-  const centre = base - radius;            // circle centre above tile
+function drawSprite(x, y, emoji, label, bodyColor, isPlayer, spriteId, direction, animFrame) {
+  const base = y - TH/2;   // feet at tile top vertex
+  const sheet = spriteId ? _sprites[spriteId] : null;
 
-  // Shadow on tile surface
-  ctx.beginPath(); ctx.ellipse(x, base+2, isPlayer?13:11, 5, 0, 0, Math.PI*2);
-  ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.fill();
-  // Body circle
-  ctx.beginPath(); ctx.arc(x, centre, radius, 0, Math.PI*2);
-  ctx.fillStyle=bodyColor; ctx.fill();
-  ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=1.2; ctx.stroke();
-  // Face emoji
-  ctx.font=`${isPlayer?15:13}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(emoji, x, centre);
-  ctx.textBaseline='alphabetic';
-  // Name label
+  if (sheet) {
+    // ── Pixel art sprite sheet rendering ──
+    const row  = SPRITE_ROWS[direction || 'down'];
+    const col  = (animFrame || 0) % 4;
+    const sx   = col  * SPRITE_W;
+    const sy   = row  * SPRITE_H;
+    const scale = isPlayer ? 1 : 0.75;
+    const dw   = SPRITE_W * scale;
+    const dh   = SPRITE_H * scale;
+    const dx   = x - dw / 2;
+    const dy   = base - dh;   // feet at base
+
+    // Shadow
+    ctx.beginPath(); ctx.ellipse(x, base+2, isPlayer?13:11, 5, 0, 0, Math.PI*2);
+    ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.fill();
+
+    ctx.imageSmoothingEnabled = false; // keep pixels crisp
+    ctx.drawImage(sheet, sx, sy, SPRITE_W, SPRITE_H, dx, dy, dw, dh);
+  } else {
+    // ── Fallback: emoji circle (original rendering) ──
+    const radius = isPlayer ? 14 : 12;
+    const centre = base - radius;
+
+    ctx.beginPath(); ctx.ellipse(x, base+2, isPlayer?13:11, 5, 0, 0, Math.PI*2);
+    ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.fill();
+    ctx.beginPath(); ctx.arc(x, centre, radius, 0, Math.PI*2);
+    ctx.fillStyle=bodyColor; ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=1.2; ctx.stroke();
+    ctx.font=`${isPlayer?15:13}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(emoji, x, centre);
+    ctx.textBaseline='alphabetic';
+  }
+
+  // Name label (always shown)
+  const radius = isPlayer ? 14 : 12;
+  const labelY = sheet
+    ? (base - (SPRITE_H * (isPlayer?1:0.75)) - 2)
+    : (base - radius*2 - 4);
   ctx.font=`${isPlayer?'bold ':''}9px Caveat,cursive`;
   ctx.fillStyle=isPlayer?'#ffe8c0':'#f0e8d5';
   ctx.shadowColor='rgba(0,0,0,0.95)'; ctx.shadowBlur=5;
-  ctx.fillText(label, x, centre-radius-4);
+  ctx.textAlign='center';
+  ctx.fillText(label, x, labelY);
   ctx.shadowBlur=0;
 }
 
@@ -592,9 +644,11 @@ function render() {
       // Use pixel position if NPC is wandering, else tile position
       const nx = (n.px !== undefined ? n.px : isoX(n.col,n.row)) + offX;
       const ny = (n.py !== undefined ? n.py : isoY(n.col,n.row)) + offY;
-      drawSprite(nx, ny, n.emoji, n.name, n.color, false);
+      const nid = n.id || n.name?.toLowerCase().replace(/\s+/g,'_');
+      if (nid && !(nid in _sprites)) loadSprite(nid);
+      drawSprite(nx, ny, n.emoji, n.name, n.color, false, nid, n.direction||'down', n.animFrame||0);
     }
-    else if (d.k==='player')  drawSprite(player.px+offX,player.py+offY,'👧','Kaida',player.color,true);
+    else if (d.k==='player')  drawSprite(player.px+offX,player.py+offY,'👧','Kaida',player.color,true,'player',player.direction,player.animFrame);
   }
 
   drawMarker();

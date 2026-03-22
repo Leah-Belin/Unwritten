@@ -35,6 +35,10 @@ const player = {
   px: 0, py: 0,
   path: [],
   color: '#e8c090',
+  direction: 'down',
+  moving: false,
+  animFrame: 0,
+  animTimer: 0,
 };
 
 const MOVE_SPEED = 90;
@@ -112,6 +116,10 @@ function loop(ts) {
     const dx=tx-player.px, dy=ty-player.py;
     const dist=Math.sqrt(dx*dx+dy*dy);
     const step=MOVE_SPEED*dt;
+    player.moving = true;
+    player.direction = isoDirection(dx, dy);
+    player.animTimer += dt;
+    if (player.animTimer > 0.15) { player.animTimer=0; player.animFrame=(player.animFrame+1)%4; }
     if (dist<step) {
       player.px=tx; player.py=ty; player.col=next.col; player.row=next.row;
       player.path.shift();
@@ -119,6 +127,9 @@ function loop(ts) {
     } else {
       player.px+=dx/dist*step; player.py+=dy/dist*step;
     }
+  } else {
+    player.moving = false;
+    player.animFrame = 0;
   }
 
   // Real-time period advance
@@ -287,6 +298,18 @@ function promptPickup(item) {
   State.save();
 }
 
+// ── DIRECTION HELPER ──────────────────────────────────────────
+// Convert screen-space dx/dy (isometric) to a cardinal direction name.
+// In isometric view, moving right on screen = moving down-right on the map.
+function isoDirection(dx, dy) {
+  // Use the larger component to determine dominant direction
+  if (Math.abs(dx) > Math.abs(dy)) {
+    return dx > 0 ? 'right' : 'left';
+  } else {
+    return dy > 0 ? 'down' : 'up';
+  }
+}
+
 // ── NPC WANDERING ─────────────────────────────────────────────
 // NPCs wander near their home position every ~30 seconds
 const NPC_WANDER_INTERVAL = 30; // seconds between wander steps
@@ -348,6 +371,11 @@ function moveNPCs(dt) {
     const ty = isoY(next.col, next.row);
     const dx = tx - npc.px, dy = ty - npc.py;
     const dist = Math.sqrt(dx*dx + dy*dy);
+
+    npc.moving = true;
+    npc.direction = isoDirection(dx, dy);
+    npc.animTimer = (npc.animTimer || 0) + step / 60;
+    if (npc.animTimer > 0.15) { npc.animTimer=0; npc.animFrame=((npc.animFrame||0)+1)%4; }
 
     if (dist < step) {
       npc.px = tx; npc.py = ty;
