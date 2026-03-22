@@ -311,17 +311,16 @@ function isoDirection(dx, dy) {
 }
 
 // ── NPC WANDERING ─────────────────────────────────────────────
-// NPCs wander near their home position every ~30 seconds
-const NPC_WANDER_INTERVAL = 30; // seconds between wander steps
-const NPC_WANDER_RADIUS   = 3;  // tiles from home
-let npcWanderTimer = 0;
+// Each NPC has its own wander timer so they move independently
+const NPC_WANDER_RADIUS = 3; // default tiles from home
 
 function initNPCPositions() {
-  // Store home positions
+  // Store home positions and stagger each NPC's first move
   NPCS.forEach(npc => {
     npc.homeCol = npc.col;
     npc.homeRow = npc.row;
     npc.wanderPath = [];
+    npc.wanderTimer = Math.random() * 20; // staggered start (0–20 s)
   });
 }
 
@@ -356,6 +355,7 @@ function applyNPCSchedules() {
     npc.col = entry.col;
     npc.row = entry.row;
     npc.wanderPath = [];
+    npc.wanderTimer = Math.random() * 10; // stagger so new arrivals don't all move at once
     npc.px = undefined;
     npc.py = undefined;
     currentNPCs.push(npc);
@@ -363,16 +363,17 @@ function applyNPCSchedules() {
 }
 
 function updateNPCWander(dt) {
-  if (currentBuilding) return; // NPCs don't wander inside buildings
-  npcWanderTimer += dt;
-  if (npcWanderTimer < NPC_WANDER_INTERVAL) return;
-  npcWanderTimer = 0;
+  if (currentBuilding) return;
 
   currentNPCs.forEach(npc => {
-    if (npc.stationary) return; // stall holders etc. stay put
-    if (npc.wanderPath && npc.wanderPath.length > 0) return; // already moving
+    if (npc.stationary) return;
+    if (npc.wanderPath && npc.wanderPath.length > 0) return; // still moving
 
-    // Pick a random nearby walkable tile within radius of home
+    // Count down this NPC's individual pause timer
+    npc.wanderTimer = (npc.wanderTimer || 0) - dt;
+    if (npc.wanderTimer > 0) return;
+
+    // Pick a random nearby walkable tile within this NPC's radius
     const radius = npc.wanderRadius || NPC_WANDER_RADIUS;
     const candidates = [];
     for (let dr = -radius; dr <= radius; dr++) {
@@ -385,8 +386,10 @@ function updateNPCWander(dt) {
     }
     if (candidates.length === 0) return;
     const target = candidates[Math.floor(Math.random() * candidates.length)];
-    // Short A* path for NPC
-    npc.wanderPath = astar(npc.col, npc.row, target.col, target.row).slice(0, 4);
+    npc.wanderPath = astar(npc.col, npc.row, target.col, target.row).slice(0, 5);
+
+    // Next pause: 8–22 s (varies per NPC so they stay out of sync)
+    npc.wanderTimer = 8 + Math.random() * 14;
   });
 }
 
