@@ -49,6 +49,7 @@ loadTileImg('dirt',         _MWT + 'Tiles/Dirt%20Block%201.png');
 loadTileImg('water',        _MWT + 'Tiles/Water%20Block.png');
 loadTileImg('tree_a',       _MWT + 'Outline/Objects/Tree%201.png');
 loadTileImg('tree_b',       _MWT + 'Outline/Objects/Tree%202.png');
+loadTileImg('floor',        _MWT + 'Tiles/Sand%20Block%201.png');
 
 // Map tile type → image id for ground tiles
 const _GROUND_IMG = {
@@ -346,6 +347,10 @@ function drawTile(c, r) {
     return;
   }
   if (def.raised) {
+    // Interior floor tiles — draw as flat image tile instead of a box
+    if (currentBuilding && currentMap[r]?.[c] === T.BUILDING) {
+      if (_tileImgs.floor) { drawTileImg(_tileImgs.floor, x, y); return; }
+    }
     // Interior walls are short so the room is visible.
     // The "near" sides (bottom row, right col) are almost flush with the floor
     // so they don't obscure the interior from the isometric camera.
