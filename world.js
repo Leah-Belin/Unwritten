@@ -148,8 +148,8 @@ function buildVillageMap() {
   // Main paths
   for (let i = 0; i < VILLAGE_ROWS; i++) { villageMap[i][19] = T.PATH; villageMap[i][20] = T.PATH; }
   for (let j = 0; j < VILLAGE_COLS; j++) { villageMap[19][j] = T.PATH; villageMap[20][j] = T.PATH; }
-  // Town square — cobblestone plaza around fountain (9×9, fountain at exact centre)
-  fillVRect(16, 16, 9, 9, T.COBBLE);
+  // Town square — cobblestone plaza around fountain (7×7, fountain at exact centre, gap before town hall)
+  fillVRect(17, 17, 7, 7, T.COBBLE);
   // Flowers
   [[5,5],[8,12],[12,4],[30,6],[35,14],[6,28],[3,35],[32,32],[14,36],[22,8],[28,34],[15,22],[24,30]].forEach(([r,c])=>{
     if(villageMap[r][c]===T.GRASS)villageMap[r][c]=T.FLOWER;
