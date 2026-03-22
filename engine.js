@@ -1407,9 +1407,264 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
 // ── ROOM TRANSITION ───────────────────────────────────────────
 // Placeholder SVG art per building — swap for <img src="..."> when real art exists
 const BUILDING_ART = {
-  market: `<img src="images/buildings/market.jpg" style="width:100%;height:100%;object-fit:cover">`,
+  market: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" style="width:100%;height:100%;background:#fdf6ee">
+    <!-- Sky -->
+    <rect width="400" height="300" fill="#fdf6ee"/>
+    <!-- Peach cloud left -->
+    <ellipse cx="80" cy="40" rx="55" ry="18" fill="#f5cdb4" opacity="0.6"/>
+    <ellipse cx="55" cy="48" rx="30" ry="12" fill="#f5cdb4" opacity="0.5"/>
+    <!-- Blue cloud right -->
+    <ellipse cx="310" cy="35" rx="50" ry="16" fill="#c8dce8" opacity="0.6"/>
+    <ellipse cx="340" cy="44" rx="28" ry="11" fill="#c8dce8" opacity="0.5"/>
+    <!-- Cobblestone ground -->
+    <rect x="0" y="210" width="400" height="90" fill="#e8d8c0"/>
+    <line x1="0" y1="225" x2="400" y2="225" stroke="#c8b89a" stroke-width="0.8"/>
+    <line x1="0" y1="245" x2="400" y2="245" stroke="#c8b89a" stroke-width="0.8"/>
+    <line x1="0" y1="265" x2="400" y2="265" stroke="#c8b89a" stroke-width="0.8"/>
+    <line x1="30" y1="210" x2="30" y2="300" stroke="#c8b89a" stroke-width="0.6"/>
+    <line x1="80" y1="210" x2="80" y2="300" stroke="#c8b89a" stroke-width="0.6"/>
+    <line x1="130" y1="210" x2="130" y2="300" stroke="#c8b89a" stroke-width="0.6"/>
+    <line x1="180" y1="210" x2="180" y2="300" stroke="#c8b89a" stroke-width="0.6"/>
+    <line x1="230" y1="210" x2="230" y2="300" stroke="#c8b89a" stroke-width="0.6"/>
+    <line x1="280" y1="210" x2="280" y2="300" stroke="#c8b89a" stroke-width="0.6"/>
+    <line x1="330" y1="210" x2="330" y2="300" stroke="#c8b89a" stroke-width="0.6"/>
+    <line x1="380" y1="210" x2="380" y2="300" stroke="#c8b89a" stroke-width="0.6"/>
+    <!-- LEFT STALL — pink awning -->
+    <polygon points="0,80 120,80 105,105 15,105" fill="#e8b4a0" stroke="#5a3a2a" stroke-width="1.2"/>
+    <line x1="15" y1="105" x2="105" y2="105" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- scallop fringe -->
+    <path d="M15,105 Q25,115 35,105 Q45,115 55,105 Q65,115 75,105 Q85,115 95,105 Q100,115 105,105" fill="none" stroke="#5a3a2a" stroke-width="1"/>
+    <!-- stall posts -->
+    <rect x="15" y="105" width="5" height="105" fill="#8a6a50" stroke="#5a3a2a" stroke-width="0.8"/>
+    <rect x="100" y="105" width="5" height="105" fill="#8a6a50" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- stall table -->
+    <rect x="5" y="165" width="115" height="10" fill="#d4b890" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="5" y="175" width="115" height="35" fill="#e8d0a8" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- bread loaves on table -->
+    <ellipse cx="30" cy="168" rx="10" ry="7" fill="#c8955a" stroke="#5a3a2a" stroke-width="0.8"/>
+    <ellipse cx="50" cy="166" rx="11" ry="8" fill="#c8955a" stroke="#5a3a2a" stroke-width="0.8"/>
+    <ellipse cx="70" cy="168" rx="10" ry="7" fill="#c8955a" stroke="#5a3a2a" stroke-width="0.8"/>
+    <ellipse cx="88" cy="167" rx="9" ry="6" fill="#c8955a" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- sausages hanging -->
+    <line x1="30" y1="80" x2="30" y2="120" stroke="#5a3a2a" stroke-width="0.8"/>
+    <ellipse cx="30" cy="125" rx="5" ry="8" fill="#a06840" stroke="#5a3a2a" stroke-width="0.8"/>
+    <line x1="50" y1="80" x2="50" y2="115" stroke="#5a3a2a" stroke-width="0.8"/>
+    <ellipse cx="50" cy="120" rx="4" ry="7" fill="#a06840" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- LEFT stall keeper (round cap, apron) -->
+    <circle cx="25" cy="148" r="9" fill="#d4a870" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="18" y="155" width="14" height="12" rx="2" fill="#c8956a" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- apron -->
+    <rect x="19" y="157" width="12" height="9" rx="1" fill="#e8e0d0" stroke="#5a3a2a" stroke-width="0.6"/>
+    <!-- cap -->
+    <ellipse cx="25" cy="141" rx="9" ry="4" fill="#7a6a5a" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- 2nd stall person -->
+    <circle cx="55" cy="145" r="9" fill="#c8a068" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="48" y="152" width="14" height="18" rx="2" fill="#b8845a" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- CENTRE STALL — cream tent -->
+    <polygon points="160,60 240,60 255,95 145,95" fill="#f0e8d0" stroke="#5a3a2a" stroke-width="1.2"/>
+    <path d="M145,95 Q157,107 169,95 Q181,107 193,95 Q205,107 217,95 Q229,107 241,95 Q248,107 255,95" fill="none" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="148" y="95" width="5" height="115" fill="#8a6a50" stroke="#5a3a2a" stroke-width="0.8"/>
+    <rect x="250" y="95" width="5" height="115" fill="#8a6a50" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- centre table -->
+    <rect x="148" y="165" width="108" height="8" fill="#d4b890" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="148" y="173" width="108" height="37" fill="#e8d0a8" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- goods on table -->
+    <rect x="158" y="158" width="18" height="10" rx="1" fill="#d4c090" stroke="#5a3a2a" stroke-width="0.7"/>
+    <rect x="180" y="156" width="18" height="12" rx="1" fill="#d4c090" stroke="#5a3a2a" stroke-width="0.7"/>
+    <rect x="202" y="158" width="16" height="10" rx="1" fill="#d4c090" stroke="#5a3a2a" stroke-width="0.7"/>
+    <rect x="222" y="157" width="18" height="11" rx="1" fill="#d4c090" stroke="#5a3a2a" stroke-width="0.7"/>
+    <!-- centre NPC -->
+    <circle cx="200" cy="143" r="9" fill="#d4a870" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="193" y="150" width="14" height="18" rx="2" fill="#c8a078" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- RIGHT STALL — blue awning -->
+    <polygon points="280,75 400,75 400,100 265,100" fill="#b8d0d8" stroke="#5a3a2a" stroke-width="1.2"/>
+    <path d="M265,100 Q277,112 289,100 Q301,112 313,100 Q325,112 337,100 Q349,112 361,100 Q373,112 385,100 Q393,112 400,100" fill="none" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="268" y="100" width="5" height="110" fill="#8a6a50" stroke="#5a3a2a" stroke-width="0.8"/>
+    <rect x="392" y="100" width="5" height="110" fill="#8a6a50" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- right table / counter -->
+    <rect x="320" y="158" width="75" height="10" fill="#d4b890" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="320" y="168" width="75" height="42" fill="#c4a878" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- clothes hanging right -->
+    <line x1="310" y1="75" x2="310" y2="145" stroke="#5a3a2a" stroke-width="0.8"/>
+    <rect x="303" y="105" width="14" height="22" rx="2" fill="#a8c0b8" stroke="#5a3a2a" stroke-width="0.8"/>
+    <line x1="340" y1="75" x2="340" y2="140" stroke="#5a3a2a" stroke-width="0.8"/>
+    <rect x="333" y="100" width="12" height="25" rx="2" fill="#d0b8a0" stroke="#5a3a2a" stroke-width="0.8"/>
+    <line x1="365" y1="75" x2="365" y2="143" stroke="#5a3a2a" stroke-width="0.8"/>
+    <rect x="358" y="103" width="13" height="22" rx="2" fill="#c8a8b8" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- right stall keeper -->
+    <circle cx="355" cy="150" r="9" fill="#d4a870" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="348" y="157" width="14" height="18" rx="2" fill="#c8956a" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- right stall 2nd person -->
+    <circle cx="385" cy="148" r="9" fill="#c8b888" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="378" y="155" width="14" height="22" rx="2" fill="#e0c890" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- barrel (right foreground) -->
+    <ellipse cx="305" cy="248" rx="18" ry="10" fill="#c4a060" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="287" y="215" width="36" height="33" fill="#c4a060" stroke="#5a3a2a" stroke-width="1"/>
+    <ellipse cx="305" cy="215" rx="18" ry="8" fill="#d4b070" stroke="#5a3a2a" stroke-width="1"/>
+    <line x1="287" y1="228" x2="323" y2="228" stroke="#5a3a2a" stroke-width="0.8"/>
+    <line x1="287" y1="238" x2="323" y2="238" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- plant in barrel -->
+    <ellipse cx="305" cy="210" rx="14" ry="6" fill="#90b878" stroke="#5a3a2a" stroke-width="0.8"/>
+    <path d="M300,205 Q305,192 310,205" fill="#78a060" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- FOREGROUND CHILDREN -->
+    <!-- girl skipping rope -->
+    <circle cx="90" cy="238" r="10" fill="#e8c090" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="83" y="247" width="14" height="20" rx="2" fill="#e8c898" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- rope arc -->
+    <path d="M75,265 Q90,285 110,265" fill="none" stroke="#5a3a2a" stroke-width="1.2"/>
+    <line x1="83" y1="265" x2="75" y2="265" stroke="#5a3a2a" stroke-width="1"/>
+    <line x1="97" y1="265" x2="110" y2="265" stroke="#5a3a2a" stroke-width="1"/>
+    <!-- running boy 1 -->
+    <circle cx="185" cy="232" r="10" fill="#d4a868" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="178" y="241" width="14" height="18" rx="2" fill="#c8a068" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- hoop -->
+    <circle cx="210" cy="260" r="16" fill="none" stroke="#5a3a2a" stroke-width="2"/>
+    <!-- running boy 2 -->
+    <circle cx="225" cy="228" r="10" fill="#d4b878" stroke="#5a3a2a" stroke-width="1"/>
+    <rect x="218" y="237" width="14" height="18" rx="2" fill="#c0a060" stroke="#5a3a2a" stroke-width="0.8"/>
+    <!-- birds -->
+    <path d="M255,275 Q260,270 265,275" fill="none" stroke="#8a7060" stroke-width="1.5"/>
+    <path d="M270,268 Q276,263 282,268" fill="none" stroke="#8a7060" stroke-width="1.5"/>
+    <ellipse cx="260" cy="276" rx="5" ry="3" fill="#a08070" stroke="#5a3a2a" stroke-width="0.7"/>
+    <ellipse cx="276" cy="269" rx="5" ry="3" fill="#a08070" stroke="#5a3a2a" stroke-width="0.7"/>
+    <!-- outline sketch texture lines -->
+    <rect x="0" y="0" width="400" height="300" fill="none" stroke="#5a3a2a" stroke-width="1.5" rx="8"/>
+  </svg>`,
 
-  bakery: `<img src="images/buildings/bakery.jpg" style="width:100%;height:100%;object-fit:cover">`,
+  bakery: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" style="width:100%;height:100%;background:#fdf0c8">
+    <!-- warm golden background -->
+    <rect width="400" height="300" fill="#fdf0c8"/>
+    <!-- ceiling beams -->
+    <rect x="0" y="0" width="400" height="28" fill="#c8a060"/>
+    <rect x="0" y="5" width="400" height="6" fill="#b89050" stroke="#8a6830" stroke-width="0.5"/>
+    <rect x="60" y="0" width="14" height="28" fill="#a07840" stroke="#8a6830" stroke-width="0.5"/>
+    <rect x="160" y="0" width="14" height="28" fill="#a07840" stroke="#8a6830" stroke-width="0.5"/>
+    <rect x="260" y="0" width="14" height="28" fill="#a07840" stroke="#8a6830" stroke-width="0.5"/>
+    <rect x="350" y="0" width="14" height="28" fill="#a07840" stroke="#8a6830" stroke-width="0.5"/>
+    <!-- hanging bundles from beam -->
+    <line x1="90" y1="5" x2="90" y2="40" stroke="#8a6830" stroke-width="1"/>
+    <ellipse cx="90" cy="45" rx="6" ry="9" fill="#c89848" stroke="#8a6830" stroke-width="0.8"/>
+    <line x1="115" y1="5" x2="115" y2="50" stroke="#8a6830" stroke-width="1"/>
+    <ellipse cx="115" cy="55" rx="5" ry="8" fill="#d4a850" stroke="#8a6830" stroke-width="0.8"/>
+    <line x1="135" y1="5" x2="135" y2="38" stroke="#8a6830" stroke-width="1"/>
+    <!-- herb bundle -->
+    <path d="M128,38 Q135,30 142,38" fill="#a0b870" stroke="#8a6830" stroke-width="0.8"/>
+    <ellipse cx="135" cy="40" rx="7" ry="4" fill="#90a860" stroke="#8a6830" stroke-width="0.7"/>
+    <line x1="200" y1="5" x2="200" y2="42" stroke="#8a6830" stroke-width="1"/>
+    <ellipse cx="200" cy="48" rx="6" ry="9" fill="#c89848" stroke="#8a6830" stroke-width="0.8"/>
+    <!-- wall -->
+    <rect x="0" y="28" width="400" height="272" fill="#f0d898"/>
+    <!-- LEFT WINDOW -->
+    <rect x="18" y="55" width="55" height="65" rx="12" fill="#d0e8f0" stroke="#8a6830" stroke-width="2"/>
+    <rect x="18" y="55" width="55" height="65" rx="12" fill="none" stroke="#c8a860" stroke-width="3"/>
+    <!-- window curtains -->
+    <path d="M18,55 Q28,80 22,120" fill="#e09068" stroke="#8a6830" stroke-width="1"/>
+    <path d="M73,55 Q63,80 68,120" fill="#e09068" stroke="#8a6830" stroke-width="1"/>
+    <!-- window cross -->
+    <line x1="45" y1="55" x2="45" y2="120" stroke="#8a6830" stroke-width="1"/>
+    <line x1="18" y1="88" x2="73" y2="88" stroke="#8a6830" stroke-width="1"/>
+    <!-- SMALL WINDOW right -->
+    <rect x="340" y="50" width="42" height="40" rx="4" fill="#d0e8f0" stroke="#8a6830" stroke-width="1.5"/>
+    <line x1="361" y1="50" x2="361" y2="90" stroke="#8a6830" stroke-width="1"/>
+    <line x1="340" y1="70" x2="382" y2="70" stroke="#8a6830" stroke-width="1"/>
+    <!-- BREAD OVEN / FIREPLACE — centre -->
+    <rect x="195" y="80" width="130" height="155" rx="5" fill="#c8a870" stroke="#8a6830" stroke-width="1.5"/>
+    <!-- stone blocks on oven -->
+    <rect x="195" y="80" width="130" height="155" rx="5" fill="none" stroke="#b89050" stroke-width="0.5"/>
+    <!-- stone texture grid -->
+    <line x1="215" y1="80" x2="215" y2="235" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="235" y1="80" x2="235" y2="235" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="255" y1="80" x2="255" y2="235" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="275" y1="80" x2="275" y2="235" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="295" y1="80" x2="295" y2="235" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="315" y1="80" x2="315" y2="235" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="195" y1="100" x2="325" y2="100" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="195" y1="120" x2="325" y2="120" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="195" y1="140" x2="325" y2="140" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="195" y1="160" x2="325" y2="160" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="195" y1="180" x2="325" y2="180" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="195" y1="200" x2="325" y2="200" stroke="#b89050" stroke-width="0.5"/>
+    <line x1="195" y1="220" x2="325" y2="220" stroke="#b89050" stroke-width="0.5"/>
+    <!-- oven arch mouth -->
+    <path d="M225,235 Q225,175 260,170 Q295,175 295,235" fill="#3a2510" stroke="#8a6830" stroke-width="1.5"/>
+    <!-- fire glow -->
+    <ellipse cx="260" cy="230" rx="28" ry="12" fill="#f0a020" opacity="0.8"/>
+    <ellipse cx="260" cy="218" rx="18" ry="16" fill="#f8c030" opacity="0.7"/>
+    <path d="M248,215 Q255,195 260,210 Q265,195 272,215" fill="#ffd040" opacity="0.9"/>
+    <!-- BREAD SHELF right side -->
+    <rect x="345" y="75" width="55" height="155" rx="3" fill="#c4a060" stroke="#8a6830" stroke-width="1.5"/>
+    <rect x="345" y="110" width="55" height="5" fill="#a07840" stroke="#8a6830" stroke-width="0.8"/>
+    <rect x="345" y="150" width="55" height="5" fill="#a07840" stroke="#8a6830" stroke-width="0.8"/>
+    <rect x="345" y="190" width="55" height="5" fill="#a07840" stroke="#8a6830" stroke-width="0.8"/>
+    <!-- bread loaves on shelves -->
+    <ellipse cx="360" cy="105" rx="10" ry="8" fill="#c8905a" stroke="#8a6830" stroke-width="0.8"/>
+    <ellipse cx="378" cy="103" rx="10" ry="8" fill="#c8905a" stroke="#8a6830" stroke-width="0.8"/>
+    <ellipse cx="362" cy="145" rx="11" ry="8" fill="#d4a060" stroke="#8a6830" stroke-width="0.8"/>
+    <ellipse cx="380" cy="143" rx="10" ry="8" fill="#c8905a" stroke="#8a6830" stroke-width="0.8"/>
+    <ellipse cx="360" cy="185" rx="10" ry="7" fill="#c8905a" stroke="#8a6830" stroke-width="0.8"/>
+    <ellipse cx="378" cy="183" rx="9" ry="7" fill="#d4a060" stroke="#8a6830" stroke-width="0.8"/>
+    <!-- COUNTER left -->
+    <rect x="0" y="170" width="185" height="20" rx="2" fill="#c4a060" stroke="#8a6830" stroke-width="1.5"/>
+    <rect x="0" y="190" width="185" height="80" rx="2" fill="#d4b070" stroke="#8a6830" stroke-width="1.5"/>
+    <!-- counter top items: lavender pot -->
+    <rect x="12" y="145" width="20" height="28" rx="3" fill="#c8a060" stroke="#8a6830" stroke-width="1"/>
+    <path d="M12,148 Q22,135 32,148" fill="#c0a8d8" stroke="#8a6830" stroke-width="0.8"/>
+    <path d="M16,145 Q22,130 28,145" fill="#b898cc" stroke="#8a6830" stroke-width="0.7"/>
+    <!-- clay jars on counter -->
+    <ellipse cx="65" cy="170" rx="10" ry="8" fill="#c89860" stroke="#8a6830" stroke-width="1"/>
+    <rect x="55" y="152" width="20" height="20" rx="4" fill="#c89860" stroke="#8a6830" stroke-width="1"/>
+    <ellipse cx="65" cy="152" rx="10" ry="5" fill="#d4a870" stroke="#8a6830" stroke-width="0.8"/>
+    <ellipse cx="95" cy="168" rx="9" ry="7" fill="#b88850" stroke="#8a6830" stroke-width="1"/>
+    <rect x="86" y="152" width="18" height="18" rx="4" fill="#b88850" stroke="#8a6830" stroke-width="1"/>
+    <ellipse cx="95" cy="152" rx="9" ry="4" fill="#c89860" stroke="#8a6830" stroke-width="0.8"/>
+    <!-- BAKER (round, cheerful) behind counter -->
+    <!-- body -->
+    <ellipse cx="148" cy="195" rx="25" ry="22" fill="#d4a870" stroke="#8a6830" stroke-width="1.5"/>
+    <!-- shirt -->
+    <ellipse cx="148" cy="210" rx="25" ry="15" fill="#c8956a" stroke="#8a6830" stroke-width="1"/>
+    <!-- collar -->
+    <path d="M135,190 Q148,195 161,190" fill="#90c0a0" stroke="#8a6830" stroke-width="1"/>
+    <!-- head -->
+    <circle cx="148" cy="168" r="20" fill="#e0b880" stroke="#8a6830" stroke-width="1.5"/>
+    <!-- face: smile -->
+    <path d="M140,172 Q148,180 156,172" fill="none" stroke="#8a6830" stroke-width="1.2"/>
+    <!-- eyes -->
+    <ellipse cx="142" cy="165" rx="3" ry="3.5" fill="#5a3a20"/>
+    <ellipse cx="154" cy="165" rx="3" ry="3.5" fill="#5a3a20"/>
+    <!-- cheeks -->
+    <ellipse cx="138" cy="172" rx="5" ry="3" fill="#e09070" opacity="0.5"/>
+    <ellipse cx="158" cy="172" rx="5" ry="3" fill="#e09070" opacity="0.5"/>
+    <!-- CENTRE TABLE -->
+    <rect x="100" y="248" width="120" height="8" rx="2" fill="#c4a060" stroke="#8a6830" stroke-width="1.2"/>
+    <rect x="108" y="256" width="5" height="30" fill="#b08848" stroke="#8a6830" stroke-width="0.8"/>
+    <rect x="207" y="256" width="5" height="30" fill="#b08848" stroke="#8a6830" stroke-width="0.8"/>
+    <!-- bowl on table -->
+    <ellipse cx="150" cy="248" rx="22" ry="10" fill="#c8a060" stroke="#8a6830" stroke-width="1"/>
+    <ellipse cx="150" cy="244" rx="20" ry="8" fill="#d4b070" stroke="#8a6830" stroke-width="0.8"/>
+    <!-- fruits in bowl -->
+    <circle cx="142" cy="241" r="6" fill="#e07050" stroke="#8a6830" stroke-width="0.7"/>
+    <circle cx="154" cy="239" r="6" fill="#e08050" stroke="#8a6830" stroke-width="0.7"/>
+    <circle cx="163" cy="242" r="5" fill="#d06040" stroke="#8a6830" stroke-width="0.7"/>
+    <!-- bottle on table -->
+    <rect x="182" y="228" width="12" height="22" rx="3" fill="#d0b870" stroke="#8a6830" stroke-width="1"/>
+    <rect x="185" y="222" width="6" height="10" rx="2" fill="#c8a858" stroke="#8a6830" stroke-width="0.8"/>
+    <!-- small bowl -->
+    <ellipse cx="118" cy="248" rx="10" ry="5" fill="#c09050" stroke="#8a6830" stroke-width="0.8"/>
+    <ellipse cx="118" cy="245" rx="9" ry="4" fill="#d0a060" stroke="#8a6830" stroke-width="0.7"/>
+    <!-- FLOOR tiles -->
+    <rect x="0" y="265" width="400" height="35" fill="#e8d090"/>
+    <line x1="0" y1="275" x2="400" y2="275" stroke="#c8a850" stroke-width="0.6"/>
+    <line x1="0" y1="285" x2="400" y2="285" stroke="#c8a850" stroke-width="0.6"/>
+    <line x1="50" y1="265" x2="50" y2="300" stroke="#c8a850" stroke-width="0.6"/>
+    <line x1="100" y1="265" x2="100" y2="300" stroke="#c8a850" stroke-width="0.6"/>
+    <line x1="150" y1="265" x2="150" y2="300" stroke="#c8a850" stroke-width="0.6"/>
+    <line x1="200" y1="265" x2="200" y2="300" stroke="#c8a850" stroke-width="0.6"/>
+    <line x1="250" y1="265" x2="250" y2="300" stroke="#c8a850" stroke-width="0.6"/>
+    <line x1="300" y1="265" x2="300" y2="300" stroke="#c8a850" stroke-width="0.6"/>
+    <line x1="350" y1="265" x2="350" y2="300" stroke="#c8a850" stroke-width="0.6"/>
+    <!-- sketch border -->
+    <rect x="0" y="0" width="400" height="300" fill="none" stroke="#8a6830" stroke-width="1.5" rx="6"/>
+  </svg>`,
 
   bakery_upper: `<img src="images/buildings/bakery_upper.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
