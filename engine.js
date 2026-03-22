@@ -853,6 +853,7 @@ function interactCabinet() {
 
 // ── SCENE MANAGEMENT ──────────────────────────────────────────
 function loadScene(sceneId, fromBuildingId) {
+  pendingDoorEntry = null;
   if (sceneId === 'village') {
     currentBuilding = null;
     currentFloor    = null;
@@ -932,6 +933,8 @@ let pendingBuilding = null;
 function enterBuilding(buildingId) {
   const building = BUILDINGS[buildingId];
   if (!building) return;
+
+  pendingDoorEntry = null;
 
   if (State.flags.exile_begun && buildingId !== 'hestas_hut') {
     addNarrative('The door is closed to you now.', 'alert');
