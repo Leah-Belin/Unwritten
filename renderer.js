@@ -25,6 +25,12 @@ function loadSprite(id) {
 loadSprite('player');
 loadSprite('jaxon');
 loadSprite('blacksmith');
+loadSprite('mariella');
+loadSprite('children');
+loadSprite('hesta');
+loadSprite('elder');
+loadSprite('father');
+loadSprite('innkeeper');
 
 // ── DRAW MORTAR/GRAIN TEXTURE ─────────────────────────────────
 // Draw mortar/grain texture lines on a face, clipped to the parallelogram shape.
