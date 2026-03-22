@@ -24,6 +24,7 @@ function loadSprite(id) {
 // Add NPC ids here as sprite sheets become available.
 loadSprite('player');
 loadSprite('jaxon');
+loadSprite('kell');
 
 // ── DRAW MORTAR/GRAIN TEXTURE ─────────────────────────────────
 // Draw mortar/grain texture lines on a face, clipped to the parallelogram shape.
