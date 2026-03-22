@@ -9,7 +9,7 @@
 //   player  → images/characters/player.png
 //   NPCs    → images/characters/<npc.id>.png  (npc.id = lowercase name, e.g. "mariella")
 const SPRITE_W = 64, SPRITE_H = 64;
-const SPRITE_ROWS = { up:0, left:1, down:2, right:3 };
+const SPRITE_ROWS = { up:8, left:9, down:10, right:11 };
 const _sprites = {};   // id → HTMLImageElement (null = load failed)
 
 function loadSprite(id) {
