@@ -442,32 +442,30 @@ function drawStation(station) {
 }
 
 // ── FURNITURE DRAWING ──────────────────────────────────────────
-// Shared iso-box: fills and strokes left/right/top faces of an isometric box.
-// Origin (x,y) is the tile centre. hw/hh are half extents of the footprint.
-// bh is height in pixels.  Returns clip path for the top face (for grain etc.)
+// Iso-box helper: left/right/top faces
 function _isoBox(x, y, hw, hh, bh, topC, leftC, rightC, lw=0.75) {
   ctx.lineWidth = lw;
   ctx.beginPath();
   ctx.moveTo(x-hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
   ctx.closePath(); ctx.fillStyle=leftC; ctx.fill();
-  ctx.strokeStyle='rgba(0,0,0,0.32)'; ctx.stroke();
+  ctx.strokeStyle='rgba(0,0,0,0.30)'; ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(x+hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x+hw,y);
   ctx.closePath(); ctx.fillStyle=rightC; ctx.fill();
-  ctx.strokeStyle='rgba(0,0,0,0.32)'; ctx.stroke();
+  ctx.strokeStyle='rgba(0,0,0,0.30)'; ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(x,y-hh-bh); ctx.lineTo(x+hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x-hw,y-bh);
   ctx.closePath(); ctx.fillStyle=topC; ctx.fill();
-  ctx.strokeStyle='rgba(0,0,0,0.18)'; ctx.stroke();
+  ctx.strokeStyle='rgba(0,0,0,0.16)'; ctx.stroke();
 }
 
-// Draw wood-grain hatching clipped to the top face of an iso-box
-function _woodGrain(x, y, hw, hh, bh, alpha=0.10) {
+// Wood grain lines clipped to iso-box top face
+function _woodGrain(x, y, hw, hh, bh) {
   ctx.save();
   ctx.beginPath();
   ctx.moveTo(x,y-hh-bh); ctx.lineTo(x+hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x-hw,y-bh);
   ctx.closePath(); ctx.clip();
-  ctx.strokeStyle=`rgba(80,40,10,${alpha})`; ctx.lineWidth=0.7;
+  ctx.strokeStyle='rgba(80,40,10,0.10)'; ctx.lineWidth=0.7;
   for (let i=-5; i<=5; i++) {
     const ox = i * hw * 0.22;
     ctx.beginPath();
@@ -476,233 +474,129 @@ function _woodGrain(x, y, hw, hh, bh, alpha=0.10) {
   ctx.restore();
 }
 
-// Draw horizontal plank lines on the side faces of an iso-box
-function _plankLines(x, y, hw, hh, bh, n=3, alpha=0.13) {
-  ctx.strokeStyle=`rgba(0,0,0,${alpha})`; ctx.lineWidth=0.65;
-  for (let i=1; i<n; i++) {
-    const t = i/n;
-    ctx.beginPath(); ctx.moveTo(x-hw,y-bh*(1-t)); ctx.lineTo(x,y+hh-bh*(1-t)); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x+hw,y-bh*(1-t)); ctx.lineTo(x,y+hh-bh*(1-t)); ctx.stroke();
-  }
-}
-
-// Thin iso-box for legs
-function _leg(x, y, bh) {
-  _isoBox(x, y, 2.5, 1.2, bh, '#7a5028','#5c3c1a','#6e4822', 0.5);
+// Render an emoji centred on the tile with a drop shadow
+function _furnitureEmoji(x, y, emoji, size, yOff=0) {
+  ctx.save();
+  ctx.font = `${size}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(0,0,0,0.45)';
+  ctx.shadowBlur = 5;
+  ctx.shadowOffsetY = 2;
+  ctx.fillText(emoji, x, y + yOff);
+  ctx.restore();
 }
 
 function drawFurniturePiece(piece) {
   const {x,y} = toScreen(piece.col, piece.row);
-  const HW=TW/2, HH=TH/2; // full tile half-extents
+  const HW=TW/2, HH=TH/2;
 
   switch (piece.type) {
 
     case 'table': {
-      const s=0.60, hw=HW*s, hh=HH*s, bh=10, legH=bh-2;
-      // Four legs at footprint corners
-      _leg(x+hw*0.52, y+hh*0.50, legH);
-      _leg(x-hw*0.52, y+hh*0.50, legH);
-      _leg(x+hw*0.52, y-hh*0.50, legH);
-      _leg(x-hw*0.52, y-hh*0.50, legH);
-      // Thin tabletop slab
-      _isoBox(x, y, hw, hh, bh, '#c8a462','#8a5a2e','#b07838');
-      _woodGrain(x, y, hw, hh, bh, 0.12);
-      // Optional mug silhouette
-      ctx.fillStyle='#7a6050'; ctx.beginPath();
-      ctx.ellipse(x+hw*0.25, y-bh-hh*0.25, 2.5, 1.2, 0.35, 0, Math.PI*2); ctx.fill();
-      ctx.fillRect(x+hw*0.22, y-bh-hh*0.25-5, 5, 5);
+      // Clean flat surface — legs hidden below, just show the top
+      const s=0.62, hw=HW*s, hh=HH*s, bh=9;
+      // Leg stubs (just visible below the top)
+      const legC='#6a4020';
+      ctx.fillStyle=legC;
+      [[x-hw*0.48,y+hh*0.45],[x+hw*0.48,y+hh*0.45],
+       [x-hw*0.48,y-hh*0.45],[x+hw*0.48,y-hh*0.45]].forEach(([lx,ly])=>{
+        ctx.beginPath(); ctx.moveTo(lx-2,ly-1); ctx.lineTo(lx,ly+hh*0.5);
+        ctx.lineTo(lx+2,ly+hh*0.5); ctx.lineTo(lx+4,ly-1); ctx.closePath(); ctx.fill();
+      });
+      _isoBox(x, y, hw, hh, bh, '#d4aa68','#8a5a2e','#b07838');
+      _woodGrain(x, y, hw, hh, bh);
       break;
     }
 
     case 'counter': {
       const s=0.66, hw=HW*s, hh=HH*s, bh=13;
       _isoBox(x, y, hw, hh, bh, '#c09050','#7a4e26','#a07038');
-      _plankLines(x, y, hw, hh, bh, 4, 0.11);
-      _woodGrain(x, y, hw, hh, bh, 0.09);
-      // Clay jar on counter
-      ctx.fillStyle='#c07848';
-      ctx.beginPath(); ctx.ellipse(x+hw*0.32, y-bh-hh*0.22, 3.5, 2, 0.3, 0, Math.PI*2); ctx.fill();
-      ctx.fillRect(x+hw*0.32-3, y-bh-hh*0.22-6, 6, 6);
-      ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.6; ctx.strokeRect(x+hw*0.32-3, y-bh-hh*0.22-6, 6, 6);
-      break;
-    }
-
-    case 'chair': {
-      const s=0.36, hw=HW*s, hh=HH*s, bh=8, legH=bh-2;
-      // Legs
-      _leg(x+hw*0.48, y+hh*0.48, legH);
-      _leg(x-hw*0.48, y+hh*0.48, legH);
-      _leg(x+hw*0.48, y-hh*0.48, legH);
-      _leg(x-hw*0.48, y-hh*0.48, legH);
-      // Seat
-      _isoBox(x, y, hw, hh, bh, '#c09050','#7a4828','#a06830');
-      _woodGrain(x, y, hw, hh, bh, 0.10);
-      // Back rest — tall thin slab rising from far edge of seat
-      const brHW=hw*0.88, brHH=hh*0.28, brBH=16;
-      _isoBox(x-hw*0.06, y-hh*0.72, brHW, brHH, brBH, '#b07840','#6e4020','#906030');
-      // Back slats
-      ctx.strokeStyle='rgba(0,0,0,0.18)'; ctx.lineWidth=0.8;
-      for (let i=1; i<3; i++) {
-        const t=i/3;
-        ctx.beginPath();
-        ctx.moveTo(x-hw*0.06-brHW+brHW*2*t, y-hh*0.72-brBH);
-        ctx.lineTo(x-hw*0.06-brHW+brHW*2*t+brHW*0.5, y-hh*0.72+brHH-brBH);
-        ctx.stroke();
+      // Horizontal plank lines on sides
+      ctx.strokeStyle='rgba(0,0,0,0.10)'; ctx.lineWidth=0.65;
+      for (let i=1; i<4; i++) {
+        const t=i/4;
+        ctx.beginPath(); ctx.moveTo(x-hw,y-bh*(1-t)); ctx.lineTo(x,y+hh-bh*(1-t)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x+hw,y-bh*(1-t)); ctx.lineTo(x,y+hh-bh*(1-t)); ctx.stroke();
       }
+      _woodGrain(x, y, hw, hh, bh);
       break;
     }
 
-    case 'stool': {
-      const s=0.27, hw=HW*s, hh=HH*s, bh=7, legH=bh-1;
-      // 3 angled legs
-      _leg(x,        y+hh*0.60, legH);
-      _leg(x+hw*0.70, y-hh*0.30, legH);
-      _leg(x-hw*0.70, y-hh*0.30, legH);
-      // Round-ish seat
-      _isoBox(x, y, hw, hh, bh, '#c8a060','#886038','#a87848');
-      _woodGrain(x, y, hw, hh, bh, 0.09);
+    case 'chair':
+      _furnitureEmoji(x, y, '🪑', 22, -4);
       break;
-    }
 
-    case 'bed': {
-      const s=0.70, hw=HW*s, hh=HH*s, bh=5;
-      // Bed frame base
-      _isoBox(x, y, hw, hh, bh, '#9e7858','#6a4a2c','#886040');
-      // Mattress (slightly inset, raised)
-      const ms=0.62, mhw=HW*ms, mhh=HH*ms, mbh=bh+4;
-      _isoBox(x, y, mhw, mhh, mbh, '#d8c8a8','#9a7855','#c0a870');
-      // Blanket covering foot-half of mattress
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(x, y+mhh-mbh); ctx.lineTo(x+mhw, y-mbh); ctx.lineTo(x+mhw*0.85, y-mbh-mhh*0.2); ctx.lineTo(x, y+mhh*0.8-mbh); ctx.closePath();
-      ctx.fillStyle='#b09888'; ctx.fill();
-      ctx.strokeStyle='rgba(0,0,0,0.12)'; ctx.lineWidth=0.5; ctx.stroke();
-      // Blanket fold lines
-      ctx.strokeStyle='rgba(0,0,0,0.08)'; ctx.lineWidth=0.7;
-      for (let i=1; i<3; i++) {
-        const t=i/3;
-        ctx.beginPath();
-        ctx.moveTo(x+mhw*(1-t*0.3), y-mbh+mhh*(t-0.15)); ctx.lineTo(x+mhw*(0.85-t*0.3), y-mbh-mhh*0.2+mhh*t); ctx.stroke();
-      }
-      ctx.restore();
-      // Headboard — tall slab at far end
-      const hbHW=hw*0.92, hbHH=hh*0.25, hbBH=bh+14;
-      _isoBox(x-hw*0.04, y-hh*0.75, hbHW, hbHH, hbBH, '#8a6840','#5e4228','#786050');
-      // Headboard slats
-      ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=0.7;
-      for (let i=1; i<3; i++) {
-        const t=i/3;
-        ctx.beginPath();
-        ctx.moveTo(x-hw*0.04-hbHW+hbHW*2*t, y-hh*0.75-hbBH);
-        ctx.lineTo(x-hw*0.04-hbHW+hbHW*2*t+hbHW*0.3, y-hh*0.75+hbHH-hbBH);
-        ctx.stroke();
-      }
-      // Pillow
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(x-mhw*0.55, y-mbh-mhh*0.35); ctx.lineTo(x-mhw*0.05, y-mbh-mhh*0.05);
-      ctx.lineTo(x+mhw*0.38, y-mbh-mhh*0.42); ctx.lineTo(x-mhw*0.12, y-mbh-mhh*0.72);
-      ctx.closePath(); ctx.fillStyle='#ece4d0'; ctx.fill();
-      ctx.strokeStyle='rgba(0,0,0,0.18)'; ctx.lineWidth=0.55; ctx.stroke();
-      ctx.restore();
+    case 'stool':
+      _furnitureEmoji(x, y, '🪑', 16, -2);
       break;
-    }
 
-    case 'cot': {
-      const s=0.52, hw=HW*s, hh=HH*s, bh=5;
-      _isoBox(x, y, hw, hh, bh, '#a08860','#685838','#887048');
-      const ms=0.44, mhw=HW*ms, mhh=HH*ms;
-      _isoBox(x, y, mhw, mhh, bh+3, '#c8b890','#8a6845','#b09060');
-      // Simple rolled blanket at foot
-      ctx.fillStyle='#9a8878';
-      ctx.beginPath(); ctx.ellipse(x+hw*0.45, y-bh-hh*0.1, hw*0.3, hh*0.5, 0.3, 0, Math.PI*2); ctx.fill();
-      ctx.strokeStyle='rgba(0,0,0,0.2)'; ctx.lineWidth=0.6; ctx.stroke();
+    case 'bed':
+      _furnitureEmoji(x, y, '🛏️', 32, -6);
       break;
-    }
+
+    case 'cot':
+      _furnitureEmoji(x, y, '🛏️', 26, -4);
+      break;
 
     case 'barrel': {
-      const s=0.30, hw=HW*s, hh=HH*s, bh=18;
+      const s=0.28, hw=HW*s, hh=HH*s, bh=16;
       const topY = y - bh;
-      // Body: left stave-face (slightly convex — widen mid)
+      // Left face (slightly curved via two segments)
       ctx.beginPath();
-      ctx.moveTo(x-hw*0.85, topY+hh*0.85);
-      ctx.quadraticCurveTo(x-hw*1.08, y-bh*0.5+hh*0.5, x-hw*1.0, y+hh*0.3);
+      ctx.moveTo(x-hw*0.82, topY+hh*0.82);
+      ctx.quadraticCurveTo(x-hw*1.1, y-bh*0.45+hh*0.45, x-hw, y+hh*0.25);
       ctx.lineTo(x, y+hh); ctx.lineTo(x, topY+hh); ctx.closePath();
       ctx.fillStyle='#7a5820'; ctx.fill();
-      ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.7; ctx.stroke();
-      // Body: right stave-face
+      ctx.strokeStyle='rgba(0,0,0,0.28)'; ctx.lineWidth=0.7; ctx.stroke();
+      // Right face
       ctx.beginPath();
-      ctx.moveTo(x+hw*0.85, topY+hh*0.85);
-      ctx.quadraticCurveTo(x+hw*1.08, y-bh*0.5+hh*0.5, x+hw*1.0, y+hh*0.3);
+      ctx.moveTo(x+hw*0.82, topY+hh*0.82);
+      ctx.quadraticCurveTo(x+hw*1.1, y-bh*0.45+hh*0.45, x+hw, y+hh*0.25);
       ctx.lineTo(x, y+hh); ctx.lineTo(x, topY+hh); ctx.closePath();
       ctx.fillStyle='#6a4c18'; ctx.fill();
-      ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.7; ctx.stroke();
-      // Vertical stave lines
-      ctx.strokeStyle='rgba(0,0,0,0.13)'; ctx.lineWidth=0.7;
-      for (let i=-2; i<=2; i++) {
-        const t=(i+2.5)/5;
-        ctx.beginPath();
-        ctx.moveTo(x-hw*0.85+hw*1.7*t, topY+hh*0.85-hh*1.7*Math.abs(t-0.5)*0.5);
-        ctx.lineTo(x-hw*1.0+hw*2.0*t, y+hh*0.3-hh*1.3*Math.abs(t-0.5)*0.3);
-        ctx.stroke();
-      }
+      ctx.strokeStyle='rgba(0,0,0,0.28)'; ctx.lineWidth=0.7; ctx.stroke();
       // Top ellipse
-      ctx.beginPath(); ctx.ellipse(x, topY+hh*0.88, hw*0.88, hh*0.88, 0, 0, Math.PI*2);
+      ctx.beginPath(); ctx.ellipse(x, topY+hh*0.85, hw*0.85, hh*0.85, 0, 0, Math.PI*2);
       ctx.fillStyle='#8a6428'; ctx.fill();
-      ctx.strokeStyle='rgba(0,0,0,0.4)'; ctx.lineWidth=0.9; ctx.stroke();
-      // Metal hoops — V-shaped lines across both faces
-      ctx.strokeStyle='rgba(40,28,10,0.65)'; ctx.lineWidth=1.2;
-      for (const frac of [0.20, 0.52, 0.83]) {
-        const hy = topY + hh*0.88 + (y+hh - topY - hh*0.88) * frac;
-        const hw2 = hw*(0.82+0.24*Math.sin(frac*Math.PI));
-        ctx.beginPath(); ctx.moveTo(x-hw2, hy); ctx.lineTo(x, hy+hh*0.75); ctx.lineTo(x+hw2, hy); ctx.stroke();
+      ctx.strokeStyle='rgba(0,0,0,0.38)'; ctx.lineWidth=0.85; ctx.stroke();
+      // Metal hoops
+      ctx.strokeStyle='rgba(40,28,10,0.60)'; ctx.lineWidth=1.1;
+      for (const frac of [0.22, 0.54, 0.84]) {
+        const hy = topY+hh*0.85 + (y+hh - topY - hh*0.85)*frac;
+        const hw2 = hw*(0.80+0.22*Math.sin(frac*Math.PI));
+        ctx.beginPath(); ctx.moveTo(x-hw2,hy); ctx.lineTo(x,hy+hh*0.70); ctx.lineTo(x+hw2,hy); ctx.stroke();
       }
       break;
     }
 
     case 'shelf': {
-      const s=0.58, hw=HW*s, hh=HH*s, bh=22;
-      // Back panel (very thin — against wall)
-      _isoBox(x-hw*0.04, y, hw, hh*0.18, bh, '#9a7848','#685030','#887040');
-      // Three shelf planks with items
-      const shelfColors = ['#8ab880','#c08060','#7898c0'];
+      const s=0.56, hw=HW*s, hh=HH*s, bh=20;
+      // Back panel
+      _isoBox(x-hw*0.04, y, hw, hh*0.16, bh, '#9a7848','#685030','#887040');
+      // Three shelf planks with coloured jars
+      const jarColors = ['#8ab880','#c08060','#7898c0','#d4a840','#a07888'];
       for (let si=0; si<3; si++) {
-        const sby = y - bh*(0.18+si*0.30);
-        _isoBox(x, sby, hw*0.88, hh*0.45, 2.5, '#b09050','#786038','#988048');
-        // 2-3 small jars/pots on each shelf
+        const sby = y - bh*(0.16+si*0.29);
+        _isoBox(x, sby, hw*0.86, hh*0.42, 2.2, '#b09050','#786038','#988048');
         if (si < 2) {
           for (let ji=0; ji<3; ji++) {
-            const jx = x - hw*0.42 + ji*hw*0.44;
-            const jy = sby - 2.5 - hh*0.22;
-            const jc = shelfColors[(si*3+ji)%shelfColors.length];
+            const jx = x - hw*0.38 + ji*hw*0.40;
+            const jy = sby - 2.2 - hh*0.20;
+            const jc = jarColors[(si*3+ji)%jarColors.length];
             ctx.fillStyle=jc;
-            ctx.beginPath(); ctx.ellipse(jx, jy-3.5, 2.8, 1.6, 0.3, 0, Math.PI*2); ctx.fill();
-            ctx.fillRect(jx-2.5, jy-3.5-5, 5, 5);
-            ctx.strokeStyle='rgba(0,0,0,0.25)'; ctx.lineWidth=0.55;
-            ctx.strokeRect(jx-2.5, jy-3.5-5, 5, 5);
+            ctx.beginPath(); ctx.ellipse(jx, jy-3, 2.6, 1.5, 0.3, 0, Math.PI*2); ctx.fill();
+            ctx.fillRect(jx-2.2, jy-8, 4.4, 5);
+            ctx.strokeStyle='rgba(0,0,0,0.22)'; ctx.lineWidth=0.5; ctx.strokeRect(jx-2.2, jy-8, 4.4, 5);
           }
         }
       }
       break;
     }
 
-    case 'chest': {
-      const s=0.44, hw=HW*s, hh=HH*s, bh=9;
-      // Chest body
-      _isoBox(x, y, hw, hh, bh, '#a07e30','#685220','#887028');
-      _plankLines(x, y, hw, hh, bh, 3, 0.10);
-      // Lid (slightly raised, lighter top)
-      _isoBox(x, y, hw*0.96, hh*0.96, bh+2.5, '#c4a23e','#7a6228','#a07e32');
-      // Corner metal brackets
-      ctx.fillStyle='#454030';
-      const pts=[[x-hw,y-bh*0.5],[x+hw,y-bh*0.5],[x,y+hh-1],[x,y-hh-bh+1]];
-      pts.forEach(([px,py])=>ctx.fillRect(px-2,py-2,4,4));
-      // Front hasp (lock plate)
-      ctx.fillStyle='#d4b030';
-      ctx.beginPath(); ctx.roundRect(x-2.5, y-bh*0.35, 5, 6, 1); ctx.fill();
-      ctx.fillStyle='#454030'; ctx.fillRect(x-1, y-bh*0.35+2, 2, 3);
+    case 'chest':
+      _furnitureEmoji(x, y, '📦', 26, -4);
       break;
-    }
 
     default: break;
   }
@@ -1184,11 +1078,16 @@ function attachInputHandlers() {
       }
     }
 
-    // ── Furniture click — walk to adjacent tile ───────────────
+    // ── Furniture click — walk to adjacent tile (never an exit) ──
     for (const f of currentFurniture) {
       const {x:fx, y:fy} = toScreen(f.col, f.row);
       if (Math.abs(sx-fx) < 34 && Math.abs(sy-fy) < 26) {
-        const adj = getAdjacentWalkable(f.col, f.row);
+        const adj = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]]
+          .map(([dc,dr]) => ({col:f.col+dc, row:f.row+dr}))
+          .filter(p => walkable(p.col, p.row)
+                    && !currentExits.some(e => e.col===p.col && e.row===p.row))
+          .sort((a,b) => (Math.abs(a.col-player.col)+Math.abs(a.row-player.row))
+                       - (Math.abs(b.col-player.col)+Math.abs(b.row-player.row)))[0];
         if (adj) player.path = astar(player.col, player.row, adj.col, adj.row);
         return;
       }
