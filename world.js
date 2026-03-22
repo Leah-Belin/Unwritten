@@ -133,13 +133,14 @@ const BUILDINGS = {
         stations: [{ type:'worktable', col:10, row:5, label:"Gallan's Worktable 🔧" }],
         furniture: [
           {type:'bed',   col:2, row:2},
-          {type:'bed',   col:2, row:7},
+          {type:'bed',   col:2, row:6},
           {type:'table', col:5, row:4},
           {type:'chair', col:6, row:4},
-          {type:'chest', col:6, row:8},
+          {type:'chest', col:3, row:5},
         ],
         exits: [
           { label:'Go downstairs', targetFloor:'bakery_ground', col:9, row:5 },
+          { label:'Go downstairs', targetFloor:'bakery_ground', col:6, row:7 },
         ],
         cabinet: {
           col:11, row:3,

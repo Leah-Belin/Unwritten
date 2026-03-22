@@ -1407,8 +1407,9 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
 }
 
 // ── ROOM TRANSITION ───────────────────────────────────────────
-// Placeholder SVG art per building — swap for <img src="..."> when real art exists
 const BUILDING_ART = {
+  market: `<img src="images/buildings/default.jpg" style="width:100%;height:100%;object-fit:cover">`,
+
   bakery: `<img src="images/buildings/bakery.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
   bakery_upper: `<img src="images/buildings/bakery_upper.jpg" style="width:100%;height:100%;object-fit:cover">`,
