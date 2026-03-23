@@ -80,7 +80,7 @@ loadTileImg('house_halftimber',    'images/buildings/house_halftimber.png');
 // img = tile image key. yOff = extra vertical offset (positive = down).
 const VILLAGE_BLDG_SPRITES = [
   // Main character buildings — new isometric shop sprites
-  { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  img:'shop_bakery',  yOff:22 },
+  { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  img:'shop_bakery',  yOff:0 },
   { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, img:'shop_forge',   yOff:22 },
   { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, img:'shop_general', yOff:22 },
   // Civic buildings — proportional Free Isometric sprites (designed for this grid, no yOff needed)
