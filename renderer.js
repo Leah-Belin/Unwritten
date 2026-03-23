@@ -460,15 +460,29 @@ function drawTile(c, r) {
     }
     // Resolve building-specific colors when in the village
     let leftCol=def.left, rightCol=def.right, topCol=def.top;
-    let bldg=null, style=null;
+    let bldg=null, style=null, isRoof=false;
     if (!currentBuilding) {
       bldg = getBuildingAtTile(c, r);
       if (bldg) {
         style = BUILDING_STYLES[bldg.id];
         if (style) {
-          const isRoof = (currentMap[r]?.[c] === T.BUILDING); // interior tile = roof
+          isRoof = (currentMap[r]?.[c] === T.BUILDING); // interior tile = roof
           if (isRoof) {
-            leftCol=style.roof; rightCol=style.roof; topCol=style.roof;
+            // Pitched (gabled) roof: ridge runs N-S, gable faces E and W.
+            // Vary bh by column position so the centre column peaks above the walls.
+            const roofPeak = style.roofPeak ?? 10;
+            const interiorCols = bldg.cMax - bldg.cMin - 1;
+            const interiorC    = c - bldg.cMin - 1; // 0-indexed interior column
+            if (interiorCols >= 2) {
+              const centerC = (interiorCols - 1) / 2;
+              const dist = Math.abs(interiorC - centerC) / Math.max(centerC, 0.5);
+              bh = bh + Math.round(roofPeak * Math.max(0, 1 - dist));
+            } else {
+              bh = bh + roofPeak; // narrow building: whole roof at peak height
+            }
+            leftCol  = style.roofL  ?? style.roof;
+            rightCol = style.roofR  ?? style.roof;
+            topCol   = style.roof;
           } else {
             leftCol=style.wallL; rightCol=style.wallR; topCol=style.wall;
           }
@@ -493,6 +507,20 @@ function drawTile(c, r) {
     ctx.lineTo(x, y+hh-bh); ctx.lineTo(x-hw, y-bh);
     ctx.closePath(); ctx.fillStyle=topCol; ctx.fill();
     ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=0.6; ctx.stroke();
+    // Shingle/tile lines on roof top face
+    if (isRoof && style) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x, y-hh-bh); ctx.lineTo(x+hw, y-bh);
+      ctx.lineTo(x, y+hh-bh); ctx.lineTo(x-hw, y-bh);
+      ctx.clip();
+      ctx.strokeStyle='rgba(0,0,0,0.14)'; ctx.lineWidth=0.8;
+      for (let dy=3; dy<TH*1.5; dy+=4) {
+        ctx.beginPath();
+        ctx.moveTo(x-hw-2, y-bh-hh+dy); ctx.lineTo(x+hw+2, y-bh-hh+dy); ctx.stroke();
+      }
+      ctx.restore();
+    }
 
     // Building details — windows and chimneys on WALL tiles in village mode
     if (!currentBuilding && bldg && style && currentMap[r]?.[c] === T.WALL) {
