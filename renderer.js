@@ -88,9 +88,9 @@ const VILLAGE_BLDG_SPRITES = [
   { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
   // Residential houses
   { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_large',    yOff:29 },
-  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_cottage',  yOff:22 },
-  { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_dark_roof',yOff:25 },
-  { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_simple',   yOff:18 },
+  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_cottage',  yOff:22, wallColor:'#b3978a' },
+  { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_dark_roof',yOff:25, wallColor:'#586745' },
+  { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_simple',   yOff:18, wallColor:'#a3bdb8' },
 ];
 
 // Maps 'col,row' → sprite img key for every tile inside a building footprint.
@@ -284,6 +284,27 @@ function drawBuildingSprite(b) {
   const cr = (b.r1 + b.r2) / 2;
   const cx = isoX(cc, cr) + offX;
   const cy = isoY(cc, b.r2) + TH / 2 + offY + (b.yOff ?? 0);
+
+  // Fill the south-facing wall behind the sprite for buildings whose PNG has a
+  // transparent south face (open-front isometric sprites).  Draw the right-face
+  // quad for every tile along the bottom footprint row before the sprite image
+  // is composited on top — opaque sprite pixels cover it, transparent ones let it show.
+  if (b.wallColor) {
+    const hw = TW / 2, hh = TH / 2;
+    const bh = b.wallBH ?? 28;
+    for (let c = b.c1; c <= b.c2; c++) {
+      const {x, y} = toScreen(c, b.r2);
+      ctx.beginPath();
+      ctx.moveTo(x + hw, y - bh); ctx.lineTo(x, y + hh - bh);
+      ctx.lineTo(x, y + hh);      ctx.lineTo(x + hw, y);
+      ctx.closePath();
+      ctx.fillStyle = b.wallColor;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+      ctx.lineWidth = 0.6;
+      ctx.stroke();
+    }
+  }
 
   // Pixel-art (Hernandack) sprites need crisp nearest-neighbour scaling
   const pixelArt = (b.sw !== undefined);
