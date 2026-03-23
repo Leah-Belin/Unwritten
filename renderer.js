@@ -65,9 +65,9 @@ const _HN = _IT + 'hernandack-houses/';
 loadTileImg('bldg_fi1', _FI + 'house%201.png'); // purple/slate — inn, council
 loadTileImg('bldg_fi2', _FI + 'house%202.png'); // red/timber   — bakery, town hall
 loadTileImg('bldg_fi3', _FI + 'house%203.png'); // dark slate   — forge
-loadTileImg('bldg_hn1', _HN + 'Isometric-Houses-1.png'); // blue-roof sheet
+loadTileImg('bldg_hn1', _HN + 'Isometric-Houses-1-flip.png'); // blue-roof sheet
 loadTileImg('bldg_hn2', _HN + 'Isometric-Houses-2-flip.png'); // pink-roof sheet
-loadTileImg('bldg_hn3', _HN + 'Isometric-Houses-3.png'); // green-roof sheet
+loadTileImg('bldg_hn3', _HN + 'Isometric-Houses-3-flip.png'); // green-roof sheet
 
 // Residential house sprites (extracted from house-collection-six-isometric-style)
 loadTileImg('house_large',     'images/buildings/house_large.png');
