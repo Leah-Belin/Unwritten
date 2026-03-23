@@ -827,8 +827,8 @@ function render() {
   currentStations.forEach(st => items.push({k:'station',st,z:st.row+st.col+0.6}));
   currentFurniture.forEach(f => items.push({k:'furniture',f,z:f.row+f.col+0.55}));
   if (currentCabinet) items.push({k:'cabinet',z:currentCabinet.row+currentCabinet.col+0.6});
-  // Building sprite overlays — depth at mid-footprint so south-of-building things draw on top
-  if (!currentBuilding) {
+  // Building sprite overlays — village only; other outdoor zones have no building sprites
+  if (!currentBuilding && State.scene === 'village') {
     for (const b of VILLAGE_BLDG_SPRITES)
       items.push({k:'bldg', b, z:(b.r1+b.r2+b.c1+b.c2)/2 + 0.45});
   }
