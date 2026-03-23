@@ -60,14 +60,15 @@ loadTileImg('floor_slate',  _IT + 'isometric_0201.png');
 loadTileImg('floor_cobble', _IT + 'isometric_0215.png');
 
 // ── BUILDING EXTERIOR SPRITES ─────────────────────────────────
-// Shops / civic buildings (extracted from Isometric shops.png)
+// Shops (extracted from Isometric shops.png)
 loadTileImg('shop_bakery',  'images/buildings/shop_bakery.png');
 loadTileImg('shop_forge',   'images/buildings/shop_forge.png');
 loadTileImg('shop_mill',    'images/buildings/shop_mill.png');
 loadTileImg('shop_general', 'images/buildings/shop_general.png');
-// Civic / temple buildings (extracted from Isometric temple 1 & 2.png)
-loadTileImg('temple_roman',   'images/buildings/temple_roman.png');
-loadTileImg('temple_eastern', 'images/buildings/temple_eastern.png');
+// Civic buildings — Free Isometric tileset (right size for town footprints)
+const _FI = _IT + 'free%20isometric%20tileset%20for%20prototyping/';
+loadTileImg('bldg_fi1', _FI + 'house%201.png'); // slate/purple — council hall
+loadTileImg('bldg_fi2', _FI + 'house%202.png'); // red timber   — town hall
 // Villager houses (extracted from Villager houses 1.png)
 loadTileImg('house_thatched',      'images/buildings/house_thatched.png');
 loadTileImg('house_log',           'images/buildings/house_log.png');
@@ -82,9 +83,9 @@ const VILLAGE_BLDG_SPRITES = [
   { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  img:'shop_bakery'  },
   { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, img:'shop_forge'   },
   { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, img:'shop_general' },
-  // Civic buildings — temple sprites
-  { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, img:'temple_roman'   },
-  { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'temple_eastern' },
+  // Civic buildings — proportional Free Isometric sprites
+  { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, img:'bldg_fi2' },
+  { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
   // Residential houses — new villager house sprites
   { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_halftimber',    yOff:20 },
   { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_thatched',      yOff:20 },
@@ -866,8 +867,8 @@ function render() {
   // Building sprite overlays — village only; other outdoor zones have no building sprites
   if (!currentBuilding && State.scene === 'village') {
     for (const b of VILLAGE_BLDG_SPRITES)
-      // z = SE-corner depth (r2+c2): sprite always draws after ALL footprint grass tiles.
-      items.push({k:'bldg', b, z:b.r2+b.c2+0.45});
+      // z = SW-corner depth (r2+c1): characters one step south always draw in front.
+      items.push({k:'bldg', b, z:b.r2+b.c1+0.9});
   }
   currentNPCs.forEach(n => items.push({k:'npc',n,z:n.row+n.col+0.8}));
   items.push({k:'player',z:player.row+player.col+0.8});
