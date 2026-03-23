@@ -166,7 +166,7 @@ function buildVillageMap() {
   placeBuilding(10,15,6,10); // Town Hall
   placeBuilding(22,26,5,6);  // Council Hall (moved west to clear the plot)
   placeBuilding(31,4,5,5);   // Hesta's hut
-  placeBuilding(25,10,5,5);  // Jaxon's house
+  placeBuilding(25,10,4,6);  // Jaxon's house
   placeBuilding(28,22,4,4);  // Villager house A
   placeBuilding(12,28,4,4);  // Villager house B
   placeBuilding(32,14,4,4);  // Villager house C
