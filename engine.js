@@ -738,11 +738,13 @@ const BUILDING_ART = {
 
   bakery_upper: `<img src="images/buildings/bakery_upper.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
-  inn: `<img src="images/buildings/inn.jpeg" style="width:100%;height:100%;object-fit:cover">`,
+  inn: `<img src="images/buildings/inn_interior.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
   forge: `<img src="images/buildings/forge.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
-  town_hall: `<img src="images/buildings/town_hall.jpg" style="width:100%;height:100%;object-fit:cover">`,
+  town_hall: `<img src="images/buildings/town_hall_interior.jpg" style="width:100%;height:100%;object-fit:cover">`,
+
+  council_hall: `<img src="images/buildings/council_interior.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
   jaxons_house: `<img src="images/buildings/jaxons_house.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
