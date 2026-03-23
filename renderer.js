@@ -65,10 +65,11 @@ loadTileImg('shop_bakery',  'images/buildings/shop_bakery.png');
 loadTileImg('shop_forge',   'images/buildings/shop_forge.png');
 loadTileImg('shop_mill',    'images/buildings/shop_mill.png');
 loadTileImg('shop_general', 'images/buildings/shop_general.png');
-// Civic buildings — Free Isometric tileset (right size for town footprints)
-const _FI = _IT + 'free%20isometric%20tileset%20for%20prototyping/';
-loadTileImg('bldg_fi1', _FI + 'house%201.png'); // slate/purple — council hall
-loadTileImg('bldg_fi2', _FI + 'house%202.png'); // red timber   — town hall
+// Civic & special buildings
+loadTileImg('bldg_inn',          'images/buildings/bldg_inn.png');
+loadTileImg('bldg_town_hall',    'images/buildings/bldg_town_hall.png');
+loadTileImg('bldg_council_hall', 'images/buildings/bldg_council_hall.png');
+loadTileImg('bldg_hestas_hut',   'images/buildings/bldg_hestas_hut.png');
 // Villager houses (extracted from Villager houses 1.png)
 loadTileImg('house_thatched',      'images/buildings/house_thatched.png');
 loadTileImg('house_log',           'images/buildings/house_log.png');
@@ -79,13 +80,14 @@ loadTileImg('house_halftimber',    'images/buildings/house_halftimber.png');
 // r1,c1..r2,c2 = tile footprint (inclusive).
 // img = tile image key. yOff = extra vertical offset (positive = down).
 const VILLAGE_BLDG_SPRITES = [
-  // Main character buildings — new isometric shop sprites
-  { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  img:'shop_bakery',  yOff:0 },
-  { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, img:'shop_forge',   yOff:22 },
-  { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, img:'shop_general', yOff:22 },
-  // Civic buildings — proportional Free Isometric sprites (designed for this grid, no yOff needed)
-  { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, img:'bldg_fi2' },
-  { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
+  // Main character buildings
+  { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  img:'shop_bakery',      yOff:-20 },
+  { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, img:'shop_forge',       yOff:-60 },
+  { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, img:'bldg_inn',         yOff:-60 },
+  // Civic buildings
+  { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, img:'bldg_town_hall',   yOff:-40 },
+  { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'bldg_council_hall',yOff:-40 },
+  { id:'hestas_hut',      r1:31, c1:4,  r2:35, c2:8,  img:'bldg_hestas_hut',  yOff:-40 },
   // Residential houses — new villager house sprites
   { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_halftimber',    yOff:-80 },
   { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_thatched',      yOff:-80 },
