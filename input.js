@@ -1,14 +1,46 @@
 // ── INPUT ─────────────────────────────────────────────────────
 // Attached in init() after canvas exists
 function attachInputHandlers() {
+
+  // ── Pinch-to-zoom (touch) ──────────────────────────────────
+  let _pinchDist = null;
+  canvas.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      _pinchDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      e.preventDefault();
+    }
+  }, { passive: false });
+  canvas.addEventListener('touchmove', e => {
+    if (e.touches.length === 2 && _pinchDist !== null) {
+      const d = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      zoomLevel = Math.max(0.5, Math.min(3.0, zoomLevel * (d / _pinchDist)));
+      _pinchDist = d;
+      e.preventDefault();
+    }
+  }, { passive: false });
+  canvas.addEventListener('touchend', e => { if (e.touches.length < 2) _pinchDist = null; });
+
+  // ── Mouse-wheel zoom (desktop) ────────────────────────────
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    zoomLevel = Math.max(0.5, Math.min(3.0, zoomLevel * (e.deltaY < 0 ? 1.1 : 0.9)));
+  }, { passive: false });
+
   canvas.addEventListener('click', e => {
     if (document.getElementById('dialogue-overlay').classList.contains('open')) { closeDialogue(); return; }
     if (document.getElementById('craft-overlay').classList.contains('open')) return;
     if (document.getElementById('event-overlay').classList.contains('open')) return;
 
     const rect=canvas.getBoundingClientRect();
-    const sx=e.clientX-rect.left, sy=e.clientY-rect.top;
-    const{col:clickCol, row:clickRow}=toTile(sx,sy);
+    const rawX=e.clientX-rect.left, rawY=e.clientY-rect.top;
+    const sx=rawX/zoomLevel, sy=rawY/zoomLevel;  // logical canvas coords
+    const{col:clickCol, row:clickRow}=toTile(rawX,rawY);
 
     // ── NPC click — must be adjacent to talk ──────────────────
     for (const npc of currentNPCs) {

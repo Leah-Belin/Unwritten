@@ -807,6 +807,10 @@ function render() {
   sky.addColorStop(0, p.sky1); sky.addColorStop(1, p.sky2);
   ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
 
+  // Apply zoom (scale from top-left; camera offX/offY compensate for centre)
+  ctx.save();
+  ctx.scale(zoomLevel, zoomLevel);
+
   // Collect and sort drawables (painter's algorithm)
   // Raised tiles (walls/buildings) get a small z boost so they overdraw correctly
   const items = [];
@@ -853,6 +857,7 @@ function render() {
   }
 
   drawMarker();
+  ctx.restore(); // end zoom scale
 
   // Time tint
   ctx.fillStyle=p.tint; ctx.fillRect(0,0,W,H);
