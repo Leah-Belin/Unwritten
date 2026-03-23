@@ -69,18 +69,28 @@ loadTileImg('bldg_hn1', _HN + 'Isometric-Houses-1.png'); // blue-roof sheet
 loadTileImg('bldg_hn2', _HN + 'Isometric-Houses-2.png'); // pink-roof sheet
 loadTileImg('bldg_hn3', _HN + 'Isometric-Houses-3.png'); // green-roof sheet
 
+// Residential house sprites (extracted from house-collection-six-isometric-style)
+loadTileImg('house_large',     'images/buildings/house_large.png');
+loadTileImg('house_cottage',   'images/buildings/house_cottage.png');
+loadTileImg('house_dark_roof', 'images/buildings/house_dark_roof.png');
+loadTileImg('house_simple',    'images/buildings/house_simple.png');
+
 // Village building sprite overlays.
 // r1,c1..r2,c2 = tile footprint (inclusive).
 // img = tile image key. sx,sy,sw,sh = source crop for sprite sheets.
 // yOff = extra vertical offset (positive = down) to fine-tune ground alignment.
 const VILLAGE_BLDG_SPRITES = [
   // Free Isometric sprites for the five main character buildings
-  { id:'bakery',       r1:4,  c1:3,  r2:9,  c2:8,  img:'bldg_fi2' },
-  { id:'forge',        r1:4,  c1:25, r2:8,  c2:30, img:'bldg_fi3' },
-  { id:'inn',          r1:4,  c1:32, r2:9,  c2:37, img:'bldg_fi1' },
-  { id:'town_hall',    r1:10, c1:15, r2:15, c2:24, img:'bldg_fi2' },
-  { id:'council_hall', r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
-  // Residential buildings keep procedural 3D rendering (no entry here)
+  { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  img:'bldg_fi2' },
+  { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, img:'bldg_fi3' },
+  { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, img:'bldg_fi1' },
+  { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, img:'bldg_fi2' },
+  { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
+  // Residential houses
+  { id:'jaxons_house',    r1:25, c1:10, r2:29, c2:14, img:'house_large'     },
+  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_cottage'   },
+  { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_dark_roof' },
+  { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_simple'    },
 ];
 
 // Tiles inside a building footprint — skip procedural raised-box drawing so
@@ -807,10 +817,6 @@ function render() {
   sky.addColorStop(0, p.sky1); sky.addColorStop(1, p.sky2);
   ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
 
-  // Apply zoom (scale from top-left; camera offX/offY compensate for centre)
-  ctx.save();
-  ctx.scale(zoomLevel, zoomLevel);
-
   // Collect and sort drawables (painter's algorithm)
   // Raised tiles (walls/buildings) get a small z boost so they overdraw correctly
   const items = [];
@@ -857,7 +863,6 @@ function render() {
   }
 
   drawMarker();
-  ctx.restore(); // end zoom scale
 
   // Time tint
   ctx.fillStyle=p.tint; ctx.fillRect(0,0,W,H);
