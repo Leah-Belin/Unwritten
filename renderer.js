@@ -80,17 +80,17 @@ loadTileImg('house_halftimber',    'images/buildings/house_halftimber.png');
 // img = tile image key. yOff = extra vertical offset (positive = down).
 const VILLAGE_BLDG_SPRITES = [
   // Main character buildings — new isometric shop sprites
-  { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  img:'shop_bakery',  yOff:22 },
-  { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, img:'shop_forge',   yOff:22 },
-  { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, img:'shop_general', yOff:22 },
+  { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  img:'shop_bakery'  },
+  { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, img:'shop_forge'   },
+  { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, img:'shop_general' },
   // Civic buildings — proportional Free Isometric sprites (designed for this grid, no yOff needed)
   { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, img:'bldg_fi2' },
   { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
   // Residential houses — new villager house sprites
-  { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_halftimber',    yOff:22 },
-  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_thatched',      yOff:18 },
-  { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_log',           yOff:18 },
-  { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_cottage_large', yOff:18 },
+  { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_halftimber',    yOff:20 },
+  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_thatched',      yOff:20 },
+  { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_log',           yOff:20 },
+  { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_cottage_large', yOff:20 },
 ];
 
 // Maps 'col,row' → sprite img key for every tile inside a building footprint.
