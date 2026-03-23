@@ -25,11 +25,16 @@ const BUILDING_STYLES = {
   inn:              { wall:'#d8c890', wallL:'#9a7840', wallR:'#bea060', roof:'#5a3018', chimney:true, texture:'wood' },
   town_hall:        { wall:'#dcd8c8', wallL:'#706860', wallR:'#908878', roof:'#484038', texture:'stone_cut' },
   council_hall:     { wall:'#d4d0c0', wallL:'#686058', wallR:'#888070', roof:'#404038', texture:'stone_cut' },
-  hestas_hut:       { wall:'#d0c8a0', wallL:'#7a6840', wallR:'#988858', roof:'#4a2c1c', chimney:true, texture:'stone' },
-  jaxons_house:     { wall:'#ccc8a8', wallL:'#706040', wallR:'#907858', roof:'#503020', chimney:true, texture:'brick' },
-  villager_house_a: { wall:'#d4caa8', wallL:'#7a6840', wallR:'#987860', roof:'#5c3020', chimney:true, texture:'brick' },
-  villager_house_b: { wall:'#cac4a0', wallL:'#706040', wallR:'#908058', roof:'#502818', chimney:true, texture:'brick' },
-  villager_house_c: { wall:'#cecaa8', wallL:'#7a6840', wallR:'#988860', roof:'#5a3020', chimney:true, texture:'brick' },
+  // Wattle-and-daub hut — warm golden walls, dark thatched roof
+  hestas_hut:       { wall:'#d8c478', wallL:'#6a5820', wallR:'#8a7838', roof:'#2a1c08', roofL:'#1c1206', roofR:'#3c2a10', roofPeak:12, chimney:true, texture:'wood' },
+  // Jaxon's house — whitewashed plaster, warm terracotta roof
+  jaxons_house:     { wall:'#ece8d8', wallL:'#605848', wallR:'#807868', roof:'#8a3818', roofL:'#6a2808', roofR:'#aa4828', roofPeak:12, chimney:true, texture:'brick' },
+  // Villager A — warm reddish clay walls, deep brown roof
+  villager_house_a: { wall:'#c89070', wallL:'#704838', wallR:'#906050', roof:'#481808', roofL:'#301008', roofR:'#602418', roofPeak:10, chimney:true, texture:'brick' },
+  // Villager B — cool gray stone walls, slate blue-gray roof
+  villager_house_b: { wall:'#a8b0b0', wallL:'#485058', wallR:'#687078', roof:'#3a4450', roofL:'#283040', roofR:'#4c5e6c', roofPeak:10, chimney:true, texture:'stone' },
+  // Villager C — warm ochre walls, deep auburn roof
+  villager_house_c: { wall:'#dcd070', wallL:'#787030', wallR:'#989050', roof:'#602810', roofL:'#441808', roofR:'#7c3820', roofPeak:10, chimney:true, texture:'brick' },
 };
 
 // ── TIME PERIODS ──────────────────────────────────────────────
