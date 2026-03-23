@@ -74,18 +74,13 @@ loadTileImg('bldg_hn3', _HN + 'Isometric-Houses-3.png'); // green-roof sheet
 // img = tile image key. sx,sy,sw,sh = source crop for sprite sheets.
 // yOff = extra vertical offset (positive = down) to fine-tune ground alignment.
 const VILLAGE_BLDG_SPRITES = [
-  // ── Main character buildings (Free Isometric, ~500×640 px) ──
-  { id:'bakery',           r1:4,  c1:3,  r2:9,  c2:8,  img:'bldg_fi2' },
-  { id:'forge',            r1:4,  c1:25, r2:8,  c2:30, img:'bldg_fi3' },
-  { id:'inn',              r1:4,  c1:32, r2:9,  c2:37, img:'bldg_fi1' },
-  { id:'town_hall',        r1:10, c1:15, r2:15, c2:24, img:'bldg_fi2' },
-  { id:'council_hall',     r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
-  // ── Residential buildings (Hernandack sheet, each house ~43×64 px) ──
-  { id:'jaxons_house',     r1:25, c1:10, r2:29, c2:14, img:'bldg_hn1', sx:0,  sy:0, sw:43, sh:64 },
-  { id:'hestas_hut',       r1:31, c1:4,  r2:35, c2:8,  img:'bldg_hn2', sx:0,  sy:0, sw:43, sh:64 },
-  { id:'villager_house_a', r1:28, c1:22, r2:31, c2:25, img:'bldg_hn1', sx:43, sy:0, sw:43, sh:64 },
-  { id:'villager_house_b', r1:12, c1:28, r2:15, c2:31, img:'bldg_hn2', sx:43, sy:0, sw:43, sh:64 },
-  { id:'villager_house_c', r1:32, c1:14, r2:35, c2:17, img:'bldg_hn3', sx:0,  sy:0, sw:43, sh:64 },
+  // Free Isometric sprites for the five main character buildings
+  { id:'bakery',       r1:4,  c1:3,  r2:9,  c2:8,  img:'bldg_fi2' },
+  { id:'forge',        r1:4,  c1:25, r2:8,  c2:30, img:'bldg_fi3' },
+  { id:'inn',          r1:4,  c1:32, r2:9,  c2:37, img:'bldg_fi1' },
+  { id:'town_hall',    r1:10, c1:15, r2:15, c2:24, img:'bldg_fi2' },
+  { id:'council_hall', r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
+  // Residential buildings keep procedural 3D rendering (no entry here)
 ];
 
 // Tiles inside a building footprint — skip procedural raised-box drawing so
@@ -289,9 +284,21 @@ function drawBuildingSprite(b) {
 function drawTile(c, r) {
   const def = TILE_DEF[currentMap[r]?.[c]];
   if (!def) return;
-  // Skip the procedural 3D-box rendering for tiles inside a building-sprite footprint.
-  // Only skip raised tiles (WALL/BUILDING); DOOR tiles are not raised so they still show.
-  if (!currentBuilding && def.raised && _BLDG_TILE_SKIP.has(`${c},${r}`)) return;
+  // For tiles inside a building-sprite footprint, draw a flat grass base instead of
+  // the procedural 3D box — the sprite sits on top and provides the building appearance.
+  if (!currentBuilding && def.raised && _BLDG_TILE_SKIP.has(`${c},${r}`)) {
+    const {x,y} = toScreen(c,r);
+    if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
+    const grassImg = _tileImgs['grass'];
+    if (grassImg) { drawTileImg(grassImg, x, y); }
+    else {
+      const hw=TW/2, hh=TH/2;
+      ctx.beginPath();
+      ctx.moveTo(x,y-hh); ctx.lineTo(x+hw,y); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
+      ctx.closePath(); ctx.fillStyle='#8a9a6a'; ctx.fill();
+    }
+    return;
+  }
   const {x,y} = toScreen(c,r);
   if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
   const hw=TW/2, hh=TH/2;
