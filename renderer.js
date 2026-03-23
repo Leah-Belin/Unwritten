@@ -87,8 +87,8 @@ const VILLAGE_BLDG_SPRITES = [
   { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, img:'bldg_fi2' },
   { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
   // Residential houses — new villager house sprites
-  { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_halftimber',    yOff:-40 },
-  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_thatched',      yOff:-40 },
+  { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_halftimber',    yOff:-80 },
+  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_thatched',      yOff:-80 },
   { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_log',           yOff:-20 },
   { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_cottage_large', yOff:-20 },
 ];
