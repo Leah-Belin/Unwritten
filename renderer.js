@@ -298,9 +298,21 @@ function drawTile(c, r) {
   // For tiles inside a building-sprite footprint, draw a flat grass base instead of
   // the procedural 3D box — but only when the sprite image has actually loaded.
   const _spriteImgKey = _BLDG_TILE_SPRITE.get(`${c},${r}`);
-  // Tiles inside a loaded building-sprite footprint are covered by the sprite image.
-  // Skip them entirely so no procedural rendering leaks through.
-  if (!currentBuilding && _spriteImgKey && _tileImgs[_spriteImgKey]) return;
+  // Tiles inside a loaded building-sprite footprint get a flat grass base;
+  // the sprite image is drawn on top (at higher z) and covers everything.
+  if (!currentBuilding && _spriteImgKey && _tileImgs[_spriteImgKey]) {
+    const {x,y} = toScreen(c,r);
+    if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
+    const grassImg = _tileImgs['grass'];
+    if (grassImg) { drawTileImg(grassImg, x, y); }
+    else {
+      const hw=TW/2, hh=TH/2;
+      ctx.beginPath();
+      ctx.moveTo(x,y-hh); ctx.lineTo(x+hw,y); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
+      ctx.closePath(); ctx.fillStyle='#8a9a6a'; ctx.fill();
+    }
+    return;
+  }
   const {x,y} = toScreen(c,r);
   if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
   const hw=TW/2, hh=TH/2;
@@ -834,9 +846,8 @@ function render() {
   // Building sprite overlays — village only; other outdoor zones have no building sprites
   if (!currentBuilding && State.scene === 'village') {
     for (const b of VILLAGE_BLDG_SPRITES)
-      // z = SW-corner depth (r2+c1): sprites are drawn after tiles in their footprint
-      // while still letting players/trees south of the building appear in front.
-      items.push({k:'bldg', b, z:b.r2+b.c1+0.45});
+      // z = SE-corner depth (r2+c2): sprite always draws after ALL footprint grass tiles.
+      items.push({k:'bldg', b, z:b.r2+b.c2+0.45});
   }
   currentNPCs.forEach(n => items.push({k:'npc',n,z:n.row+n.col+0.8}));
   items.push({k:'player',z:player.row+player.col+0.8});
