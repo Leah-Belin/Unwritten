@@ -38,8 +38,10 @@ function attachInputHandlers() {
     if (document.getElementById('event-overlay').classList.contains('open')) return;
 
     const rect=canvas.getBoundingClientRect();
-    const sx=e.clientX-rect.left, sy=e.clientY-rect.top;
-    const{col:clickCol, row:clickRow}=toTile(sx,sy);
+    const rawX=e.clientX-rect.left, rawY=e.clientY-rect.top;
+    // Undo centre-anchored zoom to get logical canvas coords for hit-tests
+    const sx=(rawX-W/2)/zoomLevel+W/2, sy=(rawY-H/2)/zoomLevel+H/2;
+    const{col:clickCol, row:clickRow}=toTile(rawX,rawY);
 
     // ── NPC click — must be adjacent to talk ──────────────────
     for (const npc of currentNPCs) {

@@ -15,15 +15,19 @@ const PORTRAIT_GALEN     = 'images/portraits/galen.jpg';
 const PORTRAIT_MARIELLA  = 'images/portraits/mariella.jpg';
 
 // ── ISO MATH ──────────────────────────────────────────────────
-let TW = 64, TH = 32;          // mutable — updated each frame from zoomLevel
+const TW = 64, TH = 32;
 let zoomLevel = 1.0;            // changed by pinch / scroll-wheel
 const isoX = (c,r) => (c - r) * (TW/2);
 const isoY = (c,r) => (c + r) * (TH/2);
 let offX = 0, offY = 0;
 
 const toScreen = (c,r) => ({ x: isoX(c,r)+offX, y: isoY(c,r)+offY });
-const toTile   = (sx,sy) => {
-  const wx=sx-offX, wy=sy-offY;
+// Canvas is drawn with ctx.scale(zoom) centred on (W/2, H/2).
+// Invert that transform before converting a screen tap to a tile.
+const toTile = (sx,sy) => {
+  const lx = (sx - W/2) / zoomLevel + W/2;
+  const ly = (sy - H/2) / zoomLevel + H/2;
+  const wx = lx - offX, wy = ly - offY;
   return {
     col: Math.round((wx/(TW/2) + wy/(TH/2)) / 2),
     row: Math.round((wy/(TH/2) - wx/(TW/2)) / 2),
@@ -151,8 +155,7 @@ function loop(ts) {
   // Show proximity pickup hints
   updateProximityItems();
 
-  // Update tile size from zoom, then smooth camera
-  TW = 64 * zoomLevel | 0;  TH = 32 * zoomLevel | 0;
+  // Smooth camera
   const tx=W/2-player.px, ty=H/2-player.py-TH;
   offX+=(tx-offX)*0.08; offY+=(ty-offY)*0.08;
 

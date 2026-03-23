@@ -93,13 +93,14 @@ const VILLAGE_BLDG_SPRITES = [
   { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_simple'    },
 ];
 
-// Tiles inside a building footprint — skip procedural raised-box drawing so
-// the single building sprite covers them cleanly.
-const _BLDG_TILE_SKIP = new Set();
+// Maps 'col,row' → sprite img key for every tile inside a building footprint.
+// drawTile uses this to skip procedural raised-box rendering only when the
+// sprite image is actually loaded (falls back to procedural if image is missing).
+const _BLDG_TILE_SPRITE = new Map();
 for (const b of VILLAGE_BLDG_SPRITES)
   for (let r = b.r1; r <= b.r2; r++)
     for (let c = b.c1; c <= b.c2; c++)
-      _BLDG_TILE_SKIP.add(`${c},${r}`);
+      _BLDG_TILE_SPRITE.set(`${c},${r}`, b.img);
 
 // Per-building floor tile
 const _FLOOR_IMG = {
@@ -295,8 +296,9 @@ function drawTile(c, r) {
   const def = TILE_DEF[currentMap[r]?.[c]];
   if (!def) return;
   // For tiles inside a building-sprite footprint, draw a flat grass base instead of
-  // the procedural 3D box — the sprite sits on top and provides the building appearance.
-  if (!currentBuilding && def.raised && _BLDG_TILE_SKIP.has(`${c},${r}`)) {
+  // the procedural 3D box — but only when the sprite image has actually loaded.
+  const _spriteImgKey = _BLDG_TILE_SPRITE.get(`${c},${r}`);
+  if (!currentBuilding && def.raised && _spriteImgKey && _tileImgs[_spriteImgKey]) {
     const {x,y} = toScreen(c,r);
     if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
     const grassImg = _tileImgs['grass'];
@@ -817,6 +819,12 @@ function render() {
   sky.addColorStop(0, p.sky1); sky.addColorStop(1, p.sky2);
   ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
 
+  // Zoom: scale from the canvas centre so the player (centred by offX/offY) stays fixed
+  ctx.save();
+  ctx.translate(W/2, H/2);
+  ctx.scale(zoomLevel, zoomLevel);
+  ctx.translate(-W/2, -H/2);
+
   // Collect and sort drawables (painter's algorithm)
   // Raised tiles (walls/buildings) get a small z boost so they overdraw correctly
   const items = [];
@@ -863,6 +871,7 @@ function render() {
   }
 
   drawMarker();
+  ctx.restore(); // end zoom
 
   // Time tint
   ctx.fillStyle=p.tint; ctx.fillRect(0,0,W,H);
