@@ -19,10 +19,12 @@ const TW = 64, TH = 32;
 const isoX = (c,r) => (c - r) * (TW/2);
 const isoY = (c,r) => (c + r) * (TH/2);
 let offX = 0, offY = 0;
+let zoomLevel = 1.0;
 
 const toScreen = (c,r) => ({ x: isoX(c,r)+offX, y: isoY(c,r)+offY });
 const toTile   = (sx,sy) => {
-  const wx=sx-offX, wy=sy-offY;
+  const lx=sx/zoomLevel, ly=sy/zoomLevel;
+  const wx=lx-offX, wy=ly-offY;
   return {
     col: Math.round((wx/(TW/2) + wy/(TH/2)) / 2),
     row: Math.round((wy/(TH/2) - wx/(TW/2)) / 2),
@@ -150,8 +152,8 @@ function loop(ts) {
   // Show proximity pickup hints
   updateProximityItems();
 
-  // Smooth camera
-  const tx=W/2-player.px, ty=H/2-player.py-TH;
+  // Smooth camera (account for zoom so player stays centred at all zoom levels)
+  const tx=W/(2*zoomLevel)-player.px, ty=H/(2*zoomLevel)-player.py-TH/zoomLevel;
   offX+=(tx-offX)*0.08; offY+=(ty-offY)*0.08;
 
   render();
@@ -739,7 +741,11 @@ const BUILDING_ART = {
 
   town_hall: `<img src="images/buildings/town_hall.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
-  jaxons_house: `<img src="images/buildings/jaxons_house.jpg" style="width:100%;height:100%;object-fit:cover">`,
+  jaxons_house:     `<img src="images/buildings/house_large.jpg"     style="width:100%;height:100%;object-fit:cover">`,
+
+  villager_house_a: `<img src="images/buildings/house_cottage.jpg"   style="width:100%;height:100%;object-fit:cover">`,
+  villager_house_b: `<img src="images/buildings/house_dark_roof.jpg" style="width:100%;height:100%;object-fit:cover">`,
+  villager_house_c: `<img src="images/buildings/house_simple.jpg"    style="width:100%;height:100%;object-fit:cover">`,
 
   hestas_hut: `<img src="images/buildings/hestas_hut.jpg" style="width:100%;height:100%;object-fit:cover">`,
 
