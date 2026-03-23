@@ -298,7 +298,7 @@ function drawTile(c, r) {
   // For tiles inside a building-sprite footprint, draw a flat grass base instead of
   // the procedural 3D box — but only when the sprite image has actually loaded.
   const _spriteImgKey = _BLDG_TILE_SPRITE.get(`${c},${r}`);
-  if (!currentBuilding && def.raised && _spriteImgKey && _tileImgs[_spriteImgKey]) {
+  if (!currentBuilding && _spriteImgKey && _tileImgs[_spriteImgKey]) {
     const {x,y} = toScreen(c,r);
     if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
     const grassImg = _tileImgs['grass'];
@@ -844,7 +844,7 @@ function render() {
   // Building sprite overlays — village only; other outdoor zones have no building sprites
   if (!currentBuilding && State.scene === 'village') {
     for (const b of VILLAGE_BLDG_SPRITES)
-      items.push({k:'bldg', b, z:(b.r1+b.r2+b.c1+b.c2)/2 + 0.45});
+      items.push({k:'bldg', b, z:b.r2+b.c2+0.45});
   }
   currentNPCs.forEach(n => items.push({k:'npc',n,z:n.row+n.col+0.8}));
   items.push({k:'player',z:player.row+player.col+0.8});
