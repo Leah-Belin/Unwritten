@@ -13,7 +13,7 @@
   --font-hand:      'Caveat', cursive;
 }
 html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-family:var(--font-body); color:var(--ink); }
-#layout { display:grid; grid-template-columns:1fr auto; grid-template-rows:100vh; width:100vw; height:100vh; }
+#layout { display:grid; grid-template-columns:1fr auto; grid-template-rows:100%; width:100%; height:100%; }
 #panel-backdrop { display:none; }
 
 /* ══ CANVAS PANEL ══════════════════════════════════════════════ */
@@ -283,7 +283,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 #ui-panel {
   display:flex; flex-direction:column;
   background:var(--parchment); border-left:3px solid var(--ink);
-  position:relative; overflow:hidden;
+  position:relative; overflow-x:hidden; overflow-y:visible;
   width:300px; max-width:300px; min-width:0;
   transition:max-width 0.3s ease;
 }
@@ -358,8 +358,8 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 
 /* Day bar */
 #day-bar { padding:4px 14px 6px; border-top:1px solid var(--parchment-deep); font-family:var(--font-hand); font-size:0.78rem; color:var(--sepia); display:flex; justify-content:space-between; position:relative; z-index:1; flex-shrink:0; }
-#reset-btn { display:block; width:100%; background:none; border:none; border-top:1px solid var(--parchment-deep); font-family:var(--font-hand); font-size:0.72rem; color:var(--sepia); opacity:0.45; cursor:pointer; padding:5px 0 7px; text-align:center; flex-shrink:0; }
-#reset-btn:hover { opacity:1; }
+#reset-btn { display:block; width:100%; background:none; border:none; border-top:1px solid var(--parchment-deep); font-family:var(--font-hand); font-size:0.72rem; color:var(--sepia); opacity:0.6; cursor:pointer; padding:5px 0 8px; text-align:center; flex-shrink:0; }
+#reset-btn:hover { opacity:1; color:var(--accent); }
 
 /* ══ MOBILE — panel becomes a fixed overlay ════════════════════ */
 @media (max-width: 640px) {

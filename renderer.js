@@ -87,10 +87,10 @@ const VILLAGE_BLDG_SPRITES = [
   { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, img:'bldg_fi2' },
   { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
   // Residential houses
-  { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_large'     },
-  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_cottage'   },
-  { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_dark_roof' },
-  { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_simple'    },
+  { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_large',    yOff:29 },
+  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_cottage',  yOff:22 },
+  { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_dark_roof',yOff:25 },
+  { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_simple',   yOff:18 },
 ];
 
 // Maps 'col,row' → sprite img key for every tile inside a building footprint.
@@ -298,19 +298,9 @@ function drawTile(c, r) {
   // For tiles inside a building-sprite footprint, draw a flat grass base instead of
   // the procedural 3D box — but only when the sprite image has actually loaded.
   const _spriteImgKey = _BLDG_TILE_SPRITE.get(`${c},${r}`);
-  if (!currentBuilding && _spriteImgKey && _tileImgs[_spriteImgKey]) {
-    const {x,y} = toScreen(c,r);
-    if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
-    const grassImg = _tileImgs['grass'];
-    if (grassImg) { drawTileImg(grassImg, x, y); }
-    else {
-      const hw=TW/2, hh=TH/2;
-      ctx.beginPath();
-      ctx.moveTo(x,y-hh); ctx.lineTo(x+hw,y); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
-      ctx.closePath(); ctx.fillStyle='#8a9a6a'; ctx.fill();
-    }
-    return;
-  }
+  // Tiles inside a loaded building-sprite footprint are covered by the sprite image.
+  // Skip them entirely so no procedural rendering leaks through.
+  if (!currentBuilding && _spriteImgKey && _tileImgs[_spriteImgKey]) return;
   const {x,y} = toScreen(c,r);
   if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
   const hw=TW/2, hh=TH/2;
@@ -844,7 +834,9 @@ function render() {
   // Building sprite overlays — village only; other outdoor zones have no building sprites
   if (!currentBuilding && State.scene === 'village') {
     for (const b of VILLAGE_BLDG_SPRITES)
-      items.push({k:'bldg', b, z:b.r2+b.c2+0.45});
+      // z = SW-corner depth (r2+c1): sprites are drawn after tiles in their footprint
+      // while still letting players/trees south of the building appear in front.
+      items.push({k:'bldg', b, z:b.r2+b.c1+0.45});
   }
   currentNPCs.forEach(n => items.push({k:'npc',n,z:n.row+n.col+0.8}));
   items.push({k:'player',z:player.row+player.col+0.8});
