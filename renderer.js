@@ -60,37 +60,36 @@ loadTileImg('floor_slate',  _IT + 'isometric_0201.png');
 loadTileImg('floor_cobble', _IT + 'isometric_0215.png');
 
 // ── BUILDING EXTERIOR SPRITES ─────────────────────────────────
-const _FI = _IT + 'free%20isometric%20tileset%20for%20prototyping/';
-const _HN = _IT + 'hernandack-houses/';
-loadTileImg('bldg_fi1', _FI + 'house%201.png'); // purple/slate — inn, council
-loadTileImg('bldg_fi2', _FI + 'house%202.png'); // red/timber   — bakery, town hall
-loadTileImg('bldg_fi3', _FI + 'house%203.png'); // dark slate   — forge
-loadTileImg('bldg_hn1', _HN + 'Isometric-Houses-1-flip.png'); // blue-roof sheet
-loadTileImg('bldg_hn2', _HN + 'Isometric-Houses-2-flip.png'); // pink-roof sheet
-loadTileImg('bldg_hn3', _HN + 'Isometric-Houses-3-flip.png'); // green-roof sheet
-
-// Residential house sprites (extracted from house-collection-six-isometric-style)
-loadTileImg('house_large',     'images/buildings/house_large.png');
-loadTileImg('house_cottage',   'images/buildings/house_cottage.png');
-loadTileImg('house_dark_roof', 'images/buildings/house_dark_roof.png');
-loadTileImg('house_simple',    'images/buildings/house_simple.png');
+// Shops / civic buildings (extracted from Isometric shops.png)
+loadTileImg('shop_bakery',  'images/buildings/shop_bakery.png');
+loadTileImg('shop_forge',   'images/buildings/shop_forge.png');
+loadTileImg('shop_mill',    'images/buildings/shop_mill.png');
+loadTileImg('shop_general', 'images/buildings/shop_general.png');
+// Civic / temple buildings (extracted from Isometric temple 1 & 2.png)
+loadTileImg('temple_roman',   'images/buildings/temple_roman.png');
+loadTileImg('temple_eastern', 'images/buildings/temple_eastern.png');
+// Villager houses (extracted from Villager houses 1.png)
+loadTileImg('house_thatched',      'images/buildings/house_thatched.png');
+loadTileImg('house_log',           'images/buildings/house_log.png');
+loadTileImg('house_cottage_large', 'images/buildings/house_cottage_large.png');
+loadTileImg('house_halftimber',    'images/buildings/house_halftimber.png');
 
 // Village building sprite overlays.
 // r1,c1..r2,c2 = tile footprint (inclusive).
-// img = tile image key. sx,sy,sw,sh = source crop for sprite sheets.
-// yOff = extra vertical offset (positive = down) to fine-tune ground alignment.
+// img = tile image key. yOff = extra vertical offset (positive = down).
 const VILLAGE_BLDG_SPRITES = [
-  // Free Isometric sprites for the five main character buildings
-  { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  img:'bldg_fi2' },
-  { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, img:'bldg_fi3' },
-  { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, img:'bldg_fi1' },
-  { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, img:'bldg_fi2' },
-  { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'bldg_fi1' },
-  // Residential houses
-  { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_large',    yOff:29 },
-  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_cottage',  yOff:22, wallColor:'#b3978a' },
-  { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_dark_roof',yOff:25, wallColor:'#586745' },
-  { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_simple',   yOff:18, wallColor:'#a3bdb8' },
+  // Main character buildings — new isometric shop sprites
+  { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  img:'shop_bakery'  },
+  { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, img:'shop_forge'   },
+  { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, img:'shop_general' },
+  // Civic buildings — temple sprites
+  { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, img:'temple_roman'   },
+  { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'temple_eastern' },
+  // Residential houses — new villager house sprites
+  { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_halftimber',    yOff:20 },
+  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_thatched',      yOff:20 },
+  { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_log',           yOff:20 },
+  { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_cottage_large', yOff:20 },
 ];
 
 // Maps 'col,row' → sprite img key for every tile inside a building footprint.
