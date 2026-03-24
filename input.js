@@ -118,6 +118,43 @@ function attachInputHandlers() {
       }
     }
     if (!currentBuilding) {
+      // ── Building sprite hit-test (screen-space) ─────────────
+      // The tile-based check below misses clicks on the visual building when
+      // yOff lifts the sprite above its tile footprint. Check sprite bounds first.
+      if (State.scene === 'village') {
+        for (const b of VILLAGE_BLDG_SPRITES) {
+          const img = _tileImgs[b.img];
+          if (!img || !img.naturalWidth) continue;
+          const srcW = b.sw ?? img.naturalWidth;
+          const srcH = b.sh ?? img.naturalHeight;
+          if (!srcW || !srcH) continue;
+          const fW = (b.c2 - b.c1 + b.r2 - b.r1) * TW / 2;
+          const scale = fW / srcW;
+          const dw = srcW * scale;
+          const dh = srcH * scale;
+          const cc = (b.c1 + b.c2) / 2;
+          const cr = (b.r1 + b.r2) / 2;
+          const cx = isoX(cc, cr) + offX;
+          const cy = isoY(cc, b.r2) + TH / 2 + offY + (b.yOff ?? 0);
+          if (sx >= cx - dw / 2 && sx <= cx + dw / 2 && sy >= cy - dh && sy <= cy) {
+            const building = BUILDING_BOUNDS.find(bd => bd.id === b.id);
+            if (building) {
+              if (isAdjacentToBuilding(building)) {
+                enterBuilding(building.id);
+              } else {
+                const doorEntry = Object.entries(DOOR_MAP).find(([_k, v]) => v === building.id);
+                if (doorEntry) {
+                  const [dc, dr] = doorEntry[0].split(',').map(Number);
+                  const adj = getAdjacentWalkable(dc, dr);
+                  if (adj) { player.path = astar(player.col, player.row, adj.col, adj.row); pendingDoorEntry = building.id; }
+                }
+              }
+              return;
+            }
+          }
+        }
+      }
+      // ── Tile-based building detection (fallback / interior tiles) ──
       if (clickCol>=0 && clickRow>=0 && clickCol<mapCols && clickRow<mapRows) {
         const tile = currentMap[clickRow]?.[clickCol];
         if (tile === T.WALL || tile === T.BUILDING || tile === T.DOOR) {
