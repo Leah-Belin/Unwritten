@@ -921,12 +921,12 @@ function advancePeriod() {
 // Maps door tile positions to building IDs
 // Matches placeBuilding(r,c,h,w) — door at row r+h-1, col c+floor(w/2)
 const DOOR_MAP = {
-  '6,9':   'bakery',
-  '28,8':  'forge',
-  '35,9':  'inn',
-  '20,15': 'town_hall',
-  '29,26': 'council_hall',
-  '6,35':  'hestas_hut',
+  '6,8':   'bakery',          // placeBuilding(4,3,5,6)   → r+h-1=8,  c+⌊w/2⌋=6
+  '28,5':  'forge',           // placeBuilding(4,25,2,6)  → r+h-1=5,  c+⌊w/2⌋=28
+  '35,6':  'inn',             // placeBuilding(4,32,3,6)  → r+h-1=6,  c+⌊w/2⌋=35
+  '20,13': 'town_hall',       // placeBuilding(10,15,4,10)→ r+h-1=13, c+⌊w/2⌋=20
+  '29,24': 'council_hall',    // placeBuilding(22,26,3,6) → r+h-1=24, c+⌊w/2⌋=29
+  '6,33':  'hestas_hut',      // placeBuilding(31,4,3,5)  → r+h-1=33, c+⌊w/2⌋=6
   '13,28': 'jaxons_house',
   '24,31': 'villager_house_a',
   '30,15': 'villager_house_b',
@@ -936,12 +936,12 @@ const DOOR_MAP = {
 // Building footprints for click-to-enter — any click on a wall/building/door tile
 // triggers entry if player is adjacent. Maps each building's tile range.
 const BUILDING_BOUNDS = [
-  { id:'bakery',          rMin:4,  rMax:9,  cMin:3,  cMax:8  },
-  { id:'forge',           rMin:4,  rMax:8,  cMin:25, cMax:30 },
-  { id:'inn',             rMin:4,  rMax:9,  cMin:32, cMax:37 },
-  { id:'town_hall',       rMin:10, rMax:15, cMin:15, cMax:24 },
-  { id:'council_hall',    rMin:22, rMax:26, cMin:26, cMax:31 },
-  { id:'hestas_hut',      rMin:31, rMax:35, cMin:4,  cMax:8  },
+  { id:'bakery',          rMin:4,  rMax:8,  cMin:3,  cMax:8  },
+  { id:'forge',           rMin:4,  rMax:5,  cMin:25, cMax:30 },
+  { id:'inn',             rMin:4,  rMax:6,  cMin:32, cMax:37 },
+  { id:'town_hall',       rMin:10, rMax:13, cMin:15, cMax:24 },
+  { id:'council_hall',    rMin:22, rMax:24, cMin:26, cMax:31 },
+  { id:'hestas_hut',      rMin:31, rMax:33, cMin:4,  cMax:8  },
   { id:'jaxons_house',    rMin:25, rMax:28, cMin:10, cMax:15 },
   { id:'villager_house_a',rMin:28, rMax:31, cMin:22, cMax:25 },
   { id:'villager_house_b',rMin:12, rMax:15, cMin:28, cMax:31 },

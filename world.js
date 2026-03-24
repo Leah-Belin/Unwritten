@@ -160,12 +160,12 @@ function buildVillageMap() {
     if(villageMap[r][c]===T.GRASS)villageMap[r][c]=T.FLOWER;
   });
   // Buildings (removed separate healer's house — Gallan lives in bakery)
-  placeBuilding(4,3,6,6);    // Bakery (Kaida & Gallan's home)
-  placeBuilding(4,25,5,6);   // Forge
-  placeBuilding(4,32,6,6);   // Inn
-  placeBuilding(10,15,6,10); // Town Hall
-  placeBuilding(22,26,5,6);  // Council Hall (moved west to clear the plot)
-  placeBuilding(31,4,5,5);   // Hesta's hut
+  placeBuilding(4,3,5,6);    // Bakery (Kaida & Gallan's home)   — yOff:-20 (~1 row)
+  placeBuilding(4,25,2,6);   // Forge                            — yOff:-60 (~4 rows)
+  placeBuilding(4,32,3,6);   // Inn                              — yOff:-60 (~4 rows)
+  placeBuilding(10,15,4,10); // Town Hall                        — yOff:-40 (~2 rows)
+  placeBuilding(22,26,3,6);  // Council Hall                     — yOff:-40 (~2 rows)
+  placeBuilding(31,4,3,5);   // Hesta's hut                      — yOff:-40 (~2 rows)
   placeBuilding(25,10,4,6);  // Jaxon's house
   placeBuilding(28,22,4,4);  // Villager house A
   placeBuilding(12,28,4,4);  // Villager house B
