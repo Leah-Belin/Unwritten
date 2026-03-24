@@ -93,8 +93,8 @@ const VILLAGE_BLDG_SPRITES = [
   { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, tileR2:24, img:'bldg_council_hall',yOff:-40 },
   { id:'hestas_hut',      r1:31, c1:4,  r2:35, c2:8,  tileR2:33, img:'bldg_hestas_hut',  yOff:-40 },
   // Residential houses — sprite r2 matches tile extent, no tileR2 needed
-  { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_halftimber',    yOff:-80 },
-  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_thatched',      yOff:-80 },
+  { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_halftimber',    yOff:-20 },
+  { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_thatched',      yOff:-20 },
   { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_log',           yOff:-20 },
   { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_cottage_large', yOff:-20 },
 ];
