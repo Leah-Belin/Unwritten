@@ -81,14 +81,18 @@ loadTileImg('house_halftimber',    'images/buildings/house_halftimber.png');
 // img = tile image key. yOff = extra vertical offset (positive = down).
 const VILLAGE_BLDG_SPRITES = [
   // Main character buildings
-  { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  img:'shop_bakery',      yOff:-20 },
-  { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, img:'shop_forge',       yOff:-60 },
-  { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, img:'bldg_inn',         yOff:-60 },
+  // tileR2 = actual south row of building tiles (from placeBuilding); r2 is the
+  // larger sprite footprint used for ground-tile suppression and image sizing.
+  // Z-sort must use tileR2 so characters on walkable tiles south of the building
+  // tiles (but inside the sprite footprint) render in front, not behind.
+  { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  tileR2:8,  img:'shop_bakery',      yOff:-20 },
+  { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, tileR2:5,  img:'shop_forge',       yOff:-60 },
+  { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, tileR2:6,  img:'bldg_inn',         yOff:-60 },
   // Civic buildings
-  { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, img:'bldg_town_hall',   yOff:-40 },
-  { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, img:'bldg_council_hall',yOff:-40 },
-  { id:'hestas_hut',      r1:31, c1:4,  r2:35, c2:8,  img:'bldg_hestas_hut',  yOff:-40 },
-  // Residential houses — new villager house sprites
+  { id:'town_hall',       r1:10, c1:15, r2:15, c2:24, tileR2:13, img:'bldg_town_hall',   yOff:-40 },
+  { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, tileR2:24, img:'bldg_council_hall',yOff:-40 },
+  { id:'hestas_hut',      r1:31, c1:4,  r2:35, c2:8,  tileR2:33, img:'bldg_hestas_hut',  yOff:-40 },
+  // Residential houses — sprite r2 matches tile extent, no tileR2 needed
   { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_halftimber',    yOff:-80 },
   { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_thatched',      yOff:-80 },
   { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_log',           yOff:-20 },
@@ -869,11 +873,13 @@ function render() {
   // Building sprite overlays — village only; other outdoor zones have no building sprites
   if (!currentBuilding && State.scene === 'village') {
     for (const b of VILLAGE_BLDG_SPRITES)
-      // z = SW-corner depth (r2+c1): anything at the same depth or south draws in front.
-      items.push({k:'bldg', b, z:b.r2+b.c1+0.7});
+      // Use tileR2 (actual building-tile south row) not sprite r2, so characters
+      // on walkable grass tiles between tileR2 and r2 sort in front of the building.
+      items.push({k:'bldg', b, z:(b.tileR2??b.r2)+b.c1+0.7});
   }
-  currentNPCs.forEach(n => items.push({k:'npc',n,z:n.row+n.col+0.8}));
-  items.push({k:'player',z:player.row+player.col+0.8});
+  // Use pixel py for z during movement; py = isoY(col,row) = (col+row)*(TH/2)
+  currentNPCs.forEach(n => items.push({k:'npc',n,z:(n.py!==undefined?n.py/(TH/2):n.row+n.col)+0.8}));
+  items.push({k:'player',z:player.py/(TH/2)+0.8});
   items.sort((a,b) => a.z-b.z);
 
   ctx.textAlign='center';
