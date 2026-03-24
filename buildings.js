@@ -129,7 +129,7 @@ const BUILDINGS = {
     id: 'town_hall',
     name: 'Town Hall',
     emoji: '⚖️',
-    exteriorCol: 19, exteriorRow: 11,
+    exteriorCol: 22, exteriorRow: 13,
     floors: [
       {
         id: 'townhall_ground',
