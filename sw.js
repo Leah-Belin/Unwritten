@@ -1,7 +1,7 @@
 // ── CACHE VERSION ──────────────────────────────────────────────
 // Change this string to force every client to discard the old cache
 // and re-fetch all game assets on their next visit.
-const CACHE = 'unwritten-v17';
+const CACHE = 'unwritten-v18';
 
 const PRECACHE = [
   './',
