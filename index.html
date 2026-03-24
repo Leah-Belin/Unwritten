@@ -167,9 +167,13 @@
 <script src="quests.js"></script>
 <script src="ui.js"></script>
 <script src="events.js"></script>
-<script src="renderer.js"></script> <!-- all canvas drawing functions -->
+<script src="renderer-assets.js"></script> <!-- sprite/tile image loading -->
+<script src="renderer-tiles.js"></script>  <!-- tile drawing helpers + drawTile -->
+<script src="renderer.js"></script>        <!-- sprites, furniture, render() -->
 <script src="input.js"></script>    <!-- click handler -->
-<script src="engine.js"></script>   <!-- game loop, scene management, init -->
+<script src="npc.js"></script>      <!-- NPC wandering + dialogue -->
+<script src="scene.js"></script>    <!-- scene/floor/building management -->
+<script src="engine.js"></script>   <!-- core game loop + init -->
 <script>
   window.addEventListener('load', init);
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
