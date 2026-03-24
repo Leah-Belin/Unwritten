@@ -183,7 +183,7 @@ function checkArrival() {
 
   // Check pending door entry — fire when player is adjacent to the target building
   if (pendingDoorEntry && !currentBuilding) {
-    const building = BUILDING_BOUNDS.find(b => b.id === pendingDoorEntry);
+    const building = BUILDING_REGISTRY.find(b => b.id === pendingDoorEntry);
     if (building && isAdjacentToBuilding(building)) {
       const id = pendingDoorEntry;
       pendingDoorEntry = null;
