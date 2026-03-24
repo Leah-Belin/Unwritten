@@ -150,26 +150,6 @@ function attachInputHandlers() {
           }
         }
       }
-      // ── Tile-based building detection (fallback / interior tiles) ──
-      if (clickCol>=0 && clickRow>=0 && clickCol<mapCols && clickRow<mapRows) {
-        const tile = currentMap[clickRow]?.[clickCol];
-        if (tile === T.WALL || tile === T.BUILDING || tile === T.DOOR) {
-          const building = getBuildingAtTile(clickCol, clickRow);
-          if (building) {
-            if (isAdjacentToBuilding(building)) {
-              enterBuilding(building.id);
-            } else {
-              // Walk to the door tile of this building
-              const adj = getAdjacentWalkable(building.doorCol, building.doorRow);
-              if (adj) {
-                player.path = astar(player.col, player.row, adj.col, adj.row);
-                pendingDoorEntry = building.id;
-              }
-            }
-            return;
-          }
-        }
-      }
     }
 
     // ── Furniture click — walk to adjacent tile (never an exit) ──

@@ -234,9 +234,9 @@ function placeBuilding(r,c,h,w){
     if(i<0||i>=VILLAGE_ROWS||j<0||j>=VILLAGE_COLS)continue;
     villageMap[i][j]=(i===r||i===r+h-1||j===c||j===c+w-1)?T.WALL:T.BUILDING;
   }
-  // Door on south face, center
+  // South face center: walkable path tile (entrance is the building image, not a door tile)
   const doorRow = r+h-1;
   const doorCol = c+Math.floor(w/2);
-  if(doorRow<VILLAGE_ROWS)villageMap[doorRow][doorCol]=T.DOOR;
+  if(doorRow<VILLAGE_ROWS)villageMap[doorRow][doorCol]=T.PATH;
 }
 
