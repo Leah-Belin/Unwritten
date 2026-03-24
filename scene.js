@@ -120,10 +120,9 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
       const pos = zoneReturn[fromZone] || { col:20, row:23 };
       player.col=pos.col; player.row=pos.row;
     } else if (fromBuildingId) {
-      const doorEntry = Object.entries(DOOR_MAP).find(([_k,v]) => v === fromBuildingId);
-      if (doorEntry) {
-        const [dc, dr] = doorEntry[0].split(',').map(Number);
-        player.col = dc; player.row = dr + 1;
+      const b = BUILDING_REGISTRY.find(b => b.id === fromBuildingId);
+      if (b) {
+        player.col = b.doorCol; player.row = b.doorRow + 1;
       } else {
         player.col=20; player.row=23;
       }
@@ -275,53 +274,37 @@ function loadFloor(building, floorId) {
 }
 
 // ── WORLD MAP ─────────────────────────────────────────────────
-// Maps door tile positions to building IDs
-// Matches placeBuilding(r,c,h,w) — door at row r+h-1, col c+floor(w/2)
-const DOOR_MAP = {
-  '6,8':   'bakery',          // placeBuilding(4,3,5,6)   → r+h-1=8,  c+⌊w/2⌋=6
-  '28,5':  'forge',           // placeBuilding(4,25,2,6)  → r+h-1=5,  c+⌊w/2⌋=28
-  '35,6':  'inn',             // placeBuilding(4,32,3,6)  → r+h-1=6,  c+⌊w/2⌋=35
-  '20,13': 'town_hall',       // placeBuilding(10,15,4,10)→ r+h-1=13, c+⌊w/2⌋=20
-  '29,24': 'council_hall',    // placeBuilding(22,26,3,6) → r+h-1=24, c+⌊w/2⌋=29
-  '6,33':  'hestas_hut',      // placeBuilding(31,4,3,5)  → r+h-1=33, c+⌊w/2⌋=6
-  '13,28': 'jaxons_house',
-  '24,31': 'villager_house_a',
-  '30,15': 'villager_house_b',
-  '16,35': 'villager_house_c',
-};
-
-// Building footprints for click-to-enter — any click on a wall/building/door tile
-// triggers entry if player is adjacent. Maps each building's tile range.
-const BUILDING_BOUNDS = [
-  { id:'bakery',          rMin:4,  rMax:8,  cMin:3,  cMax:8  },
-  { id:'forge',           rMin:4,  rMax:5,  cMin:25, cMax:30 },
-  { id:'inn',             rMin:4,  rMax:6,  cMin:32, cMax:37 },
-  { id:'town_hall',       rMin:10, rMax:13, cMin:15, cMax:24 },
-  { id:'council_hall',    rMin:22, rMax:24, cMin:26, cMax:31 },
-  { id:'hestas_hut',      rMin:31, rMax:33, cMin:4,  cMax:8  },
-  { id:'jaxons_house',    rMin:25, rMax:28, cMin:10, cMax:15 },
-  { id:'villager_house_a',rMin:28, rMax:31, cMin:22, cMax:25 },
-  { id:'villager_house_b',rMin:12, rMax:15, cMin:28, cMax:31 },
-  { id:'villager_house_c',rMin:32, rMax:35, cMin:14, cMax:17 },
+// Single source of truth for building door positions and tile footprints.
+// doorCol/doorRow: the door tile coordinates on the village map.
+// rMin/rMax/cMin/cMax: tile footprint used for click-to-enter detection.
+const BUILDING_REGISTRY = [
+  { id:'bakery',          doorCol:6,  doorRow:8,  rMin:4,  rMax:8,  cMin:3,  cMax:8  },
+  { id:'forge',           doorCol:28, doorRow:5,  rMin:4,  rMax:5,  cMin:25, cMax:30 },
+  { id:'inn',             doorCol:35, doorRow:6,  rMin:4,  rMax:6,  cMin:32, cMax:37 },
+  { id:'town_hall',       doorCol:20, doorRow:13, rMin:10, rMax:13, cMin:15, cMax:24 },
+  { id:'council_hall',    doorCol:29, doorRow:24, rMin:22, rMax:24, cMin:26, cMax:31 },
+  { id:'hestas_hut',      doorCol:6,  doorRow:33, rMin:31, rMax:33, cMin:4,  cMax:8  },
+  { id:'jaxons_house',    doorCol:13, doorRow:28, rMin:25, rMax:28, cMin:10, cMax:15 },
+  { id:'villager_house_a',doorCol:24, doorRow:31, rMin:28, rMax:31, cMin:22, cMax:25 },
+  { id:'villager_house_b',doorCol:30, doorRow:15, rMin:12, rMax:15, cMin:28, cMax:31 },
+  { id:'villager_house_c',doorCol:16, doorRow:35, rMin:32, rMax:35, cMin:14, cMax:17 },
 ];
 
 function getBuildingAtTile(col, row) {
-  return BUILDING_BOUNDS.find(b =>
+  return BUILDING_REGISTRY.find(b =>
     row >= b.rMin && row <= b.rMax &&
     col >= b.cMin && col <= b.cMax
   ) || null;
 }
 
 function isAdjacentToBuilding(building) {
-  // Check if player is adjacent to the building's door tile
-  const doorKey = Object.entries(DOOR_MAP).find(([_k,v]) => v === building.id);
-  if (!doorKey) return false;
-  const [dc, dr] = doorKey[0].split(',').map(Number);
-  return Math.abs(player.col - dc) <= 1 && Math.abs(player.row - dr) <= 1;
+  const b = BUILDING_REGISTRY.find(b => b.id === building.id);
+  if (!b) return false;
+  return Math.abs(player.col - b.doorCol) <= 1 && Math.abs(player.row - b.doorRow) <= 1;
 }
 
 function getDoorBuilding(col, row) {
-  return DOOR_MAP[`${col},${row}`] || null;
+  return BUILDING_REGISTRY.find(b => b.doorCol === col && b.doorRow === row)?.id || null;
 }
 
 function toggleWorldMap() {

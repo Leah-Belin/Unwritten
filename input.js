@@ -137,17 +137,13 @@ function attachInputHandlers() {
           const cx = isoX(cc, cr) + offX;
           const cy = isoY(cc, b.r2) + TH / 2 + offY + (b.yOff ?? 0);
           if (sx >= cx - dw / 2 && sx <= cx + dw / 2 && sy >= cy - dh && sy <= cy) {
-            const building = BUILDING_BOUNDS.find(bd => bd.id === b.id);
+            const building = BUILDING_REGISTRY.find(bd => bd.id === b.id);
             if (building) {
               if (isAdjacentToBuilding(building)) {
                 enterBuilding(building.id);
               } else {
-                const doorEntry = Object.entries(DOOR_MAP).find(([_k, v]) => v === building.id);
-                if (doorEntry) {
-                  const [dc, dr] = doorEntry[0].split(',').map(Number);
-                  const adj = getAdjacentWalkable(dc, dr);
-                  if (adj) { player.path = astar(player.col, player.row, adj.col, adj.row); pendingDoorEntry = building.id; }
-                }
+                const adj = getAdjacentWalkable(building.doorCol, building.doorRow);
+                if (adj) { player.path = astar(player.col, player.row, adj.col, adj.row); pendingDoorEntry = building.id; }
               }
               return;
             }
@@ -164,15 +160,10 @@ function attachInputHandlers() {
               enterBuilding(building.id);
             } else {
               // Walk to the door tile of this building
-              const doorEntry = Object.entries(DOOR_MAP).find(([_k,v]) => v === building.id);
-              if (doorEntry) {
-                const [dc, dr] = doorEntry[0].split(',').map(Number);
-                // Walk to tile adjacent to door
-                const adj = getAdjacentWalkable(dc, dr);
-                if (adj) {
-                  player.path = astar(player.col, player.row, adj.col, adj.row);
-                  pendingDoorEntry = building.id;
-                }
+              const adj = getAdjacentWalkable(building.doorCol, building.doorRow);
+              if (adj) {
+                player.path = astar(player.col, player.row, adj.col, adj.row);
+                pendingDoorEntry = building.id;
               }
             }
             return;
