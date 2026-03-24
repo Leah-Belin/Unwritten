@@ -1,3 +1,128 @@
+// ── DRAW MORTAR/GRAIN TEXTURE ─────────────────────────────────
+// Draw mortar/grain texture lines on a face, clipped to the parallelogram shape.
+function drawWallTexture(x, y, bh, face, texture) {
+  const hw=TW/2, hh=TH/2;
+  const x0 = face==='left' ? x-hw : x;
+  const faceW=hw, faceH=bh+hh;
+  ctx.save();
+  ctx.beginPath();
+  if (face==='left') {
+    ctx.moveTo(x-hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x-hw,y);
+  } else {
+    ctx.moveTo(x+hw,y-bh); ctx.lineTo(x,y+hh-bh); ctx.lineTo(x,y+hh); ctx.lineTo(x+hw,y);
+  }
+  ctx.clip();
+  ctx.strokeStyle='rgba(0,0,0,0.18)';
+  if (texture==='wood') {
+    ctx.lineWidth=0.7;
+    for (let dy=7; dy<faceH+7; dy+=7) {
+      ctx.beginPath(); ctx.moveTo(x0-4,y-bh+dy); ctx.lineTo(x0+faceW+4,y-bh+dy); ctx.stroke();
+    }
+    ctx.strokeStyle='rgba(0,0,0,0.05)'; ctx.lineWidth=0.4;
+    for (let dx=5; dx<faceW; dx+=9) {
+      ctx.beginPath(); ctx.moveTo(x0+dx,y-bh-2); ctx.lineTo(x0+dx-2,y+hh+2); ctx.stroke();
+    }
+  } else if (texture==='brick') {
+    ctx.lineWidth=0.7;
+    const bH=5,bW=11; let row=0;
+    for (let dy=0; dy<faceH+bH; dy+=bH+1,row++) {
+      ctx.beginPath(); ctx.moveTo(x0-4,y-bh+dy); ctx.lineTo(x0+faceW+4,y-bh+dy); ctx.stroke();
+      const xOff=(row%2===0)?0:(bW+1)/2;
+      for (let dx=xOff; dx<faceW+bW; dx+=bW+1) {
+        ctx.beginPath(); ctx.moveTo(x0+dx,y-bh+dy); ctx.lineTo(x0+dx,y-bh+dy+bH+1); ctx.stroke();
+      }
+    }
+  } else if (texture==='stone'||texture==='stone_cut') {
+    ctx.lineWidth=0.8;
+    const rows=texture==='stone_cut'?[14,14,14,14]:[11,13,12,14];
+    let curY=0,ri=0;
+    while(curY<faceH+20) {
+      const sh=rows[ri%rows.length];
+      ctx.beginPath(); ctx.moveTo(x0-4,y-bh+curY); ctx.lineTo(x0+faceW+4,y-bh+curY); ctx.stroke();
+      const vxList=(ri%2===0)?[9,22,32]:[4,16,28,38];
+      for(const vx of vxList) {
+        if(vx<faceW){ ctx.beginPath(); ctx.moveTo(x0+vx,y-bh+curY); ctx.lineTo(x0+vx,y-bh+curY+sh); ctx.stroke(); }
+      }
+      curY+=sh+1; ri++;
+    }
+  }
+  ctx.restore();
+}
+
+// ── DRAWING HELPERS ───────────────────────────────────────────
+
+// Draw a perspective-correct window inset on one face of a raised tile.
+// face: 'left' (SW-facing) or 'right' (SE-facing)
+// large: wider display window (bakery)
+function drawFaceWindow(x, y, bh, face, large, fillCol, borderCol) {
+  const hw = TW/2, hh = TH/2;
+  const u1 = large ? 0.10 : 0.20, u2 = large ? 0.90 : 0.80;
+  const v1 = 0.18, v2 = 0.80;
+  // Face corners: BL, BR, TL, TR
+  let BL, BR, TL, TR;
+  if (face === 'right') {
+    BL=[x,    y+hh];      BR=[x+hw, y];
+    TL=[x,    y+hh-bh];   TR=[x+hw, y-bh];
+  } else {
+    BL=[x-hw, y];         BR=[x,    y+hh];
+    TL=[x-hw, y-bh];      TR=[x,    y+hh-bh];
+  }
+  // Bilinear point on face
+  function pt(u,v) {
+    const bx=BL[0]+u*(BR[0]-BL[0]), by=BL[1]+u*(BR[1]-BL[1]);
+    const tx=TL[0]+u*(TR[0]-TL[0]), ty=TL[1]+u*(TR[1]-TL[1]);
+    return [bx+v*(tx-bx), by+v*(ty-by)];
+  }
+  const wTL=pt(u1,v2), wTR=pt(u2,v2), wBR=pt(u2,v1), wBL=pt(u1,v1);
+  // Pane fill
+  ctx.beginPath();
+  ctx.moveTo(wTL[0],wTL[1]); ctx.lineTo(wTR[0],wTR[1]);
+  ctx.lineTo(wBR[0],wBR[1]); ctx.lineTo(wBL[0],wBL[1]);
+  ctx.closePath(); ctx.fillStyle=fillCol; ctx.fill();
+  // Border
+  ctx.strokeStyle=borderCol; ctx.lineWidth=0.8; ctx.stroke();
+  // Mullion cross
+  const mH=pt((u1+u2)/2,v1), mHt=pt((u1+u2)/2,v2);
+  const mVl=pt(u1,(v1+v2)/2), mVr=pt(u2,(v1+v2)/2);
+  ctx.strokeStyle=borderCol; ctx.lineWidth=0.7;
+  ctx.beginPath(); ctx.moveTo(mH[0],mH[1]);  ctx.lineTo(mHt[0],mHt[1]); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mVl[0],mVl[1]); ctx.lineTo(mVr[0],mVr[1]); ctx.stroke();
+}
+
+// Draw a small stone chimney on top of a tile, offset toward the NW corner.
+// Called after the main tile box is painted so it sits on top.
+function drawChimney(x, y, bh) {
+  const ch=14, cw=4;
+  const cx=x-12, cy=y-bh-5; // NW area of tile top, just above surface
+  // Left face
+  ctx.beginPath();
+  ctx.moveTo(cx-cw, cy-ch); ctx.lineTo(cx, cy-ch+cw*0.5);
+  ctx.lineTo(cx, cy);        ctx.lineTo(cx-cw, cy-cw*0.5);
+  ctx.closePath(); ctx.fillStyle='#585048'; ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.6; ctx.stroke();
+  // Right face
+  ctx.beginPath();
+  ctx.moveTo(cx+cw, cy-ch); ctx.lineTo(cx, cy-ch+cw*0.5);
+  ctx.lineTo(cx, cy);        ctx.lineTo(cx+cw, cy-cw*0.5);
+  ctx.closePath(); ctx.fillStyle='#706860'; ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.6; ctx.stroke();
+  // Top cap
+  ctx.beginPath();
+  ctx.moveTo(cx, cy-ch-cw*0.5); ctx.lineTo(cx+cw, cy-ch);
+  ctx.lineTo(cx, cy-ch+cw*0.5); ctx.lineTo(cx-cw, cy-ch);
+  ctx.closePath(); ctx.fillStyle='#888078'; ctx.fill();
+  // Smoke wisps (in cooler periods)
+  const p = State.period;
+  if (p === 0 || p === 1 || p >= 4) {
+    const t = Date.now()*0.0015;
+    ctx.save();
+    ctx.globalAlpha = 0.22 + Math.sin(t+x*0.1)*0.08;
+    ctx.fillStyle='#c8c8c0';
+    ctx.beginPath(); ctx.ellipse(cx-1, cy-ch-7,  2.5, 4,   0.2, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx-2, cy-ch-14, 3.5, 5.5, 0.2, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+}
 
 // ── DRAWING ───────────────────────────────────────────────────
 function drawBuildingSprite(b) {
@@ -20,6 +145,33 @@ function drawBuildingSprite(b) {
   const cr = (b.r1 + b.r2) / 2;
   const cx = isoX(cc, cr) + offX;
   const cy = isoY(cc, b.r2) + TH / 2 + offY + (b.yOff ?? 0);
+
+  // Fill the south-facing wall behind the sprite for buildings whose PNG has a
+  // transparent south face (open-front isometric sprites).  Draw the right-face
+  // quad for every tile along the bottom footprint row before the sprite image
+  // is composited on top — opaque sprite pixels cover it, transparent ones let it show.
+  if (b.wallColor) {
+    const hw = TW / 2, hh = TH / 2;
+    const bh = b.wallBH ?? 28;
+    for (let c = b.c1; c <= b.c2; c++) {
+      const {x, y} = toScreen(c, b.r2);
+      ctx.beginPath();
+      ctx.moveTo(x + hw, y - bh); ctx.lineTo(x, y + hh - bh);
+      ctx.lineTo(x, y + hh);      ctx.lineTo(x + hw, y);
+      ctx.closePath();
+      ctx.fillStyle = b.wallColor;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+      ctx.lineWidth = 0.6;
+      ctx.stroke();
+    }
+  }
+
+  // Pixel-art (Hernandack) sprites need crisp nearest-neighbour scaling
+  const pixelArt = (b.sw !== undefined);
+  if (pixelArt) ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(img, srcX, srcY, srcW, srcH, cx - dw / 2, cy - dh, dw, dh);
+  if (pixelArt) ctx.imageSmoothingEnabled = true;
 }
 
 function drawTile(c, r) {
@@ -264,6 +416,22 @@ function drawTile(c, r) {
         ctx.moveTo(x-hw-2, y-bh-hh+dy); ctx.lineTo(x+hw+2, y-bh-hh+dy); ctx.stroke();
       }
       ctx.restore();
+    }
+
+    // Building details — windows and chimneys on WALL tiles in village mode
+    if (!currentBuilding && bldg && style && currentMap[r]?.[c] === T.WALL) {
+      const onS = r===bldg.rMax, onE=c===bldg.cMax, onN=r===bldg.rMin, onW=c===bldg.cMin;
+      const isCorner = (onS||onN)&&(onE||onW);
+      if (!isCorner) {
+        const glowing = State.period >= 4; // dusk→night: warm light inside
+        const winFill   = glowing ? 'rgba(190,140,50,0.88)' : 'rgba(12,8,4,0.92)';
+        const winBorder = '#807060';
+        if (onS && !onE && !onW) drawFaceWindow(x, y, bh, 'right', style.bigWindows||false, winFill, winBorder);
+        if (onE && !onS && !onN) drawFaceWindow(x, y, bh, 'left',  style.bigWindows||false, winFill, winBorder);
+      }
+      if (style.chimney && r===bldg.rMin && c===bldg.cMin) drawChimney(x, y, bh);
+      drawWallTexture(x, y, bh, 'left',  style.texture);
+      drawWallTexture(x, y, bh, 'right', style.texture);
     }
   }
 }
