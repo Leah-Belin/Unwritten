@@ -856,7 +856,7 @@ function render() {
   for (let r=0; r<mapRows; r++)
     for (let c=0; c<mapCols; c++) {
       const def = TILE_DEF[currentMap[r]?.[c]];
-      const raised = def?.raised ? 0.4 : 0;
+      const raised = def?.raised ? 0.4 : def?.tree ? 0.75 : 0;
       items.push({k:'tile',c,r, z:r+c+raised});
     }
 
@@ -869,8 +869,8 @@ function render() {
   // Building sprite overlays — village only; other outdoor zones have no building sprites
   if (!currentBuilding && State.scene === 'village') {
     for (const b of VILLAGE_BLDG_SPRITES)
-      // z = SW-corner depth (r2+c1): characters one step south always draw in front.
-      items.push({k:'bldg', b, z:b.r2+b.c1+0.9});
+      // z = SW-corner depth (r2+c1): anything at the same depth or south draws in front.
+      items.push({k:'bldg', b, z:b.r2+b.c1+0.7});
   }
   currentNPCs.forEach(n => items.push({k:'npc',n,z:n.row+n.col+0.8}));
   items.push({k:'player',z:player.row+player.col+0.8});
