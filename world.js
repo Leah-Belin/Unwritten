@@ -163,7 +163,7 @@ function buildVillageMap() {
   placeBuilding(4,3,5,6);    // Bakery (Kaida & Gallan's home)   — yOff:-20 (~1 row)
   placeBuilding(4,25,2,6);   // Forge                            — yOff:-60 (~4 rows)
   placeBuilding(4,32,3,6);   // Inn                              — yOff:-60 (~4 rows)
-  placeBuilding(15,20,4,10); // Town Hall                        — yOff:-40 (~2 rows)
+  //placeBuilding(15,20,4,10); // Town Hall                        — yOff:-40 (~2 rows)
   placeBuilding(22,26,3,6);  // Council Hall                     — yOff:-40 (~2 rows)
   placeBuilding(31,4,3,5);   // Hesta's hut                      — yOff:-40 (~2 rows)
   placeBuilding(25,10,4,6);  // Jaxon's house
