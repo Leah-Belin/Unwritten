@@ -89,7 +89,7 @@ const VILLAGE_BLDG_SPRITES = [
   { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, tileR2:5,  img:'shop_forge',       yOff:-60 },
   { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, tileR2:6,  img:'bldg_inn',         yOff:-60 },
   // Civic buildings
-  { id:'town_hall',       r1:15, c1:17, r2:18, c2:30, tileR2:13, img:'bldg_town_hall',   yOff:-40 },
+  { id:'town_hall',       r1:17, c1:17, r2:20, c2:30, tileR2:13, img:'bldg_town_hall',   yOff:-35 },
   { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, tileR2:24, img:'bldg_council_hall',yOff:-40 },
   { id:'hestas_hut',      r1:31, c1:4,  r2:35, c2:8,  tileR2:33, img:'bldg_hestas_hut',  yOff:-40 },
   // Residential houses — sprite r2 matches tile extent, no tileR2 needed
