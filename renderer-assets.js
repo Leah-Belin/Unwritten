@@ -113,6 +113,61 @@ loadTileImg('temple_roman',    'images/buildings/temple_roman.png');
 loadTileImg('temple_ruins',    'images/buildings/temple_ruins.png');
 loadTileImg('temple_wall',     'images/buildings/temple_wall.png');
 
+// ── COLLECTIBLE RESOURCE IMAGES ───────────────────────────────
+// These replace the default emoji rendering for items the player can pick up.
+// All images live in images/tiles/Resources/.
+//
+// TO ADD AN IMAGE FOR A NEW COLLECTIBLE ITEM:
+//   STEP 1 — Save the PNG to images/tiles/Resources/ and register it here:
+//              loadTileImg('res_mykey', _RES + 'MyFile.png');
+//   STEP 2 — Map the item's ID to the image key in ITEM_RES_IMG below.
+//
+const _RES = 'images/tiles/Resources/';
+//
+loadTileImg('res_berries',  _RES + 'Berries.png');    // fruit / berries
+loadTileImg('res_feathers', _RES + 'Feathers.png');   // feathers (unassigned — add to ITEM_RES_IMG when needed)
+loadTileImg('res_glass',    _RES + 'Glass.png');      // glass_piece
+loadTileImg('res_mushrooms',_RES + 'Mushrooms.png');  // healing_herb
+loadTileImg('res_parsley',  _RES + 'Parsley.png');    // common_herb / mint_herb
+loadTileImg('res_sticks',   _RES + 'Sticks.png');     // timber
+loadTileImg('res_thistle',  _RES + 'Thistle.png');    // lavender / spice_herb
+loadTileImg('res_bread',    _RES + 'bread.png');      // simple_bread / spiced_rolls
+loadTileImg('res_cloth',    _RES + 'clothScrap.png'); // cloth_scrap
+loadTileImg('res_potatoes', _RES + 'potatoes.png');   // (unassigned — add to ITEM_RES_IMG when needed)
+loadTileImg('res_stones',   _RES + 'stones.png');     // stone_block / stone_fragment
+loadTileImg('res_tonics',   _RES + 'tonics.png');     // healing_tonic / energy_salve / sleep_draught
+
+// Maps item IDs (from ITEMS in world.js) → resource image keys loaded above.
+// drawItem() in renderer.js looks up the item's ID here and draws the PNG
+// instead of the emoji.  Items not listed here fall back to emoji rendering.
+//
+// TO MAP A NEW ITEM TO AN IMAGE:
+//   Make sure you completed STEP 1 and STEP 2 above, then add a line here:
+//      my_item_id: 'res_mykey',
+//
+const ITEM_RES_IMG = {
+  // Building materials
+  glass_piece:    'res_glass',
+  stone_block:    'res_stones',
+  stone_fragment: 'res_stones',
+  timber:         'res_sticks',
+  cloth_scrap:    'res_cloth',
+  // Food
+  simple_bread:   'res_bread',
+  spiced_rolls:   'res_bread',
+  fruit:          'res_berries',
+  // Herbs
+  common_herb:    'res_parsley',
+  healing_herb:   'res_mushrooms',
+  mint_herb:      'res_parsley',
+  lavender:       'res_thistle',
+  spice_herb:     'res_thistle',
+  // Tonics
+  healing_tonic:  'res_tonics',
+  energy_salve:   'res_tonics',
+  sleep_draught:  'res_tonics',
+};
+
 // Village building PNG overlays.  Each entry describes one building image and
 // where it sits on the tile grid.  Fields:
 //

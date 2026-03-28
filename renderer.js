@@ -50,14 +50,29 @@ function drawSprite(x, y, emoji, label, bodyColor, isPlayer, spriteId, direction
 
 function drawItem(item) {
   if (item.taken) return;
-  const {x,y} = toScreen(item.col, item.row);
-  ctx.font='16px serif'; ctx.textAlign='center';
-  ctx.shadowColor='rgba(0,0,0,0.8)'; ctx.shadowBlur=6;
-  ctx.fillText(ITEMS[item.itemId]?.emoji || '📦', x, y);
-  ctx.shadowBlur=0;
-  // Subtle glow ring
-  ctx.beginPath(); ctx.ellipse(x,y+4,12,5,0,0,Math.PI*2);
+  const {x, y} = toScreen(item.col, item.row);
+
+  // Subtle glow ring on the ground beneath the item
+  ctx.beginPath(); ctx.ellipse(x, y+4, 12, 5, 0, 0, Math.PI*2);
   ctx.strokeStyle='rgba(220,180,80,0.4)'; ctx.lineWidth=1; ctx.stroke();
+
+  // Try to draw a resource PNG; fall back to emoji if no image is mapped or loaded.
+  // To add a PNG for an item, see ITEM_RES_IMG in renderer-assets.js.
+  const resKey = ITEM_RES_IMG[item.itemId];
+  const resImg = resKey ? _tileImgs[resKey] : null;
+  if (resImg && resImg.naturalWidth) {
+    // Height is fixed; width derived from aspect ratio so images are never squashed
+    const drawH = 40;
+    const drawW = drawH * (resImg.naturalWidth / resImg.naturalHeight);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(resImg, x - drawW/2, y + 4 - drawH, drawW, drawH);
+    ctx.imageSmoothingEnabled = true;
+  } else {
+    ctx.font='16px serif'; ctx.textAlign='center';
+    ctx.shadowColor='rgba(0,0,0,0.8)'; ctx.shadowBlur=6;
+    ctx.fillText(ITEMS[item.itemId]?.emoji || '📦', x, y);
+    ctx.shadowBlur=0;
+  }
 }
 
 function drawStation(station) {
