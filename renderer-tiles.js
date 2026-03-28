@@ -182,7 +182,11 @@ function drawTile(c, r) {
   const _spriteImgKey = _BLDG_TILE_SPRITE.get(`${c},${r}`);
   // Tiles inside a loaded building-sprite footprint get a flat grass base;
   // the sprite image is drawn on top (at higher z) and covers everything.
-  if (!currentBuilding && _spriteImgKey && _tileImgs[_spriteImgKey]) {
+  // Exception: cobble and path tiles (e.g. town square) render as-is even when
+  // they fall within the footprint of an adjacent building sprite.
+  const _tileType = currentMap[r]?.[c];
+  if (!currentBuilding && _spriteImgKey && _tileImgs[_spriteImgKey]
+      && _tileType !== T.COBBLE && _tileType !== T.PATH) {
     const {x,y} = toScreen(c,r);
     if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
     const grassImg = _tileImgs['grass'];
