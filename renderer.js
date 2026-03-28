@@ -117,6 +117,16 @@ function _furnitureEmoji(x, y, emoji, size, yOff=0) {
   ctx.restore();
 }
 
+// Draws one piece of interior furniture.
+// Furniture that has a PNG replacement checks _tileImgs for the image key and
+// falls back to an emoji if the image isn't loaded yet.
+//
+// TO REPLACE A FURNITURE EMOJI WITH A PNG:
+//   1. Register the image in renderer-assets.js with loadTileImg (see the
+//      "DECORATION IMAGES" section there for the pattern).
+//   2. Find the matching case below and replace the _furnitureEmoji() call
+//      with the same image-draw pattern used in 'chair' and 'stool'.
+//
 function drawFurniturePiece(piece) {
   const {x,y} = toScreen(piece.col, piece.row);
   const HW=TW/2, HH=TH/2;

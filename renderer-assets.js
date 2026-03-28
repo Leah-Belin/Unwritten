@@ -75,7 +75,13 @@ loadTileImg('house_thatched',      'images/buildings/house_thatched.png');
 loadTileImg('house_log',           'images/buildings/house_log.png');
 loadTileImg('house_cottage_large', 'images/buildings/house_cottage_large.png');
 loadTileImg('house_halftimber',    'images/buildings/house_halftimber.png');
-// Village decorations — placed around town and the town square
+// ── DECORATION IMAGES ─────────────────────────────────────────
+// TO ADD A NEW DECORATION:
+//   STEP 1 — Register the image here with a short key of your choosing:
+//              loadTileImg('my_key', 'images/buildings/my_file.png');
+//   STEP 2 — Place it in a scene by adding an entry to SCENE_DECO below.
+//
+// Village decorations (town square, forge area, residential)
 loadTileImg('deco_bench',    'images/buildings/deco_bench.png');
 loadTileImg('deco_fountain', 'images/buildings/deco_fountain.png');
 loadTileImg('deco_hay',      'images/buildings/deco_hay.png');
@@ -148,16 +154,36 @@ for (const b of VILLAGE_BLDG_SPRITES)
       _buildingFootprintTiles.set(`${c},${r}`, b.img);
 
 // ── SCENE DECORATIONS ─────────────────────────────────────────
-// Small decorative objects placed on top of the tile grid, keyed by scene ID.
-// Unlike building overlays (VILLAGE_BLDG_SPRITES), these don't suppress the
-// tile underneath — they're just drawn on top of whatever tile is there.
-// Fields:
-//   img   Key in _tileImgs for the PNG image.
-//   col   Tile column to anchor on.
-//   row   Tile row to anchor on.
-//   size  Draw size in pixels (square). Tune to taste.
-//   yOff  Vertical pixel nudge; negative shifts the image upward.
-//         Default anchor: image bottom sits at tile ground level.
+// Decorative objects placed on top of the tile grid, grouped by scene.
+// The rendering engine draws each entry at the correct isometric depth
+// automatically — you only need to specify where and what.
+//
+// HOW TO ADD A NEW DECORATION
+// ────────────────────────────
+// 1. Save the PNG to images/buildings/ and register it above with loadTileImg.
+// 2. Add an entry to the right scene array below:
+//
+//      { img:'your_key', col:X, row:Y, size:64, yOff:0 },
+//
+//    col / row  — tile coordinates, matching the zone's grid (same numbers
+//                 you'd use in buildVillageMap, buildGardenMap, etc.).
+//                 col increases going right/east, row increases going down/south.
+//
+//    size       — draw size in pixels (the image is drawn as a square at this
+//                 size). Start with 56–80 for small objects, 80–96 for larger
+//                 ones, and tune visually.
+//
+//    yOff       — fine-tune the vertical position after size is set. The image
+//                 bottom sits at ground level by default. Negative values shift
+//                 the image upward (use if it looks like it's sinking into the
+//                 ground); positive shifts it down.
+//
+// The same image key can appear in multiple entries — e.g. two benches using
+// 'deco_bench' at different col/row positions.
+//
+// Valid scene keys: 'village', 'garden', 'market', 'temple_path', 'forest'
+// (add a new key for a new zone — the renderer picks up any scene automatically).
+//
 const SCENE_DECO = {
   village: [
     // Benches flanking the east-west path through the town square
