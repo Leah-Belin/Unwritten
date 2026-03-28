@@ -189,12 +189,15 @@ function drawBuildingOverlay(b) {
 // no changes are needed here.
 function drawDecoOverlay(d) {
   const img = _tileImgs[d.img];
-  if (!img) return;
+  if (!img || !img.naturalWidth) return;
   const {x, y} = toScreen(d.col, d.row);
-  const size = d.size ?? TW;
+  // size controls the HEIGHT; width is derived from the image's aspect ratio
+  // so wide images (fountains, wells, benches) aren't squashed into a square.
+  const drawH = d.size ?? TW;
+  const drawW = drawH * (img.naturalWidth / img.naturalHeight);
   const bottom = y + TH / 2 + (d.yOff ?? 0);
   ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(img, x - size / 2, bottom - size, size, size);
+  ctx.drawImage(img, x - drawW / 2, bottom - drawH, drawW, drawH);
   ctx.imageSmoothingEnabled = true;
 }
 
@@ -249,10 +252,12 @@ function drawTile(c, r) {
   if (def.fountain) {
     // Use the PNG image if loaded; fall back to the procedural fountain below.
     const fountainImg = _tileImgs['deco_fountain'];
-    if (fountainImg) {
+    if (fountainImg && fountainImg.naturalWidth) {
+      const drawH = 96;
+      const drawW = drawH * (fountainImg.naturalWidth / fountainImg.naturalHeight);
       const bottom = y + TH / 2;
       ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(fountainImg, x - TW / 2, bottom - TW, TW, TW);
+      ctx.drawImage(fountainImg, x - drawW / 2, bottom - drawH, drawW, drawH);
       ctx.imageSmoothingEnabled = true;
       return;
     }

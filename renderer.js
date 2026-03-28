@@ -122,10 +122,11 @@ function _furnitureEmoji(x, y, emoji, size, yOff=0) {
 // falls back to an emoji if the image isn't loaded yet.
 //
 // TO REPLACE A FURNITURE EMOJI WITH A PNG:
-//   1. Register the image in renderer-assets.js with loadTileImg (see the
-//      "DECORATION IMAGES" section there for the pattern).
+//   1. Add the image to images/tiles/Decorations/ and register it in
+//      renderer-assets.js under the "Interior furniture" group (see the
+//      furn_chair / furn_bed pattern there).
 //   2. Find the matching case below and replace the _furnitureEmoji() call
-//      with the same image-draw pattern used in 'chair' and 'stool'.
+//      with the same image-draw pattern used in 'chair', 'bed', or 'chest'.
 //
 function drawFurniturePiece(piece) {
   const {x,y} = toScreen(piece.col, piece.row);
@@ -164,7 +165,7 @@ function drawFurniturePiece(piece) {
     }
 
     case 'chair': {
-      const img = _tileImgs['deco_bench'];
+      const img = _tileImgs['furn_chair'];
       if (img) {
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(img, x - TW/2, y + TH/2 - TW, TW, TW);
@@ -173,24 +174,30 @@ function drawFurniturePiece(piece) {
       break;
     }
 
-    case 'stool': {
-      const img = _tileImgs['deco_bench'];
-      const s = Math.round(TW * 0.7);
+    case 'stool':
+      _furnitureEmoji(x, y, '🪑', 16, -2);
+      break;
+
+    case 'bed': {
+      const img = _tileImgs['furn_bed'];
+      if (img) {
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(img, x - TW/2, y + TH/2 - TW, TW, TW);
+        ctx.imageSmoothingEnabled = true;
+      } else { _furnitureEmoji(x, y, '🛏️', 32, -6); }
+      break;
+    }
+
+    case 'cot': {
+      const s = Math.round(TW * 0.85);
+      const img = _tileImgs['furn_cot'];
       if (img) {
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(img, x - s/2, y + TH/2 - s, s, s);
         ctx.imageSmoothingEnabled = true;
-      } else { _furnitureEmoji(x, y, '🪑', 16, -2); }
+      } else { _furnitureEmoji(x, y, '🛏️', 26, -4); }
       break;
     }
-
-    case 'bed':
-      _furnitureEmoji(x, y, '🛏️', 32, -6);
-      break;
-
-    case 'cot':
-      _furnitureEmoji(x, y, '🛏️', 26, -4);
-      break;
 
     case 'barrel': {
       const s=0.28, hw=HW*s, hh=HH*s, bh=16;
@@ -247,9 +254,16 @@ function drawFurniturePiece(piece) {
       break;
     }
 
-    case 'chest':
-      _furnitureEmoji(x, y, '📦', 26, -4);
+    case 'chest': {
+      const s = Math.round(TW * 0.8);
+      const img = _tileImgs['furn_chest'];
+      if (img) {
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(img, x - s/2, y + TH/2 - s, s, s);
+        ctx.imageSmoothingEnabled = true;
+      } else { _furnitureEmoji(x, y, '📦', 26, -4); }
       break;
+    }
 
     default: break;
   }
