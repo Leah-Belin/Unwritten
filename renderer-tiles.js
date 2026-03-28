@@ -182,6 +182,20 @@ function drawBuildingOverlay(b) {
   if (pixelArt) ctx.imageSmoothingEnabled = true;
 }
 
+// Draws a single decorative object from SCENE_DECO at its tile position.
+// The image bottom is anchored at the tile's ground level (y + TH/2) and the
+// image extends upward by `size` pixels.  yOff shifts the whole image up/down.
+function drawDecoOverlay(d) {
+  const img = _tileImgs[d.img];
+  if (!img) return;
+  const {x, y} = toScreen(d.col, d.row);
+  const size = d.size ?? TW;
+  const bottom = y + TH / 2 + (d.yOff ?? 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(img, x - size / 2, bottom - size, size, size);
+  ctx.imageSmoothingEnabled = true;
+}
+
 function drawTile(c, r) {
   const def = TILE_DEF[currentMap[r]?.[c]];
   if (!def) return;
@@ -231,6 +245,15 @@ function drawTile(c, r) {
   }
 
   if (def.fountain) {
+    // Use the PNG image if loaded; fall back to the procedural fountain below.
+    const fountainImg = _tileImgs['deco_fountain'];
+    if (fountainImg) {
+      const bottom = y + TH / 2;
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(fountainImg, x - TW / 2, bottom - TW, TW, TW);
+      ctx.imageSmoothingEnabled = true;
+      return;
+    }
     const hw=TW/2, hh=TH/2;
     const basinH=10; // height of basin rim above ground
     // Left face of basin rim
