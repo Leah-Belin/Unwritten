@@ -182,9 +182,11 @@ function drawBuildingOverlay(b) {
   if (pixelArt) ctx.imageSmoothingEnabled = true;
 }
 
-// Draws a single decorative object from SCENE_DECO at its tile position.
-// The image bottom is anchored at the tile's ground level (y + TH/2) and the
-// image extends upward by `size` pixels.  yOff shifts the whole image up/down.
+// Draws one entry from SCENE_DECO (defined in renderer-assets.js) at its tile
+// position.  The image bottom is anchored at tile ground level and extends
+// upward by `size` pixels; `yOff` shifts the whole thing up or down.
+// To add or move decorations, edit SCENE_DECO in renderer-assets.js —
+// no changes are needed here.
 function drawDecoOverlay(d) {
   const img = _tileImgs[d.img];
   if (!img) return;
