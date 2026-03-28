@@ -153,13 +153,26 @@ function drawFurniturePiece(piece) {
       break;
     }
 
-    case 'chair':
-      _furnitureEmoji(x, y, '🪑', 22, -4);
+    case 'chair': {
+      const img = _tileImgs['deco_bench'];
+      if (img) {
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(img, x - TW/2, y + TH/2 - TW, TW, TW);
+        ctx.imageSmoothingEnabled = true;
+      } else { _furnitureEmoji(x, y, '🪑', 22, -4); }
       break;
+    }
 
-    case 'stool':
-      _furnitureEmoji(x, y, '🪑', 16, -2);
+    case 'stool': {
+      const img = _tileImgs['deco_bench'];
+      const s = Math.round(TW * 0.7);
+      if (img) {
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(img, x - s/2, y + TH/2 - s, s, s);
+        ctx.imageSmoothingEnabled = true;
+      } else { _furnitureEmoji(x, y, '🪑', 16, -2); }
       break;
+    }
 
     case 'bed':
       _furnitureEmoji(x, y, '🛏️', 32, -6);
@@ -287,12 +300,17 @@ function render() {
   currentStations.forEach(st => items.push({k:'station',st,z:st.row+st.col+0.6}));
   currentFurniture.forEach(f => items.push({k:'furniture',f,z:f.row+f.col+0.55}));
   if (currentCabinet) items.push({k:'cabinet',z:currentCabinet.row+currentCabinet.col+0.6});
-  // Building sprite overlays — village only; other outdoor zones have no building sprites
+  // Building sprite overlays — village only
   if (!currentBuilding && State.scene === 'village') {
     for (const b of VILLAGE_BLDG_SPRITES)
       // Use tileR2 (actual building-tile south row) not sprite r2, so characters
       // on walkable grass tiles between tileR2 and r2 sort in front of the building.
       items.push({k:'bldg', b, z:(b.tileR2??b.r2)+b.c1+0.7});
+  }
+  // Scene-specific decorative objects (benches, wells, stalls, temple features, etc.)
+  if (!currentBuilding) {
+    const deco = SCENE_DECO[State.scene];
+    if (deco) for (const d of deco) items.push({k:'deco', d, z:d.row+d.col+0.65});
   }
   // Use pixel py for z during movement; py = isoY(col,row) = (col+row)*(TH/2)
   currentNPCs.forEach(n => items.push({k:'npc',n,z:(n.py!==undefined?n.py/(TH/2):n.row+n.col)+0.8}));
@@ -303,6 +321,7 @@ function render() {
   for (const d of items) {
     if      (d.k==='tile')    drawTile(d.c,d.r);
     else if (d.k==='bldg')   drawBuildingOverlay(d.b);
+    else if (d.k==='deco')   drawDecoOverlay(d.d);
     else if (d.k==='item')    drawItem(d.item);
     else if (d.k==='station') drawStation(d.st);
     else if (d.k==='cabinet') drawCabinet(currentCabinet);

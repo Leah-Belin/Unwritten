@@ -75,6 +75,29 @@ loadTileImg('house_thatched',      'images/buildings/house_thatched.png');
 loadTileImg('house_log',           'images/buildings/house_log.png');
 loadTileImg('house_cottage_large', 'images/buildings/house_cottage_large.png');
 loadTileImg('house_halftimber',    'images/buildings/house_halftimber.png');
+// Village decorations — placed around town and the town square
+loadTileImg('deco_bench',    'images/buildings/deco_bench.png');
+loadTileImg('deco_fountain', 'images/buildings/deco_fountain.png');
+loadTileImg('deco_hay',      'images/buildings/deco_hay.png');
+loadTileImg('deco_well',     'images/buildings/deco_well.png');
+// Garden zone decorations
+loadTileImg('garden_cart',    'images/buildings/garden_cart.png');
+loadTileImg('garden_gazebo',  'images/buildings/garden_gazebo.png');
+loadTileImg('garden_nursery', 'images/buildings/garden_nursery.png');
+loadTileImg('garden_well',    'images/buildings/garden_well.png');
+// Market stall overlays
+loadTileImg('stall_bread',   'images/buildings/stall_bread.png');
+loadTileImg('stall_cooking', 'images/buildings/stall_cooking.png');
+loadTileImg('stall_pottery', 'images/buildings/stall_pottery.png');
+loadTileImg('stall_produce', 'images/buildings/stall_produce.png');
+// Temple path features
+loadTileImg('temple_eastern',  'images/buildings/temple_eastern.png');
+loadTileImg('temple_gate',     'images/buildings/temple_gate.png');
+loadTileImg('temple_obelisk',  'images/buildings/temple_obelisk.png');
+loadTileImg('temple_pavilion', 'images/buildings/temple_pavilion.png');
+loadTileImg('temple_roman',    'images/buildings/temple_roman.png');
+loadTileImg('temple_ruins',    'images/buildings/temple_ruins.png');
+loadTileImg('temple_wall',     'images/buildings/temple_wall.png');
 
 // Village building PNG overlays.  Each entry describes one building image and
 // where it sits on the tile grid.  Fields:
@@ -123,6 +146,48 @@ for (const b of VILLAGE_BLDG_SPRITES)
   for (let r = b.r1; r <= b.r2; r++)
     for (let c = b.c1; c <= b.c2; c++)
       _buildingFootprintTiles.set(`${c},${r}`, b.img);
+
+// ── SCENE DECORATIONS ─────────────────────────────────────────
+// Small decorative objects placed on top of the tile grid, keyed by scene ID.
+// Unlike building overlays (VILLAGE_BLDG_SPRITES), these don't suppress the
+// tile underneath — they're just drawn on top of whatever tile is there.
+// Fields:
+//   img   Key in _tileImgs for the PNG image.
+//   col   Tile column to anchor on.
+//   row   Tile row to anchor on.
+//   size  Draw size in pixels (square). Tune to taste.
+//   yOff  Vertical pixel nudge; negative shifts the image upward.
+//         Default anchor: image bottom sits at tile ground level.
+const SCENE_DECO = {
+  village: [
+    // Benches flanking the east-west path through the town square
+    { img:'deco_bench', col:17, row:20, size:56, yOff:0 },
+    { img:'deco_bench', col:23, row:20, size:56, yOff:0 },
+    // Well in the residential area (south of Jaxon's house)
+    { img:'deco_well',  col:13, row:29, size:56, yOff:0 },
+    // Hay bale south of the forge
+    { img:'deco_hay',   col:27, row:8,  size:48, yOff:0 },
+  ],
+  garden: [
+    { img:'garden_gazebo',  col:12, row:5,  size:80, yOff:0 },
+    { img:'garden_nursery', col:11, row:14, size:80, yOff:0 },
+    { img:'garden_well',    col:10, row:22, size:56, yOff:0 },
+    { img:'garden_cart',    col:8,  row:24, size:56, yOff:0 },
+  ],
+  market: [
+    { img:'stall_bread',   col:9,  row:5,  size:80, yOff:0 },
+    { img:'stall_produce', col:14, row:5,  size:80, yOff:0 },
+    { img:'stall_pottery', col:19, row:5,  size:80, yOff:0 },
+    { img:'stall_cooking', col:24, row:10, size:80, yOff:0 },
+  ],
+  temple_path: [
+    { img:'temple_gate',     col:13, row:2,  size:96, yOff:0 },
+    { img:'temple_ruins',    col:6,  row:7,  size:96, yOff:0 },
+    { img:'temple_ruins',    col:21, row:7,  size:96, yOff:0 },
+    { img:'temple_obelisk',  col:13, row:11, size:64, yOff:0 },
+    { img:'temple_pavilion', col:13, row:17, size:96, yOff:0 },
+  ],
+};
 
 // Per-building floor tile
 const _FLOOR_IMG = {
