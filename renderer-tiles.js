@@ -125,26 +125,33 @@ function drawChimney(x, y, bh) {
 }
 
 // ── DRAWING ───────────────────────────────────────────────────
-function drawBuildingSprite(b) {
+// Draws the PNG overlay image for one village building entry from VILLAGE_BLDG_SPRITES.
+// The image is scaled so its width matches the footprint's screen width, centred
+// horizontally over the footprint, and bottom-aligned to the south ground edge.
+function drawBuildingOverlay(b) {
   const img = _tileImgs[b.img];
   if (!img) return;
 
+  // Source rectangle within the PNG (defaults to the full image).
   const srcX = b.sx ?? 0, srcY = b.sy ?? 0;
   const srcW = b.sw ?? img.naturalWidth;
   const srcH = b.sh ?? img.naturalHeight;
   if (!srcW || !srcH) return;
 
-  // Scale to footprint screen width: (colSpan + rowSpan) * TW/2
-  const fW = (b.c2 - b.c1 + b.r2 - b.r1) * TW / 2;
-  const scale = fW / srcW;
-  const dw = srcW * scale;
-  const dh = srcH * scale;
+  // In isometric projection the screen width of a tile footprint is
+  // (colSpan + rowSpan) * TW/2, because each tile adds TW/2 horizontally
+  // whether you step east (column) or south (row).
+  const footprintScreenWidth = (b.c2 - b.c1 + b.r2 - b.r1) * TW / 2;
+  const scale = footprintScreenWidth / srcW;
+  const drawW = srcW * scale;
+  const drawH = srcH * scale;
 
-  // Horizontal centre at the footprint centre tile; bottom at south-face ground level
-  const cc = (b.c1 + b.c2) / 2;
-  const cr = (b.r1 + b.r2) / 2;
-  const cx = isoX(cc, cr) + offX;
-  const cy = isoY(cc, b.r2) + TH / 2 + offY + (b.yOff ?? 0);
+  // Screen position: horizontally centred on the footprint's middle tile,
+  // vertically anchored so the image bottom sits at the south ground edge.
+  const midCol = (b.c1 + b.c2) / 2;
+  const midRow = (b.r1 + b.r2) / 2;
+  const cx = isoX(midCol, midRow) + offX;
+  const cy = isoY(midCol, b.r2) + TH / 2 + offY + (b.yOff ?? 0);
 
   // Fill the south-facing wall behind the sprite for buildings whose PNG has a
   // transparent south face (open-front isometric sprites).  Draw the right-face
@@ -167,10 +174,11 @@ function drawBuildingSprite(b) {
     }
   }
 
-  // Pixel-art (Hernandack) sprites need crisp nearest-neighbour scaling
+  // Pixel-art sprites (identified by having an explicit source rect) need
+  // nearest-neighbour scaling so they stay crisp rather than blurring.
   const pixelArt = (b.sw !== undefined);
   if (pixelArt) ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(img, srcX, srcY, srcW, srcH, cx - dw / 2, cy - dh, dw, dh);
+  ctx.drawImage(img, srcX, srcY, srcW, srcH, cx - drawW / 2, cy - drawH, drawW, drawH);
   if (pixelArt) ctx.imageSmoothingEnabled = true;
 }
 
@@ -179,7 +187,7 @@ function drawTile(c, r) {
   if (!def) return;
   // For tiles inside a building-sprite footprint, draw a flat grass base instead of
   // the procedural 3D box — but only when the sprite image has actually loaded.
-  const _spriteImgKey = _BLDG_TILE_SPRITE.get(`${c},${r}`);
+  const _spriteImgKey = _buildingFootprintTiles.get(`${c},${r}`);
   // Tiles inside a loaded building-sprite footprint get a flat grass base;
   // the sprite image is drawn on top (at higher z) and covers everything.
   // Exception: cobble and path tiles (e.g. town square) render as-is even when

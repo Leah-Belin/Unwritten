@@ -302,7 +302,7 @@ function render() {
   ctx.textAlign='center';
   for (const d of items) {
     if      (d.k==='tile')    drawTile(d.c,d.r);
-    else if (d.k==='bldg')   drawBuildingSprite(d.b);
+    else if (d.k==='bldg')   drawBuildingOverlay(d.b);
     else if (d.k==='item')    drawItem(d.item);
     else if (d.k==='station') drawStation(d.st);
     else if (d.k==='cabinet') drawCabinet(currentCabinet);

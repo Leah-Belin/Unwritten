@@ -76,15 +76,28 @@ loadTileImg('house_log',           'images/buildings/house_log.png');
 loadTileImg('house_cottage_large', 'images/buildings/house_cottage_large.png');
 loadTileImg('house_halftimber',    'images/buildings/house_halftimber.png');
 
-// Village building sprite overlays.
-// r1,c1..r2,c2 = tile footprint (inclusive).
-// img = tile image key. yOff = extra vertical offset (positive = down).
+// Village building PNG overlays.  Each entry describes one building image and
+// where it sits on the tile grid.  Fields:
+//
+//   r1, c1        Top-left corner of the sprite's visual footprint (tile coords).
+//   r2, c2        Bottom-right corner of the sprite's visual footprint (inclusive).
+//                 This is LARGER than the actual building tiles when the PNG image
+//                 extends south over walkable ground in front of the building.
+//                 drawBuildingOverlay uses r2 to anchor the image bottom edge and
+//                 to size the image to match the footprint width on screen.
+//   tileR2        (optional) The actual southernmost row of solid building tiles
+//                 placed by placeBuilding().  Rows between tileR2 and r2 are
+//                 walkable ground that the image visually overlaps — omit tileR2
+//                 when r2 equals the real tile extent (most residential houses).
+//                 The z-sort uses tileR2 (not r2) so characters walking on those
+//                 foreground tiles appear in front of the building, not behind it.
+//   img           Key into _tileImgs for the building's PNG image.
+//   yOff          Extra vertical pixel nudge applied when placing the image.
+//                 Negative values move the image up; tune this to align the image
+//                 bottom with the ground tiles.
+//
 const VILLAGE_BLDG_SPRITES = [
   // Main character buildings
-  // tileR2 = actual south row of building tiles (from placeBuilding); r2 is the
-  // larger sprite footprint used for ground-tile suppression and image sizing.
-  // Z-sort must use tileR2 so characters on walkable tiles south of the building
-  // tiles (but inside the sprite footprint) render in front, not behind.
   { id:'bakery',          r1:4,  c1:3,  r2:9,  c2:8,  tileR2:8,  img:'shop_bakery',      yOff:-20 },
   { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, tileR2:5,  img:'shop_forge',       yOff:-60 },
   { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, tileR2:6,  img:'bldg_inn',         yOff:-60 },
@@ -92,21 +105,24 @@ const VILLAGE_BLDG_SPRITES = [
   { id:'town_hall',       r1:14, c1:20, r2:19, c2:27, tileR2:16, img:'bldg_town_hall',   yOff:-60 },
   { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, tileR2:24, img:'bldg_council_hall',yOff:-48 },
   { id:'hestas_hut',      r1:31, c1:4,  r2:35, c2:8,  tileR2:33, img:'bldg_hestas_hut',  yOff:-40 },
-  // Residential houses — sprite r2 matches tile extent, no tileR2 needed
+  // Residential houses — r2 matches the actual tile extent, so no tileR2 needed
   { id:'jaxons_house',    r1:25, c1:10, r2:28, c2:15, img:'house_halftimber',    yOff:-20 },
   { id:'villager_house_a',r1:28, c1:22, r2:31, c2:25, img:'house_thatched',      yOff:-20 },
   { id:'villager_house_b',r1:12, c1:28, r2:15, c2:31, img:'house_log',           yOff:-20 },
   { id:'villager_house_c',r1:32, c1:14, r2:35, c2:17, img:'house_cottage_large', yOff:-20 },
 ];
 
-// Maps 'col,row' → sprite img key for every tile inside a building footprint.
-// drawTile uses this to skip procedural raised-box rendering only when the
-// sprite image is actually loaded (falls back to procedural if image is missing).
-const _BLDG_TILE_SPRITE = new Map();
+// Maps 'col,row' → image key for every tile coordinate inside a building's
+// sprite footprint (r1..r2 × c1..c2).  drawTile looks up each tile here; if
+// the building image is loaded it draws a plain grass base instead of the
+// normal procedural 3D box, so the PNG overlay (drawn later at higher z) lands
+// cleanly on flat ground.  If the image hasn't loaded yet, the 3D box shows as
+// a fallback.
+const _buildingFootprintTiles = new Map();
 for (const b of VILLAGE_BLDG_SPRITES)
   for (let r = b.r1; r <= b.r2; r++)
     for (let c = b.c1; c <= b.c2; c++)
-      _BLDG_TILE_SPRITE.set(`${c},${r}`, b.img);
+      _buildingFootprintTiles.set(`${c},${r}`, b.img);
 
 // Per-building floor tile
 const _FLOOR_IMG = {
