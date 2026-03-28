@@ -78,19 +78,27 @@ loadTileImg('house_halftimber',    'images/buildings/house_halftimber.png');
 // ── DECORATION IMAGES ─────────────────────────────────────────
 // TO ADD A NEW DECORATION:
 //   STEP 1 — Register the image here with a short key of your choosing:
-//              loadTileImg('my_key', 'images/buildings/my_file.png');
+//              loadTileImg('my_key', 'images/tiles/Decorations/MyFile.png');
 //   STEP 2 — Place it in a scene by adding an entry to SCENE_DECO below.
 //
-// Village decorations (town square, forge area, residential)
-loadTileImg('deco_bench',    'images/buildings/deco_bench.png');
-loadTileImg('deco_fountain', 'images/buildings/deco_fountain.png');
-loadTileImg('deco_hay',      'images/buildings/deco_hay.png');
-loadTileImg('deco_well',     'images/buildings/deco_well.png');
+const _DEC = 'images/tiles/Decorations/';
+//
+// Interior furniture — used by drawFurniturePiece() in renderer.js
+loadTileImg('furn_chair', _DEC + 'chair.png');   // replaces chair emoji
+loadTileImg('furn_bed',   _DEC + 'bed1.png');    // replaces bed emoji
+loadTileImg('furn_cot',   _DEC + 'Bed2.png');    // replaces cot emoji
+loadTileImg('furn_chest', _DEC + 'Chest.png');   // replaces chest emoji
+//
+// Outdoor decorations — placed via SCENE_DECO below
+loadTileImg('deco_bench',    _DEC + 'Bench.png');     // outdoor bench (503×400)
+loadTileImg('deco_fountain', _DEC + 'Fountain.png');  // town fountain (576×400)
+loadTileImg('deco_hay',      _DEC + 'hayBale.png');   // hay bale (633×400)
+loadTileImg('deco_well',     _DEC + 'well.png');      // village well (686×400)
 // Garden zone decorations
-loadTileImg('garden_cart',    'images/buildings/garden_cart.png');
-loadTileImg('garden_gazebo',  'images/buildings/garden_gazebo.png');
-loadTileImg('garden_nursery', 'images/buildings/garden_nursery.png');
-loadTileImg('garden_well',    'images/buildings/garden_well.png');
+loadTileImg('garden_cart',    _DEC + 'GardenCart.png');  // (643×400)
+loadTileImg('garden_gazebo',  _DEC + 'Gazebo.png');      // (421×411)
+loadTileImg('garden_nursery', _DEC + 'HerbStation.png'); // (705×400)
+loadTileImg('garden_well',    _DEC + 'gardenWell.png');  // (678×400)
 // Market stall overlays
 loadTileImg('stall_bread',   'images/buildings/stall_bread.png');
 loadTileImg('stall_cooking', 'images/buildings/stall_cooking.png');
@@ -169,9 +177,10 @@ for (const b of VILLAGE_BLDG_SPRITES)
 //                 you'd use in buildVillageMap, buildGardenMap, etc.).
 //                 col increases going right/east, row increases going down/south.
 //
-//    size       — draw size in pixels (the image is drawn as a square at this
-//                 size). Start with 56–80 for small objects, 80–96 for larger
-//                 ones, and tune visually.
+//    size       — height of the image in pixels. Width is derived automatically
+//                 from the image's aspect ratio, so wide images won't be
+//                 squashed. Start with 64–80 for small objects, 80–96 for
+//                 larger ones, and tune visually.
 //
 //    yOff       — fine-tune the vertical position after size is set. The image
 //                 bottom sits at ground level by default. Negative values shift
@@ -187,18 +196,18 @@ for (const b of VILLAGE_BLDG_SPRITES)
 const SCENE_DECO = {
   village: [
     // Benches flanking the east-west path through the town square
-    { img:'deco_bench', col:17, row:20, size:56, yOff:0 },
-    { img:'deco_bench', col:23, row:20, size:56, yOff:0 },
+    { img:'deco_bench', col:17, row:20, size:80, yOff:0 },
+    { img:'deco_bench', col:23, row:20, size:80, yOff:0 },
     // Well in the residential area (south of Jaxon's house)
-    { img:'deco_well',  col:13, row:29, size:56, yOff:0 },
+    { img:'deco_well',  col:13, row:29, size:80, yOff:0 },
     // Hay bale south of the forge
-    { img:'deco_hay',   col:27, row:8,  size:48, yOff:0 },
+    { img:'deco_hay',   col:27, row:8,  size:64, yOff:0 },
   ],
   garden: [
     { img:'garden_gazebo',  col:12, row:5,  size:80, yOff:0 },
     { img:'garden_nursery', col:11, row:14, size:80, yOff:0 },
-    { img:'garden_well',    col:10, row:22, size:56, yOff:0 },
-    { img:'garden_cart',    col:8,  row:24, size:56, yOff:0 },
+    { img:'garden_well',    col:10, row:22, size:80, yOff:0 },
+    { img:'garden_cart',    col:8,  row:24, size:64, yOff:0 },
   ],
   market: [
     { img:'stall_bread',   col:9,  row:5,  size:80, yOff:0 },
