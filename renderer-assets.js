@@ -85,6 +85,7 @@ const _DEC = 'images/tiles/Decorations/';
 //
 // Interior furniture — used by drawFurniturePiece() in renderer.js
 loadTileImg('furn_chair', _DEC + 'chair.png');   // replaces chair emoji
+loadTileImg('furn_table', _DEC + 'Table.png');   // replaces procedural table
 loadTileImg('furn_bed',   _DEC + 'bed1.png');    // replaces bed emoji
 loadTileImg('furn_cot',   _DEC + 'Bed2.png');    // replaces cot emoji
 loadTileImg('furn_chest', _DEC + 'Chest.png');   // replaces chest emoji

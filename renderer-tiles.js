@@ -250,6 +250,9 @@ function drawTile(c, r) {
   }
 
   if (def.fountain) {
+    // Draw cobblestone base so the town square tile isn't a blank gap.
+    const cobbleImg = _tileImgs['floor_stone'];
+    if (cobbleImg) drawTileImg(cobbleImg, x, y);
     // Use the PNG image if loaded; fall back to the procedural fountain below.
     const fountainImg = _tileImgs['deco_fountain'];
     if (fountainImg && fountainImg.naturalWidth) {
