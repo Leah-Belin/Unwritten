@@ -52,7 +52,16 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
     currentMap       = zone.grid;
     mapRows          = zone.grid.length;
     mapCols          = zone.grid[0].length;
-    currentNPCs      = zone.npcs || [];
+    currentNPCs = (zone.npcs || []).map(entry => {
+      const id  = typeof entry === 'string' ? entry : entry.id;
+      const npc = NPCS.find(n => n.id === id);
+      if (!npc) return null;
+      // Merge position override (col/row) with the full NPC definition
+      if (typeof entry === 'object' && (entry.col !== undefined || entry.row !== undefined)) {
+        return { ...npc, col: entry.col ?? npc.col, row: entry.row ?? npc.row };
+      }
+      return npc;
+    }).filter(Boolean);
     currentStations  = zone.stations || [];
     currentFurniture = [];
     currentExits     = zone.exits || [];
