@@ -122,13 +122,10 @@ function loadZoneImages(scene) {
     loadTileImg('stall_produce', 'images/buildings/stall_produce.png');
   }
   if (scene === 'temple_path') {
-    loadTileImg('temple_eastern',  'images/buildings/temple_eastern.png');
-    loadTileImg('temple_gate',     'images/buildings/temple_gate.png');
-    loadTileImg('temple_obelisk',  'images/buildings/temple_obelisk.png');
-    loadTileImg('temple_pavilion', 'images/buildings/temple_pavilion.png');
-    loadTileImg('temple_roman',    'images/buildings/temple_roman.png');
-    loadTileImg('temple_ruins',    'images/buildings/temple_ruins.png');
-    loadTileImg('temple_wall',     'images/buildings/temple_wall.png');
+    loadTileImg('temple',         'images/buildings/temple.png');       // main temple (background removed)
+    loadTileImg('temple_gate',    'images/buildings/temple_gate.png');  // entrance gate arch
+    loadTileImg('temple_obelisk', 'images/buildings/temple_obelisk.png'); // ceremonial obelisks
+    loadTileImg('temple_wall',    'images/buildings/temple_wall.png');  // ancient wall section
   }
 }
 
@@ -290,11 +287,16 @@ const SCENE_DECO = {
     { img:'stall_cooking', col:24, row:10, size:80, yOff:0 },
   ],
   temple_path: [
-    { img:'temple_gate',     col:13, row:2,  size:96, yOff:0 },
-    { img:'temple_ruins',    col:6,  row:7,  size:96, yOff:0 },
-    { img:'temple_ruins',    col:21, row:7,  size:96, yOff:0 },
-    { img:'temple_obelisk',  col:13, row:11, size:64, yOff:0 },
-    { img:'temple_pavilion', col:13, row:17, size:96, yOff:0 },
+    // Entrance gate across the ceremonial path
+    { img:'temple_gate',    col:13, row:2,  size:140, yOff:0 },
+    // Ancient wall sections where the flanking ruins used to be
+    { img:'temple_wall',    col:6,  row:7,  size:120, yOff:0 },
+    { img:'temple_wall',    col:21, row:7,  size:120, yOff:0 },
+    // Obelisks flanking the path mid-way
+    { img:'temple_obelisk', col:10, row:9,  size:100, yOff:0 },
+    { img:'temple_obelisk', col:17, row:9,  size:100, yOff:0 },
+    // Main temple at the end of the ceremonial road
+    { img:'temple',         col:13, row:16, size:200, yOff:0 },
   ],
 };
 
