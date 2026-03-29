@@ -45,6 +45,7 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
   clearNarrative();
   if (sceneId !== 'village' && ZONES?.[sceneId]) {
     // ── Load an outdoor zone ───────────────────────────────────
+    loadZoneImages(sceneId);   // lazy-load zone-specific images on first visit
     const zone = ZONES[sceneId];
     currentBuilding  = null;
     currentFloor     = null;

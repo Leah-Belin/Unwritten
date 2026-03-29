@@ -95,24 +95,42 @@ loadTileImg('deco_bench',    _DEC + 'Bench.png');     // outdoor bench (503×400
 loadTileImg('deco_fountain', _DEC + 'Fountain.png');  // town fountain (576×400)
 loadTileImg('deco_hay',      _DEC + 'hayBale.png');   // hay bale (633×400)
 loadTileImg('deco_well',     _DEC + 'well.png');      // village well (686×400)
-// Garden zone decorations
-loadTileImg('garden_cart',    _DEC + 'GardenCart.png');  // (643×400)
-loadTileImg('garden_gazebo',  _DEC + 'Gazebo.png');      // (421×411)
-loadTileImg('garden_nursery', _DEC + 'HerbStation.png'); // (705×400)
-loadTileImg('garden_well',    _DEC + 'gardenWell.png');  // (678×400)
-// Market stall overlays
-loadTileImg('stall_bread',   'images/buildings/stall_bread.png');
-loadTileImg('stall_cooking', 'images/buildings/stall_cooking.png');
-loadTileImg('stall_pottery', 'images/buildings/stall_pottery.png');
-loadTileImg('stall_produce', 'images/buildings/stall_produce.png');
-// Temple path features
-loadTileImg('temple_eastern',  'images/buildings/temple_eastern.png');
-loadTileImg('temple_gate',     'images/buildings/temple_gate.png');
-loadTileImg('temple_obelisk',  'images/buildings/temple_obelisk.png');
-loadTileImg('temple_pavilion', 'images/buildings/temple_pavilion.png');
-loadTileImg('temple_roman',    'images/buildings/temple_roman.png');
-loadTileImg('temple_ruins',    'images/buildings/temple_ruins.png');
-loadTileImg('temple_wall',     'images/buildings/temple_wall.png');
+// ── ZONE-SPECIFIC IMAGE LOADER ────────────────────────────────
+// Garden, market, and temple images are NOT loaded at startup — they're
+// loaded on first visit to each zone via loadZoneImages() below.
+// This saves ~4 MB of startup downloads.
+//
+// TO ADD IMAGES FOR A NEW ZONE:
+//   Add a block inside loadZoneImages() matching your scene id, then call
+//   loadTileImg() there (same pattern as the village images above).
+//
+const _zoneImgsLoaded = new Set();
+function loadZoneImages(scene) {
+  if (_zoneImgsLoaded.has(scene)) return;
+  _zoneImgsLoaded.add(scene);
+
+  if (scene === 'garden') {
+    loadTileImg('garden_cart',    _DEC + 'GardenCart.png');
+    loadTileImg('garden_gazebo',  _DEC + 'Gazebo.png');
+    loadTileImg('garden_nursery', _DEC + 'HerbStation.png');
+    loadTileImg('garden_well',    _DEC + 'gardenWell.png');
+  }
+  if (scene === 'market') {
+    loadTileImg('stall_bread',   'images/buildings/stall_bread.png');
+    loadTileImg('stall_cooking', 'images/buildings/stall_cooking.png');
+    loadTileImg('stall_pottery', 'images/buildings/stall_pottery.png');
+    loadTileImg('stall_produce', 'images/buildings/stall_produce.png');
+  }
+  if (scene === 'temple_path') {
+    loadTileImg('temple_eastern',  'images/buildings/temple_eastern.png');
+    loadTileImg('temple_gate',     'images/buildings/temple_gate.png');
+    loadTileImg('temple_obelisk',  'images/buildings/temple_obelisk.png');
+    loadTileImg('temple_pavilion', 'images/buildings/temple_pavilion.png');
+    loadTileImg('temple_roman',    'images/buildings/temple_roman.png');
+    loadTileImg('temple_ruins',    'images/buildings/temple_ruins.png');
+    loadTileImg('temple_wall',     'images/buildings/temple_wall.png');
+  }
+}
 
 // ── COLLECTIBLE RESOURCE IMAGES ───────────────────────────────
 // These replace the default emoji rendering for items the player can pick up.
