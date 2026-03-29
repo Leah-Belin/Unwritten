@@ -1,7 +1,8 @@
 // ── CACHE VERSION ──────────────────────────────────────────────
-// Change this string to force every client to discard the old cache
-// and re-fetch all game assets on their next visit.
-const CACHE = 'unwritten-v19';
+// Bump this only if you need to force-wipe everything (rare).
+// JS/HTML/CSS: always fetched fresh (network-first, cache = offline fallback).
+// Images: served from cache instantly, refreshed in background (stale-while-revalidate).
+const CACHE = 'unwritten-v20';
 
 const PRECACHE = [
   // Core scripts
@@ -81,9 +82,48 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Cache-first for same-origin requests; let cross-origin (fonts, etc.) pass through.
+const _isImage = url => /\.(png|jpe?g|webp|gif|svg)(\?|$)/i.test(url);
+const _isCode  = url => /\.(js|html|css)(\?|$)/i.test(url) || url.endsWith('/');
+
+// Network-first for JS/HTML/CSS — always fresh, cache = offline fallback only.
+// Stale-while-revalidate for images — instant from cache, refreshed in background.
+// Everything else: cache-first passthrough.
 self.addEventListener('fetch', e => {
   if (!e.request.url.startsWith(self.location.origin)) return;
+
+  const url = e.request.url;
+
+  if (_isCode(url)) {
+    // Network-first: try live fetch, fall back to cache when offline
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, copy));
+        }
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  if (_isImage(url)) {
+    // Stale-while-revalidate: serve cache immediately, refresh in background
+    e.respondWith(
+      caches.open(CACHE).then(cache =>
+        cache.match(e.request).then(cached => {
+          const fetchPromise = fetch(e.request).then(res => {
+            if (res.ok) cache.put(e.request, res.clone());
+            return res;
+          });
+          return cached || fetchPromise;
+        })
+      )
+    );
+    return;
+  }
+
+  // Default: cache-first for anything else (fonts, data files, etc.)
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
