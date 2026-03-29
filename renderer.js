@@ -35,18 +35,21 @@ function drawSprite(x, y, emoji, label, bodyColor, isPlayer, spriteId, direction
     ctx.textBaseline='alphabetic';
   }
 
-  // Name label (always shown)
-  const radius = isPlayer ? 14 : 12;
-  const labelY = sheet
-    ? (base - (SPRITE_H * (isPlayer?1:0.75)) - 2)
-    : (base - radius*2 - 4);
-  ctx.font=`${isPlayer?'bold ':''}9px Caveat,cursive`;
-  ctx.fillStyle=isPlayer?'#ffe8c0':'#f0e8d5';
-  ctx.shadowColor='rgba(0,0,0,0.95)'; ctx.shadowBlur=5;
-  ctx.textAlign='center';
-  ctx.fillText(label, x, labelY);
-  ctx.shadowBlur=0;
 }
+
+// ── HOVER LABEL ────────────────────────────────────────────────
+// Mouse position in canvas pixels (updated by mousemove on the canvas)
+let _mouseX = -9999, _mouseY = -9999;
+(function _initHover() {
+  const c = document.getElementById('game-canvas');
+  if (!c) return;
+  c.addEventListener('mousemove', e => {
+    const r = c.getBoundingClientRect();
+    _mouseX = (e.clientX - r.left) * (c.width  / r.width);
+    _mouseY = (e.clientY - r.top)  * (c.height / r.height);
+  });
+  c.addEventListener('mouseleave', () => { _mouseX = -9999; _mouseY = -9999; });
+})();
 
 function drawItem(item) {
   if (item.taken) return;
@@ -150,18 +153,26 @@ function drawFurniturePiece(piece) {
   switch (piece.type) {
 
     case 'table': {
-      // Clean flat surface — legs hidden below, just show the top
-      const s=0.62, hw=HW*s, hh=HH*s, bh=9;
-      // Leg stubs (just visible below the top)
-      const legC='#6a4020';
-      ctx.fillStyle=legC;
-      [[x-hw*0.48,y+hh*0.45],[x+hw*0.48,y+hh*0.45],
-       [x-hw*0.48,y-hh*0.45],[x+hw*0.48,y-hh*0.45]].forEach(([lx,ly])=>{
-        ctx.beginPath(); ctx.moveTo(lx-2,ly-1); ctx.lineTo(lx,ly+hh*0.5);
-        ctx.lineTo(lx+2,ly+hh*0.5); ctx.lineTo(lx+4,ly-1); ctx.closePath(); ctx.fill();
-      });
-      _isoBox(x, y, hw, hh, bh, '#d4aa68','#8a5a2e','#b07838');
-      _woodGrain(x, y, hw, hh, bh);
+      const img = _tileImgs['furn_table'];
+      if (img && img.naturalWidth) {
+        const drawH = Math.round(TW * 0.9);
+        const drawW = drawH * (img.naturalWidth / img.naturalHeight);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(img, x - drawW/2, y + TH/2 - drawH, drawW, drawH);
+        ctx.imageSmoothingEnabled = true;
+      } else {
+        // Procedural fallback — flat-top iso box with leg stubs and wood grain
+        const s=0.62, hw=HW*s, hh=HH*s, bh=9;
+        const legC='#6a4020';
+        ctx.fillStyle=legC;
+        [[x-hw*0.48,y+hh*0.45],[x+hw*0.48,y+hh*0.45],
+         [x-hw*0.48,y-hh*0.45],[x+hw*0.48,y-hh*0.45]].forEach(([lx,ly])=>{
+          ctx.beginPath(); ctx.moveTo(lx-2,ly-1); ctx.lineTo(lx,ly+hh*0.5);
+          ctx.lineTo(lx+2,ly+hh*0.5); ctx.lineTo(lx+4,ly-1); ctx.closePath(); ctx.fill();
+        });
+        _isoBox(x, y, hw, hh, bh, '#d4aa68','#8a5a2e','#b07838');
+        _woodGrain(x, y, hw, hh, bh);
+      }
       break;
     }
 
@@ -392,5 +403,38 @@ function render() {
   if (currentBuilding) {
     ctx.strokeStyle='rgba(139,111,71,0.3)';
     ctx.lineWidth=8; ctx.strokeRect(4,4,W-8,H-8);
+  }
+
+  // ── Hover name label ─────────────────────────────────────────
+  // Find the NPC or player closest to the mouse and show their name.
+  // Converts zoomed canvas positions to screen pixels for comparison.
+  // zoomLevel + offX/offY match the transform set up at the top of render().
+  let _hoverLabel = null, _hoverLX = 0, _hoverLY = 0, _hoverBest = 32;
+  const _toScreen = (wx, wy) => ({
+    sx: zoomLevel * (wx - W/2) + W/2,
+    sy: zoomLevel * (wy - H/2) + H/2,
+  });
+  for (const n of currentNPCs) {
+    const wx = (n.px !== undefined ? n.px : isoX(n.col, n.row)) + offX;
+    const wy = (n.py !== undefined ? n.py : isoY(n.col, n.row)) + offY;
+    const {sx, sy} = _toScreen(wx, wy);
+    const dist = Math.hypot(_mouseX - sx, _mouseY - sy);
+    if (dist < _hoverBest) { _hoverBest = dist; _hoverLabel = n.name; _hoverLX = sx; _hoverLY = sy; }
+  }
+  // Check player too
+  {
+    const {sx, sy} = _toScreen(player.px + offX, player.py + offY);
+    if (Math.hypot(_mouseX - sx, _mouseY - sy) < _hoverBest) {
+      _hoverLabel = 'Kaida'; _hoverLX = sx; _hoverLY = sy;
+    }
+  }
+  if (_hoverLabel) {
+    ctx.font = 'bold 15px Caveat, cursive';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#1a1008';
+    ctx.shadowColor = 'rgba(240,228,200,0.95)';
+    ctx.shadowBlur = 10;
+    ctx.fillText(_hoverLabel, _hoverLX, _hoverLY - 52);
+    ctx.shadowBlur = 0;
   }
 }
