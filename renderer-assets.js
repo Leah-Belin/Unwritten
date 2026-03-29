@@ -252,12 +252,12 @@ for (const b of VILLAGE_BLDG_SPRITES)
 const SCENE_DECO = {
   village: [
     // Benches flanking the east-west path through the town square
-    { img:'deco_bench', col:17, row:20, size:80, yOff:0 },
-    { img:'deco_bench', col:23, row:20, size:80, yOff:0 },
+    { img:'deco_bench', col:17, row:20, size:110, yOff:0 },
+    { img:'deco_bench', col:23, row:20, size:110, yOff:0 },
     // Well in the residential area (south of Jaxon's house)
-    { img:'deco_well',  col:13, row:29, size:80, yOff:0 },
-    // Hay bale south of the forge
-    { img:'deco_hay',   col:27, row:8,  size:64, yOff:0 },
+    { img:'deco_well',  col:13, row:29, size:110, yOff:0 },
+    // Hay bale in the open field east of the town square
+    { img:'deco_hay',   col:10, row:9,  size:90, yOff:0 },
   ],
   garden: [
     { img:'garden_gazebo',  col:12, row:5,  size:80, yOff:0 },

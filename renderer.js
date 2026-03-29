@@ -155,7 +155,7 @@ function drawFurniturePiece(piece) {
     case 'table': {
       const img = _tileImgs['furn_table'];
       if (img && img.naturalWidth) {
-        const drawH = Math.round(TW * 0.9);
+        const drawH = Math.round(TW * 1.4);
         const drawW = drawH * (img.naturalWidth / img.naturalHeight);
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(img, x - drawW/2, y + TH/2 - drawH, drawW, drawH);
@@ -192,9 +192,11 @@ function drawFurniturePiece(piece) {
 
     case 'chair': {
       const img = _tileImgs['furn_chair'];
-      if (img) {
+      if (img && img.naturalWidth) {
+        const dh = Math.round(TW * 1.4);
+        const dw = dh * (img.naturalWidth / img.naturalHeight);
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(img, x - TW/2, y + TH/2 - TW, TW, TW);
+        ctx.drawImage(img, x - dw/2, y + TH/2 - dh, dw, dh);
         ctx.imageSmoothingEnabled = true;
       } else { _furnitureEmoji(x, y, '🪑', 22, -4); }
       break;
@@ -206,20 +208,23 @@ function drawFurniturePiece(piece) {
 
     case 'bed': {
       const img = _tileImgs['furn_bed'];
-      if (img) {
+      if (img && img.naturalWidth) {
+        const dh = Math.round(TW * 1.5);
+        const dw = dh * (img.naturalWidth / img.naturalHeight);
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(img, x - TW/2, y + TH/2 - TW, TW, TW);
+        ctx.drawImage(img, x - dw/2, y + TH/2 - dh, dw, dh);
         ctx.imageSmoothingEnabled = true;
       } else { _furnitureEmoji(x, y, '🛏️', 32, -6); }
       break;
     }
 
     case 'cot': {
-      const s = Math.round(TW * 0.85);
       const img = _tileImgs['furn_cot'];
-      if (img) {
+      if (img && img.naturalWidth) {
+        const dh = Math.round(TW * 1.3);
+        const dw = dh * (img.naturalWidth / img.naturalHeight);
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(img, x - s/2, y + TH/2 - s, s, s);
+        ctx.drawImage(img, x - dw/2, y + TH/2 - dh, dw, dh);
         ctx.imageSmoothingEnabled = true;
       } else { _furnitureEmoji(x, y, '🛏️', 26, -4); }
       break;
@@ -281,11 +286,12 @@ function drawFurniturePiece(piece) {
     }
 
     case 'chest': {
-      const s = Math.round(TW * 0.8);
       const img = _tileImgs['furn_chest'];
-      if (img) {
+      if (img && img.naturalWidth) {
+        const dh = Math.round(TW * 1.2);
+        const dw = dh * (img.naturalWidth / img.naturalHeight);
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(img, x - s/2, y + TH/2 - s, s, s);
+        ctx.drawImage(img, x - dw/2, y + TH/2 - dh, dw, dh);
         ctx.imageSmoothingEnabled = true;
       } else { _furnitureEmoji(x, y, '📦', 26, -4); }
       break;
@@ -360,7 +366,8 @@ function render() {
   // Scene-specific decorative objects (benches, wells, stalls, temple features, etc.)
   if (!currentBuilding) {
     const deco = SCENE_DECO[State.scene];
-    if (deco) for (const d of deco) items.push({k:'deco', d, z:d.row+d.col+0.65});
+    // z=0.85 so decorations draw after trees (z=0.75) at the same diagonal
+    if (deco) for (const d of deco) items.push({k:'deco', d, z:d.row+d.col+0.85});
   }
   // Use pixel py for z during movement; py = isoY(col,row) = (col+row)*(TH/2)
   currentNPCs.forEach(n => items.push({k:'npc',n,z:(n.py!==undefined?n.py/(TH/2):n.row+n.col)+0.8}));
