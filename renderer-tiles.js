@@ -209,11 +209,11 @@ function drawTile(c, r) {
   const _spriteImgKey = _buildingFootprintTiles.get(`${c},${r}`);
   // Tiles inside a loaded building-sprite footprint get a flat grass base;
   // the sprite image is drawn on top (at higher z) and covers everything.
-  // Exception: cobble and path tiles (e.g. town square) render as-is even when
-  // they fall within the footprint of an adjacent building sprite.
+  // Exception: cobblestone tiles (town square) render as-is so the plaza stays visible.
+  // PATH tiles at building entrances ARE suppressed so they don't show as dirt squares.
   const _tileType = currentMap[r]?.[c];
   if (!currentBuilding && _spriteImgKey && _tileImgs[_spriteImgKey]
-      && _tileType !== T.COBBLE && _tileType !== T.PATH) {
+      && _tileType !== T.COBBLE) {
     const {x,y} = toScreen(c,r);
     if (x<-TW||x>W+TW||y<-TH*3||y>H+TH*2) return;
     const grassImg = _tileImgs['grass'];
@@ -256,7 +256,7 @@ function drawTile(c, r) {
     // Use the PNG image if loaded; fall back to the procedural fountain below.
     const fountainImg = _tileImgs['deco_fountain'];
     if (fountainImg && fountainImg.naturalWidth) {
-      const drawH = 96;
+      const drawH = 128;
       const drawW = drawH * (fountainImg.naturalWidth / fountainImg.naturalHeight);
       const bottom = y + TH / 2;
       ctx.imageSmoothingEnabled = false;
