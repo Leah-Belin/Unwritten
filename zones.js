@@ -111,13 +111,8 @@ function buildTempleMap() {
   fill(9,9,5,10,T.DIRT);
   [[10,11],[10,12],[10,14],[10,15],[12,11],[12,15],[11,10],[11,16]].forEach(([r,c])=>g[r][c]=T.WALL);
 
-  // Temple facade at south (rows 16-20, cols 9-18)
+  // Temple grounds at south — open dirt plaza behind the PNG overlay
   fill(16,9,5,10,T.DIRT);
-  for(let c=9;c<19;c++){ g[16][c]=T.WALL; }
-  for(let r=16;r<20;r++){ g[r][9]=T.WALL; g[r][18]=T.WALL; }
-  g[17][13]=T.DOOR; g[17][14]=T.DOOR; // temple door (closed — story locked)
-  for(let c=10;c<13;c++) g[16][c]=T.WALL;
-  for(let c=15;c<18;c++) g[16][c]=T.WALL;
 
   // Grass clearings beside path
   fill(3,5,14,5,T.GRASS);  // west

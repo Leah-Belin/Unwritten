@@ -296,7 +296,7 @@ const SCENE_DECO = {
     { img:'temple_obelisk', col:10, row:9,  size:100, yOff:0 },
     { img:'temple_obelisk', col:17, row:9,  size:100, yOff:0 },
     // Main temple at the end of the ceremonial road
-    { img:'temple',         col:13, row:16, size:200, yOff:0 },
+    { img:'temple',         col:13, row:16, size:420, yOff:0 },
   ],
 };
 
