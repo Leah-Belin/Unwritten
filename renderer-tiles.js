@@ -202,7 +202,10 @@ function drawDecoOverlay(d) {
 }
 
 function drawTile(c, r) {
-  const def = TILE_DEF[currentMap[r]?.[c]];
+  // Out-of-bounds tiles (border padding added by render()) draw as trees
+  const _rawType = currentMap[r]?.[c];
+  const _tileRaw = (_rawType !== undefined) ? _rawType : T.TREE;
+  const def = TILE_DEF[_tileRaw];
   if (!def) return;
   // For tiles inside a building-sprite footprint, draw a flat grass base instead of
   // the procedural 3D box — but only when the sprite image has actually loaded.
@@ -211,7 +214,7 @@ function drawTile(c, r) {
   // the sprite image is drawn on top (at higher z) and covers everything.
   // Exception: cobblestone tiles (town square) render as-is so the plaza stays visible.
   // PATH tiles at building entrances ARE suppressed so they don't show as dirt squares.
-  const _tileType = currentMap[r]?.[c];
+  const _tileType = _tileRaw;
   if (!currentBuilding && _spriteImgKey && _tileImgs[_spriteImgKey]
       && _tileType !== T.COBBLE) {
     const {x,y} = toScreen(c,r);
@@ -232,7 +235,7 @@ function drawTile(c, r) {
 
   // Top face — Miniature World block sprite when loaded, else procedural diamond
   if (!def.raised) {
-    const tileType = currentMap[r]?.[c];
+    const tileType = _tileRaw;
     const isFloor = currentBuilding && tileType === T.DIRT;
     if (isFloor && !window._floorLogged) { window._floorLogged=true; const _fid=_FLOOR_IMG[currentBuilding.id]; console.log('[floor] building.id:', currentBuilding.id, 'floorImgId:', _fid, 'img loaded:', !!_tileImgs[_fid]); }
     const imgId = isFloor ? (_FLOOR_IMG[currentBuilding.id] || 'floor_stone') : _GROUND_IMG[tileType];

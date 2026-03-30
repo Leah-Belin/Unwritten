@@ -341,11 +341,15 @@ function render() {
   ctx.translate(-W/2, -H/2);
 
   // Collect and sort drawables (painter's algorithm)
-  // Raised tiles (walls/buildings) get a small z boost so they overdraw correctly
+  // Raised tiles (walls/buildings) get a small z boost so they overdraw correctly.
+  // BORDER extra rows/cols of trees are added around the map so the viewport never
+  // shows the raw sky background when zoomed out to 0.5×.
+  const BORDER = 8;
   const items = [];
-  for (let r=0; r<mapRows; r++)
-    for (let c=0; c<mapCols; c++) {
-      const def = TILE_DEF[currentMap[r]?.[c]];
+  for (let r=-BORDER; r<mapRows+BORDER; r++)
+    for (let c=-BORDER; c<mapCols+BORDER; c++) {
+      const inMap = r>=0 && r<mapRows && c>=0 && c<mapCols;
+      const def = inMap ? TILE_DEF[currentMap[r]?.[c]] : TILE_DEF[T.TREE];
       const raised = def?.raised ? 0.4 : def?.tree ? 0.75 : 0;
       items.push({k:'tile',c,r, z:r+c+raised});
     }
