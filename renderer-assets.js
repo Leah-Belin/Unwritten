@@ -275,10 +275,10 @@ const SCENE_DECO = {
     { img:'deco_hay',   col:10, row:9,  size:90, yOff:0 },
   ],
   garden: [
-    { img:'garden_gazebo',  col:12, row:5,  size:80, yOff:0 },
-    { img:'garden_nursery', col:11, row:14, size:80, yOff:0 },
-    { img:'garden_well',    col:10, row:22, size:80, yOff:0 },
-    { img:'garden_cart',    col:8,  row:24, size:64, yOff:0 },
+    { img:'garden_gazebo',  col:12, row:5,  size:140, yOff:0 },
+    { img:'garden_nursery', col:11, row:14, size:130, yOff:0 },
+    { img:'garden_well',    col:10, row:21, size:120, yOff:0 },
+    { img:'garden_cart',    col:9,  row:23, size:110, yOff:0 },
   ],
   market: [
     { img:'stall_bread',   col:9,  row:5,  size:80, yOff:0 },
