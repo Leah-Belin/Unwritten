@@ -209,8 +209,8 @@ function buildVillageMap() {
 // ── ZONE EXIT MAP — village tile → zone scene ID ──────────────
 // Format: 'col,row'
 const ZONE_EXIT_MAP = {
-  '19,0':'garden','20,0':'garden','19,1':'garden','20,1':'garden',
-  '19,38':'temple_path','20,38':'temple_path','19,39':'temple_path','20,39':'temple_path',
+  '19,0':'temple_path','20,0':'temple_path','19,1':'temple_path','20,1':'temple_path',
+  '19,38':'garden','20,38':'garden','19,39':'garden','20,39':'garden',
   '0,19':'forest','0,20':'forest','1,19':'forest','1,20':'forest',
   '38,19':'market','39,19':'market','38,20':'market','39,20':'market',
 };
