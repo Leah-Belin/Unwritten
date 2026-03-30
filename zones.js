@@ -47,9 +47,6 @@ function buildGardenMap() {
   const g = Array.from({length:rows}, ()=>Array(cols).fill(T.TREE));
   const fill=(r,c,h,w,t)=>{ for(let i=r;i<r+h;i++) for(let j=c;j<c+w;j++){ if(i>=0&&i<rows&&j>=0&&j<cols) g[i][j]=t; }};
 
-  // Entry from south — connects to village north exit (cols 19-20 in village → cols 10-11 here)
-  g[27][10]=T.EXIT; g[27][11]=T.EXIT; g[26][10]=T.EXIT; g[26][11]=T.EXIT;
-
   // Main mountain path winding north
   for(let r=22;r<26;r++){ g[r][10]=T.PATH; g[r][11]=T.PATH; }
   // Bend west then north
@@ -65,6 +62,13 @@ function buildGardenMap() {
 
   // Lower valley (open)
   fill(19,5,7,14,T.GRASS);
+
+  // Southern exit corridor — widen to cols 7-14 so the gate is clearly visible
+  for(let c=7;c<=14;c++){ g[26][c]=T.GRASS; g[27][c]=T.GRASS; }
+
+  // Entry from south — connects to village north exit (cols 19-20 in village → cols 10-11 here)
+  // Set EXIT tiles last so fills don't overwrite them
+  g[27][10]=T.EXIT; g[27][11]=T.EXIT; g[26][10]=T.EXIT; g[26][11]=T.EXIT;
   // Garden terraces (dirt beds)
   fill(12,9,5,8,T.DIRT);
   fill(11,14,3,4,T.DIRT);
