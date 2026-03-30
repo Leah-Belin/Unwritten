@@ -90,36 +90,31 @@ function buildTempleMap() {
   const g = Array.from({length:rows}, ()=>Array(cols).fill(T.TREE));
   const fill=(r,c,h,w,t)=>{ for(let i=r;i<r+h;i++) for(let j=c;j<c+w;j++){ if(i>=0&&i<rows&&j>=0&&j<cols) g[i][j]=t; }};
 
-  // Entry from north — connects to village south exit (cols 19-20 in village → cols 13-14 here)
-  g[0][13]=T.EXIT; g[0][14]=T.EXIT; g[1][13]=T.EXIT; g[1][14]=T.EXIT;
+  // Exit back to village — south end of map (player enters here from village)
+  g[20][13]=T.EXIT; g[20][14]=T.EXIT; g[21][13]=T.EXIT; g[21][14]=T.EXIT;
 
-  // Long ceremonial path south
-  for(let r=2;r<19;r++){ g[r][13]=T.PATH; g[r][14]=T.PATH; }
+  // Long ceremonial path heading north toward the temple
+  for(let r=2;r<20;r++){ g[r][13]=T.PATH; g[r][14]=T.PATH; }
 
-  // Wide entry plaza
-  fill(1,10,4,8,T.DIRT);
+  // Wide entry plaza at south (where player arrives)
+  fill(17,10,4,8,T.DIRT);
 
-  // Ancient stone ruins flanking path
-  fill(5,5,5,4,T.DIRT);   // west ruins
-  fill(5,19,5,4,T.DIRT);  // east ruins
-  g[5][5]=T.WALL;  g[5][6]=T.WALL;  g[5][8]=T.WALL;
-  g[5][19]=T.WALL; g[5][20]=T.WALL; g[5][22]=T.WALL;
-  g[8][5]=T.WALL;  g[8][8]=T.WALL;
-  g[8][19]=T.WALL; g[8][22]=T.WALL;
+  // Open dirt areas flanking path mid-map (wall decos and obelisks sit here)
+  fill(5,5,6,4,T.DIRT);   // west
+  fill(5,19,6,4,T.DIRT);  // east
 
-  // Mid clearing — stone circle
-  fill(9,9,5,10,T.DIRT);
-  [[10,11],[10,12],[10,14],[10,15],[12,11],[12,15],[11,10],[11,16]].forEach(([r,c])=>g[r][c]=T.WALL);
+  // Mid clearing
+  fill(6,9,6,10,T.DIRT);
 
-  // Temple grounds at south — open dirt plaza behind the PNG overlay
-  fill(16,9,5,10,T.DIRT);
+  // Temple grounds at north end — open dirt (temple PNG covers this area)
+  fill(0,7,6,14,T.DIRT);
 
   // Grass clearings beside path
   fill(3,5,14,5,T.GRASS);  // west
   fill(3,18,14,5,T.GRASS); // east
 
   // Flowers/atmosphere
-  [[4,6],[6,7],[13,6],[14,7],[4,20],[6,21],[13,21]].forEach(([r,c])=>{
+  [[17,8],[15,6],[9,6],[8,7],[17,19],[15,21],[9,21]].forEach(([r,c])=>{
     if(g[r][c]===T.GRASS||g[r][c]===T.DIRT) g[r][c]=T.FLOWER;
   });
 
@@ -224,19 +219,19 @@ const ZONES = {
     id:'temple_path', name:'The Old Temple Road',
     grid: buildTempleMap(),
     items:[
-      { itemId:'stone_fragment', col:6,  row:6,  label:'Carved stone in the ruins',       respawn:false },
-      { itemId:'stone_fragment', col:21, row:7,  label:'Worn stone with faded markings',  respawn:false },
-      { itemId:'common_herb',   col:6,  row:13, label:'Herbs growing in old stonework',   respawn:true  },
-      { itemId:'common_herb',   col:21, row:12, label:'Herbs in the east ruins',          respawn:true  },
-      { itemId:'lavender',      col:7,  row:4,  label:'Lavender beside the path',         respawn:true  },
+      { itemId:'stone_fragment', col:6,  row:11, label:'Carved stone in the ruins',       respawn:false },
+      { itemId:'stone_fragment', col:21, row:10, label:'Worn stone with faded markings',  respawn:false },
+      { itemId:'common_herb',   col:6,  row:7,  label:'Herbs growing in old stonework',   respawn:true  },
+      { itemId:'common_herb',   col:21, row:6,  label:'Herbs in the east ruins',          respawn:true  },
+      { itemId:'lavender',      col:7,  row:18, label:'Lavender beside the path',         respawn:true  },
     ],
     stations:[],
     npcs:[],
     exits:[
-      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:13, row:0 },
-      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:14, row:0 },
-      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:13, row:1 },
-      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:14, row:1 },
+      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:13, row:20 },
+      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:14, row:20 },
+      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:13, row:21 },
+      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:14, row:21 },
     ],
   },
 

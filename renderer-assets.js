@@ -287,16 +287,16 @@ const SCENE_DECO = {
     { img:'stall_cooking', col:24, row:10, size:80, yOff:0 },
   ],
   temple_path: [
-    // Entrance gate across the ceremonial path
-    { img:'temple_gate',    col:13, row:2,  size:140, yOff:0 },
-    // Ancient wall sections where the flanking ruins used to be
-    { img:'temple_wall',    col:6,  row:7,  size:120, yOff:0 },
-    { img:'temple_wall',    col:21, row:7,  size:120, yOff:0 },
+    // Main temple at the north end — player walks toward this
+    { img:'temple',         col:13, row:3,  size:420, yOff:0 },
     // Obelisks flanking the path mid-way
-    { img:'temple_obelisk', col:10, row:9,  size:100, yOff:0 },
-    { img:'temple_obelisk', col:17, row:9,  size:100, yOff:0 },
-    // Main temple at the end of the ceremonial road
-    { img:'temple',         col:13, row:16, size:420, yOff:0 },
+    { img:'temple_obelisk', col:10, row:8,  size:100, yOff:0 },
+    { img:'temple_obelisk', col:17, row:8,  size:100, yOff:0 },
+    // Ancient wall sections flanking the path
+    { img:'temple_wall',    col:6,  row:11, size:120, yOff:0 },
+    { img:'temple_wall',    col:21, row:11, size:120, yOff:0 },
+    // Entrance gate at the south end — first thing player passes through
+    { img:'temple_gate',    col:13, row:17, size:140, yOff:0 },
   ],
 };
 
