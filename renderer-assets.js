@@ -300,7 +300,7 @@ const SCENE_DECO = {
     { img:'temple_wall',    col:6,  row:11, size:120, yOff:0 },
     { img:'temple_wall',    col:21, row:11, size:120, yOff:0 },
     // Entrance gate at the south end — first thing player passes through
-    { img:'temple_gate',    col:13, row:17, size:140, yOff:0, rotation:90 },
+    { img:'temple_gate',    col:13, row:17, size:140, yOff:0 },
   ],
   temple_interior: [
     { img:'temple_obelisk', col:3,  row:1, size:90, yOff:0 },
