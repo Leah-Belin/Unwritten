@@ -20,6 +20,7 @@ let zoomLevel = 1.0;            // changed by pinch / scroll-wheel
 const isoX = (c,r) => (c - r) * (TW/2);
 const isoY = (c,r) => (c + r) * (TH/2);
 let offX = 0, offY = 0;
+const snapCamera = () => { offX = W/2 - player.px; offY = H/2 - player.py - TH; };
 
 const toScreen = (c,r) => ({ x: isoX(c,r)+offX, y: isoY(c,r)+offY });
 // Canvas is drawn with ctx.scale(zoom) centred on (W/2, H/2).
@@ -412,6 +413,7 @@ function init() {
       player.row = savedRow;
       player.px  = isoX(player.col, player.row);
       player.py  = isoY(player.col, player.row);
+      snapCamera();
     }
   } else {
     loadScene('village');
