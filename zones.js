@@ -47,28 +47,25 @@ function buildGardenMap() {
   const g = Array.from({length:rows}, ()=>Array(cols).fill(T.TREE));
   const fill=(r,c,h,w,t)=>{ for(let i=r;i<r+h;i++) for(let j=c;j<c+w;j++){ if(i>=0&&i<rows&&j>=0&&j<cols) g[i][j]=t; }};
 
-  // Main mountain path winding north
-  for(let r=22;r<26;r++){ g[r][10]=T.PATH; g[r][11]=T.PATH; }
-  // Bend west then north
-  for(let c=7;c<11;c++){ g[22][c]=T.PATH; g[21][c]=T.PATH; }
-  for(let r=16;r<=22;r++){ g[r][7]=T.PATH; g[r][8]=T.PATH; }
-  // Open terraced area
-  for(let c=7;c<16;c++){ g[16][c]=T.PATH; g[17][c]=T.PATH; }
-  for(let r=10;r<=16;r++){ g[r][15]=T.PATH; }
-  for(let c=10;c<16;c++){ g[10][c]=T.PATH; }
+  // Entry path from north — widen cols 7-14 at rows 0-1 so the gate is clearly visible
+  for(let c=7;c<=14;c++){ g[0][c]=T.GRASS; g[1][c]=T.GRASS; }
+  // Path from north entrance down through the garden
+  for(let r=1;r<5;r++){ g[r][10]=T.PATH; g[r][11]=T.PATH; }
   // Upper garden path
   for(let r=5;r<=10;r++){ g[r][10]=T.PATH; g[r][11]=T.PATH; }
   for(let c=7;c<12;c++){ g[5][c]=T.PATH; }
+  // Open terraced area
+  for(let c=10;c<16;c++){ g[10][c]=T.PATH; }
+  for(let r=10;r<=16;r++){ g[r][15]=T.PATH; }
+  for(let c=7;c<16;c++){ g[16][c]=T.PATH; g[17][c]=T.PATH; }
+  // Path winding south into the lower valley
+  for(let r=16;r<=22;r++){ g[r][7]=T.PATH; g[r][8]=T.PATH; }
+  for(let c=7;c<11;c++){ g[21][c]=T.PATH; g[22][c]=T.PATH; }
+  for(let r=22;r<26;r++){ g[r][10]=T.PATH; g[r][11]=T.PATH; }
 
   // Lower valley (open)
   fill(19,5,7,14,T.GRASS);
 
-  // Southern exit corridor — widen to cols 7-14 so the gate is clearly visible
-  for(let c=7;c<=14;c++){ g[26][c]=T.GRASS; g[27][c]=T.GRASS; }
-
-  // Entry from south — connects to village north exit (cols 19-20 in village → cols 10-11 here)
-  // Set EXIT tiles last so fills don't overwrite them
-  g[27][10]=T.EXIT; g[27][11]=T.EXIT; g[26][10]=T.EXIT; g[26][11]=T.EXIT;
   // Garden terraces (dirt beds)
   fill(12,9,5,8,T.DIRT);
   fill(11,14,3,4,T.DIRT);
@@ -80,6 +77,10 @@ function buildGardenMap() {
 
   // Stream trickle on right side
   for(let r=4;r<20;r++) g[r][18]=T.WATER;
+
+  // Entry from north — connects to village south exit (cols 19-20 in village → cols 10-11 here)
+  // Set EXIT tiles last so the corridor fill doesn't overwrite them
+  g[0][10]=T.EXIT; g[0][11]=T.EXIT; g[1][10]=T.EXIT; g[1][11]=T.EXIT;
 
   // Flowers in upper garden
   [[4,9],[5,11],[6,8],[3,13],[8,7],[9,9]].forEach(([r,c])=>{
@@ -212,10 +213,10 @@ const ZONES = {
     stations:[],
     npcs:[{ id:'galen', col:12, row:10 }],
     exits:[
-      { label:'Return to village', targetScene:'village', fromZone:'garden', col:10, row:26 },
-      { label:'Return to village', targetScene:'village', fromZone:'garden', col:11, row:26 },
-      { label:'Return to village', targetScene:'village', fromZone:'garden', col:10, row:27 },
-      { label:'Return to village', targetScene:'village', fromZone:'garden', col:11, row:27 },
+      { label:'Return to village', targetScene:'village', fromZone:'garden', col:10, row:0 },
+      { label:'Return to village', targetScene:'village', fromZone:'garden', col:11, row:0 },
+      { label:'Return to village', targetScene:'village', fromZone:'garden', col:10, row:1 },
+      { label:'Return to village', targetScene:'village', fromZone:'garden', col:11, row:1 },
     ],
   },
 

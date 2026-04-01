@@ -75,7 +75,7 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
     });
 
     // Place player at the entry point (opposite edge from the exit)
-    const entryPos = { forest:{col:28,row:10}, garden:{col:10,row:24},
+    const entryPos = { forest:{col:28,row:10}, garden:{col:10,row:2},
                        temple_path:{col:13,row:18}, market:{col:3,row:10} };
     const pos = entryPos[sceneId] || { col:Math.floor(mapCols/2), row:Math.floor(mapRows/2) };
     player.col=pos.col; player.row=pos.row;
