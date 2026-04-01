@@ -133,7 +133,8 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
     // Place player at the zone exit they came from, or the building door, or default
     if (fromZone) {
       const zoneReturn = { forest:{col:2,row:19}, garden:{col:19,row:37},
-                           temple_path:{col:19,row:2}, market:{col:37,row:19} };
+                           temple_path:{col:19,row:2}, market:{col:37,row:19},
+                           temple_interior:{col:19,row:2} };
       const pos = zoneReturn[fromZone] || { col:20, row:23 };
       player.col=pos.col; player.row=pos.row;
     } else if (fromBuildingId) {
