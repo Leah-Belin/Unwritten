@@ -214,7 +214,7 @@ const VILLAGE_BLDG_SPRITES = [
   { id:'forge',           r1:4,  c1:25, r2:8,  c2:30, tileR2:5,  img:'shop_forge',       yOff:-60 },
   { id:'inn',             r1:4,  c1:32, r2:9,  c2:37, tileR2:6,  img:'bldg_inn',         yOff:-60 },
   // Civic buildings
-  { id:'town_hall',       r1:14, c1:20, r2:19, c2:27, tileR2:16, img:'bldg_town_hall',   yOff:-60 },
+  { id:'town_hall',       r1:14, c1:23, r2:19, c2:30, tileR2:16, img:'bldg_town_hall',   yOff:-60 },
   { id:'council_hall',    r1:22, c1:26, r2:26, c2:31, tileR2:24, img:'bldg_council_hall',yOff:-48 },
   { id:'hestas_hut',      r1:31, c1:4,  r2:35, c2:8,  tileR2:33, img:'bldg_hestas_hut',  yOff:-40 },
   // Residential houses — r2 matches the actual tile extent, so no tileR2 needed
@@ -300,7 +300,7 @@ const SCENE_DECO = {
     { img:'temple_wall',    col:6,  row:11, size:120, yOff:0 },
     { img:'temple_wall',    col:21, row:11, size:120, yOff:0 },
     // Entrance gate at the south end — first thing player passes through
-    { img:'temple_gate',    col:13, row:17, size:140, yOff:0 },
+    { img:'temple_gate',    col:11, row:17, size:140, yOff:0 },
   ],
   temple_interior: [
     { img:'temple_obelisk', col:3,  row:1, size:90, yOff:0 },

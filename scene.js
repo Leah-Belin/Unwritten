@@ -301,7 +301,7 @@ const BUILDING_REGISTRY = [
   { id:'bakery',          doorCol:6,  doorRow:8,  rMin:4,  rMax:8,  cMin:3,  cMax:8  },
   { id:'forge',           doorCol:28, doorRow:5,  rMin:4,  rMax:5,  cMin:25, cMax:30 },
   { id:'inn',             doorCol:35, doorRow:6,  rMin:4,  rMax:6,  cMin:32, cMax:37 },
-  { id:'town_hall',       doorCol:20, doorRow:13, rMin:10, rMax:13, cMin:15, cMax:24 },
+  { id:'town_hall',       doorCol:25, doorRow:13, rMin:10, rMax:13, cMin:21, cMax:30 },
   { id:'council_hall',    doorCol:29, doorRow:24, rMin:22, rMax:24, cMin:26, cMax:31 },
   { id:'hestas_hut',      doorCol:6,  doorRow:33, rMin:31, rMax:33, cMin:4,  cMax:8  },
   { id:'jaxons_house',    doorCol:13, doorRow:28, rMin:25, rMax:28, cMin:10, cMax:15 },
