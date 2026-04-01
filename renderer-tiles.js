@@ -197,7 +197,15 @@ function drawDecoOverlay(d) {
   const drawW = drawH * (img.naturalWidth / img.naturalHeight);
   const bottom = y + TH / 2 + (d.yOff ?? 0);
   ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(img, x - drawW / 2, bottom - drawH, drawW, drawH);
+  if (d.rotation) {
+    ctx.save();
+    ctx.translate(x, bottom - drawH / 2);
+    ctx.rotate(d.rotation * Math.PI / 180);
+    ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+    ctx.restore();
+  } else {
+    ctx.drawImage(img, x - drawW / 2, bottom - drawH, drawW, drawH);
+  }
   ctx.imageSmoothingEnabled = true;
 }
 
