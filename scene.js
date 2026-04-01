@@ -81,6 +81,7 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
     player.col=pos.col; player.row=pos.row;
     player.px=isoX(player.col,player.row); player.py=isoY(player.col,player.row);
     player.path=[];
+    snapCamera();
 
     updateSceneLabel(zone.name);
     State.scene = sceneId; State.save();
@@ -142,6 +143,7 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
     player.px=isoX(player.col,player.row);
     player.py=isoY(player.col,player.row);
     player.path=[];
+    snapCamera();
     updateSceneLabel('The Village');
     State.scene='village'; State.save();
     addNarrative('You step outside.','sys');
@@ -276,6 +278,7 @@ function loadFloor(building, floorId) {
   player.px  = isoX(player.col, player.row);
   player.py  = isoY(player.col, player.row);
   player.path = [];
+  snapCamera();
 
   updateSceneLabel(floor.name);
   State.scene = floorId; State.save();
