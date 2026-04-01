@@ -111,8 +111,8 @@ function buildTempleMap() {
   // Mid clearing
   fill(6,9,6,10,T.DIRT);
 
-  // Temple grounds at north end — open dirt (temple PNG covers this area)
-  fill(0,7,6,14,T.DIRT);
+  // Temple grounds at north end — extended to give the temple sprite room to sit
+  fill(0,7,8,14,T.DIRT);
 
   // Grass clearings beside path
   fill(3,5,14,5,T.GRASS);  // west
@@ -122,6 +122,27 @@ function buildTempleMap() {
   [[17,8],[15,6],[9,6],[8,7],[17,19],[15,21],[9,21]].forEach(([r,c])=>{
     if(g[r][c]===T.GRASS||g[r][c]===T.DIRT) g[r][c]=T.FLOWER;
   });
+
+  return g;
+}
+
+function buildTempleInteriorMap() {
+  const cols=14, rows=12;
+  const g = Array.from({length:rows}, ()=>Array(cols).fill(T.WALL));
+  const fill=(r,c,h,w,t)=>{ for(let i=r;i<r+h;i++) for(let j=c;j<c+w;j++){ if(i>=0&&i<rows&&j>=0&&j<cols) g[i][j]=t; }};
+
+  // Main cobblestone floor
+  fill(0,1,10,12,T.COBBLE);
+
+  // Altar area at the north end
+  fill(0,3,2,8,T.DIRT);
+
+  // Pillar pairs flanking the nave
+  [2,4,6].forEach(r => { g[r][2]=T.WALL; g[r][11]=T.WALL; });
+
+  // Exit at south centre
+  g[10][6]=T.EXIT; g[10][7]=T.EXIT;
+  g[11][6]=T.EXIT; g[11][7]=T.EXIT;
 
   return g;
 }
@@ -233,10 +254,32 @@ const ZONES = {
     stations:[],
     npcs:[],
     exits:[
-      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:13, row:20 },
-      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:14, row:20 },
-      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:13, row:21 },
-      { label:'Return to village', targetScene:'village', fromZone:'temple_path', col:14, row:21 },
+      { label:'Return to village',  targetScene:'village',          fromZone:'temple_path', col:13, row:20 },
+      { label:'Return to village',  targetScene:'village',          fromZone:'temple_path', col:14, row:20 },
+      { label:'Return to village',  targetScene:'village',          fromZone:'temple_path', col:13, row:21 },
+      { label:'Return to village',  targetScene:'village',          fromZone:'temple_path', col:14, row:21 },
+      { label:'Enter the temple',   targetScene:'temple_interior',  fromZone:'temple_path', col:13, row:6  },
+      { label:'Enter the temple',   targetScene:'temple_interior',  fromZone:'temple_path', col:14, row:6  },
+      { label:'Enter the temple',   targetScene:'temple_interior',  fromZone:'temple_path', col:13, row:7  },
+      { label:'Enter the temple',   targetScene:'temple_interior',  fromZone:'temple_path', col:14, row:7  },
+    ],
+  },
+
+  temple_interior: {
+    id:'temple_interior', name:'The Ancient Temple',
+    grid: buildTempleInteriorMap(),
+    items:[
+      { itemId:'stone_fragment', col:7, row:1, label:'Stone tablet on the altar', respawn:false, oneTime:true },
+      { itemId:'lavender',       col:4, row:0, label:'Dried offerings',           respawn:true  },
+      { itemId:'lavender',       col:9, row:0, label:'Dried offerings',           respawn:true  },
+    ],
+    stations:[],
+    npcs:[],
+    exits:[
+      { label:'Leave the temple', targetScene:'temple_path', fromZone:'temple_interior', col:6, row:10 },
+      { label:'Leave the temple', targetScene:'temple_path', fromZone:'temple_interior', col:7, row:10 },
+      { label:'Leave the temple', targetScene:'temple_path', fromZone:'temple_interior', col:6, row:11 },
+      { label:'Leave the temple', targetScene:'temple_path', fromZone:'temple_interior', col:7, row:11 },
     ],
   },
 

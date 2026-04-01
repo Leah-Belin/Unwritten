@@ -127,6 +127,10 @@ function loadZoneImages(scene) {
     loadTileImg('temple_obelisk', 'images/buildings/temple_obelisk.png'); // ceremonial obelisks
     loadTileImg('temple_wall',    'images/buildings/temple_wall.png');  // ancient wall section
   }
+  if (scene === 'temple_interior') {
+    loadTileImg('temple_obelisk', 'images/buildings/temple_obelisk.png');
+    loadTileImg('temple_wall',    'images/buildings/temple_wall.png');
+  }
 }
 
 // ── COLLECTIBLE RESOURCE IMAGES ───────────────────────────────
@@ -288,7 +292,7 @@ const SCENE_DECO = {
   ],
   temple_path: [
     // Main temple at the north end — player walks toward this
-    { img:'temple',         col:13, row:3,  size:420, yOff:0 },
+    { img:'temple',         col:13, row:6,  size:420, yOff:0 },
     // Obelisks flanking the path mid-way
     { img:'temple_obelisk', col:10, row:8,  size:100, yOff:0 },
     { img:'temple_obelisk', col:17, row:8,  size:100, yOff:0 },
@@ -296,7 +300,11 @@ const SCENE_DECO = {
     { img:'temple_wall',    col:6,  row:11, size:120, yOff:0 },
     { img:'temple_wall',    col:21, row:11, size:120, yOff:0 },
     // Entrance gate at the south end — first thing player passes through
-    { img:'temple_gate',    col:13, row:17, size:140, yOff:0 },
+    { img:'temple_gate',    col:13, row:17, size:140, yOff:0, rotation:90 },
+  ],
+  temple_interior: [
+    { img:'temple_obelisk', col:3,  row:1, size:90, yOff:0 },
+    { img:'temple_obelisk', col:10, row:1, size:90, yOff:0 },
   ],
 };
 

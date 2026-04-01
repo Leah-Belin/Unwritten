@@ -74,10 +74,15 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
       return { ...item, taken: State.takenItems.includes(takenKey) };
     });
 
-    // Place player at the entry point (opposite edge from the exit)
+    // Place player at the entry point.
+    // fromZoneEntry handles cases where the entry position depends on which
+    // zone the player is coming FROM (e.g. exiting temple_interior back to temple_path).
     const entryPos = { forest:{col:28,row:10}, garden:{col:10,row:2},
-                       temple_path:{col:13,row:18}, market:{col:3,row:10} };
-    const pos = entryPos[sceneId] || { col:Math.floor(mapCols/2), row:Math.floor(mapRows/2) };
+                       temple_path:{col:13,row:18}, market:{col:3,row:10},
+                       temple_interior:{col:7,row:8} };
+    const fromZoneEntry = { 'temple_path|temple_interior':{col:13,row:8} };
+    const posKey = fromZone ? `${sceneId}|${fromZone}` : null;
+    const pos = (posKey && fromZoneEntry[posKey]) || entryPos[sceneId] || { col:Math.floor(mapCols/2), row:Math.floor(mapRows/2) };
     player.col=pos.col; player.row=pos.row;
     player.px=isoX(player.col,player.row); player.py=isoY(player.col,player.row);
     player.path=[];
@@ -88,7 +93,8 @@ function loadScene(sceneId, fromBuildingId, fromZone) {
     const arrivals = { forest:'The trees close in around you.',
                        garden:'The air is cool and herb-sweet.',
                        temple_path:'The ancient road stretches ahead.',
-                       market:'Voices and colour fill the square.' };
+                       market:'Voices and colour fill the square.',
+                       temple_interior:'The air inside is heavy with stone and silence.' };
     addNarrative(arrivals[sceneId] || `You arrive at ${zone.name}.`, 'sys');
     updateSleepButton();
     updateLeaveButton();
