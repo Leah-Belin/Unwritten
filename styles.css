@@ -285,6 +285,10 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 .credits-author { color:var(--sepia); font-size:0.82rem; text-align:right; flex-shrink:0; }
 .credits-author a { color:var(--sepia); text-decoration:underline; }
 .credits-author a:hover { color:var(--accent); }
+.credits-source { font-family:var(--font-body); font-size:0.85rem; font-style:italic; color:var(--ink-light); line-height:1.6; margin-bottom:8px; }
+.credits-source a { color:var(--sepia); text-decoration:underline; }
+.credits-source a:hover { color:var(--accent); }
+.credits-authors { font-family:var(--font-body); font-size:0.83rem; color:var(--sepia); line-height:1.7; }
 #credits-btn { display:block; width:100%; background:none; border:none; border-top:1px solid var(--parchment-deep); font-family:var(--font-hand); font-size:0.72rem; color:var(--sepia); opacity:0.5; cursor:pointer; padding:5px 0 8px; text-align:center; flex-shrink:0; }
 #credits-btn:hover { opacity:1; }
 
