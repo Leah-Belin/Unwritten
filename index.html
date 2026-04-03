@@ -99,6 +99,30 @@
       </div>
     </div>
 
+    <!-- Credits -->
+    <div id="credits-overlay">
+      <div id="credits-box">
+        <div id="credits-title">— Credits —</div>
+        <div id="credits-close" onclick="closeCredits()">✕ close</div>
+        <div id="credits-content">
+          <div class="credits-section">
+            <div class="credits-section-title">Art &amp; Illustrations</div>
+            <div class="credits-list" id="credits-art"></div>
+          </div>
+          <div class="credits-section">
+            <div class="credits-section-title">Animations &amp; Sprites</div>
+            <div class="credits-list" id="credits-anim"></div>
+          </div>
+          <div class="credits-section">
+            <div class="credits-section-title">Fonts</div>
+            <div class="credits-list">
+              <div class="credits-entry"><span class="credits-item">Cinzel, Crimson Text, Caveat</span><span class="credits-author">Google Fonts</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- World Map -->
     <div id="worldmap-overlay">
       <div id="worldmap-box">
@@ -155,6 +179,7 @@
       <span id="time-label-r">🌅 Dawn</span>
     </div>
     <button id="reset-btn" onclick="if(confirm('Start a new game? All progress will be lost.')) State.reset()">↺ new game</button>
+    <button id="credits-btn" onclick="openCredits()">credits</button>
   </div><!-- /ui-panel -->
 
 </div><!-- /layout -->

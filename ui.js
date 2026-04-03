@@ -10,12 +10,21 @@ function initPanelState() {
   }
 }
 
+function openCredits() {
+  document.getElementById('credits-overlay').classList.add('open');
+}
+
+function closeCredits() {
+  document.getElementById('credits-overlay').classList.remove('open');
+}
+
 function initOverlayDismiss() {
   [
     ['craft-overlay',   closeCraftingMenu],
     ['market-overlay',  closeMarket],
     ['plot-overlay',    closePlot],
     ['worldmap-overlay',toggleWorldMap],
+    ['credits-overlay', closeCredits],
   ].forEach(([id, fn]) => {
     document.getElementById(id).addEventListener('click', e => {
       if (e.target === e.currentTarget) fn();

@@ -265,6 +265,29 @@ html, body { width:100%; height:100%; overflow:hidden; background:#0e0a06; font-
 .plot-btn:hover { background:var(--parchment-dark); border-color:var(--sepia); }
 .plot-btn.disabled { opacity:0.3; cursor:not-allowed; pointer-events:none; }
 
+/* ══ CREDITS OVERLAY ═══════════════════════════════════════════ */
+#credits-overlay {
+  position:absolute; inset:0; background:rgba(8,5,2,0.92);
+  display:flex; align-items:center; justify-content:center;
+  z-index:100; opacity:0; pointer-events:none; transition:opacity 0.3s;
+}
+#credits-overlay.open { opacity:1; pointer-events:all; }
+#credits-box { background:var(--parchment); border:3px solid var(--ink); padding:22px; width:420px; max-height:80vh; overflow-y:auto; position:relative; }
+#credits-title { font-family:var(--font-title); font-size:0.95rem; letter-spacing:0.2em; text-align:center; margin-bottom:18px; }
+#credits-close { position:absolute; top:10px; right:14px; font-family:var(--font-hand); font-size:1rem; cursor:pointer; color:var(--sepia); }
+#credits-close:hover { color:var(--ink); }
+.credits-section { margin-bottom:18px; }
+.credits-section:last-child { margin-bottom:0; }
+.credits-section-title { font-family:var(--font-title); font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--sepia); margin-bottom:8px; padding-bottom:4px; border-bottom:1px solid var(--parchment-deep); }
+.credits-entry { display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:4px 0; border-bottom:1px dotted var(--parchment-dark); font-family:var(--font-body); font-size:0.88rem; }
+.credits-entry:last-child { border-bottom:none; }
+.credits-item { color:var(--ink-light); font-style:italic; }
+.credits-author { color:var(--sepia); font-size:0.82rem; text-align:right; flex-shrink:0; }
+.credits-author a { color:var(--sepia); text-decoration:underline; }
+.credits-author a:hover { color:var(--accent); }
+#credits-btn { display:block; width:100%; background:none; border:none; border-top:1px solid var(--parchment-deep); font-family:var(--font-hand); font-size:0.72rem; color:var(--sepia); opacity:0.5; cursor:pointer; padding:5px 0 8px; text-align:center; flex-shrink:0; }
+#credits-btn:hover { opacity:1; }
+
 /* ══ WORLD MAP ═════════════════════════════════════════════════ */
 #worldmap-overlay {
   position:absolute; inset:0; background:rgba(8,5,2,0.92);
